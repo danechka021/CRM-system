@@ -1,0 +1,87 @@
+.displayTask {
+  width: 400px;
+  margin: 80 auto 0 auto;
+  padding: 5px;
+  background-color: #f3f9ff;
+  border-radius: 4px;
+}
+
+.ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  margin: 10px 0;
+  padding: 0 10px;
+  height: 50px;
+  border-radius: 4px;
+}
+
+.taskText {
+  flex: 1;
+  margin: 0 10px;
+  overflow: auto;
+}
+
+.imgEdit {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border: none;
+  display: block;
+}
+
+.imgDel {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border: none;
+  display: block;
+}
+
+.mainCheckbox {
+  display: inline-flex;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.inputCheckbox {
+  display: none;
+}
+
+.spanCheckbox {
+  width: 12px;
+  height: 12px;
+  border: 1px solid black;
+  border-radius: 50%;
+  position: relative;
+  background-color: white;
+}
+
+.spanCheckbox::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  width: 3px;
+  height: 5px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+
+.mainCheckbox input:checked + .spanCheckbox {
+  background-color: rgb(2, 51, 248);
+  border: 1px solid rgb(2, 51, 248);
+}
+
+.mainCheckbox input:checked + .spanCheckbox::after {
+  opacity: 1;
+}

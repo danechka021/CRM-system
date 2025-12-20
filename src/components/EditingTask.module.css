@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  gap: 80px;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.input {
+  width: 100%;
+  padding: 4px;
+  border: none;
+  border-bottom: 1px solid;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  padding-top: 15px;
+}
+
+.button {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.buttonSave {
+  background-color: blue;
+  color: white;
+  border-radius: 4px;
+  background-color: blue;
+  border: 1px solid rgb(35, 35, 211);
+  cursor: pointer;
+}
+
+.buttonSave:hover {
+  background-color: rgb(6, 6, 173);
+  border: transparent;
+}
+
+.buttonCancel {
+  background-color: blue;
+  color: white;
+  border-radius: 4px;
+  background-color: blue;
+  border: 1px solid blue;
+  cursor: pointer;
+}
+
+.buttonCancel:hover {
+  background-color: rgb(104, 104, 237);
+  border: transparent;
+}

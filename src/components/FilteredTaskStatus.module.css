@@ -1,0 +1,48 @@
+.button {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.allButton {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(63, 79, 79);
+  font-size: 16px;
+}
+
+.allButton:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+.inWorkButton {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(63, 79, 79);
+  font-size: 16px;
+}
+
+.inWorkButton:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+.completedButton {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(63, 79, 79);
+  font-size: 16px;
+}
+
+.completedButton:hover {
+  color: blue;
+  text-decoration: underline;
+}
