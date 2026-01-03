@@ -7,7 +7,10 @@ import DisplayTodoList from "./DisplayTodoList";
 import styles from "./MainTodoList.module.css";
 
 const MainTodoList = () => {
+  const API_URL = "https://easydev.club/api/v1/todos";
+
   //Для отображения и добавления задач
+  const [allTask, setAllTask] = useState([]);
   const [tasksName, setTasksName] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
@@ -21,39 +24,41 @@ const MainTodoList = () => {
   //Добавление задачи
 
   const addTodoTasks = ({ isDone, title }) => {
-    if (inputValue.trim()) {
-      fetch("https://easydev.club/api/v1/todos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isDone, title }),
-      })
-        .then((response) => {
-          if (!response.ok)
-            throw new Error(
-              `Статус ошиюки при добавлении новой задачи: ${response.statuse} `
-            );
-          return response.json();
-        })
-        .then((newTask) => {
-          setTasksName((prev) => [...prev, newTask]);
-          setInputValue("");
-        })
-        .catch((error) => {
-          console.log("error:", error);
-        });
-    } else {
-      confirm("Введите название задачи");
+    const titleName = title.trim();
+
+    if (titleName.length < 2 || titleName.length > 64) {
+      alert("Название задачи должно быть от 2 до 64 символов");
+      return;
     }
+    fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isDone, title }),
+    })
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(
+            `Статус ошиюки при добавлении новой задачи: ${response.statuse} `
+          );
+        return response.json();
+      })
+      .then((newTask) => {
+        setTasksName((prev) => [...prev, newTask]);
+        setInputValue("");
+      })
+      .catch((error) => {
+        console.log("error:", error);
+      });
   };
 
   //Фильтрация задач по статусу
 
-  useEffect(() => {
-    fetch(`https://easydev.club/api/v1/todos}`)
+  const fetchTasksStatus = (status) => {
+    fetch(`${API_URL}?filter=${status}`)
       .then((response) => {
         if (!response.ok)
           throw new Error(
-            `Статус ошиюки при фильтрации по статусу задачи: ${response.statuse} `
+            `Статус ошиюки при фильтрации по статусу задачи: ${response.status} `
           );
         return response.json();
       })
@@ -61,22 +66,28 @@ const MainTodoList = () => {
       .catch((error) => {
         console.log("error:", error);
       });
-  }, []);
+  };
 
-  const tasksFiltrashion = useMemo(() => {
-    if (filteredTasks === "inWork") {
-      return tasksName.filter((task) => !task.isDone);
-    }
-    if (filteredTasks === "completed") {
-      return tasksName.filter((task) => task.isDone);
-    }
-    return tasksName;
-  }, [tasksName, filteredTasks]);
+  useEffect(() => {
+    fetchTasksStatus(filteredTasks);
+  }, [filteredTasks]);
+
+  const totalCount = useMemo(() => {
+    return allTask.length;
+  }, [allTask]);
+
+  const inWorkCount = useMemo(() => {
+    return allTask.filter((task) => !task.isDone).length;
+  }, [allTask]);
+
+  const completedCount = useMemo(() => {
+    return allTask.filter((task) => task.isDone).length;
+  }, [allTask]);
 
   //Отображение задач
 
   useEffect(() => {
-    fetch(`https://easydev.club/api/v1/todos?filter`)
+    fetch(API_URL)
       .then((response) => {
         if (!response.ok)
           throw new Error(
@@ -85,7 +96,7 @@ const MainTodoList = () => {
 
         return response.json();
       })
-      .then((todoData) => setTasksName(todoData.data))
+      .then((todoData) => setAllTask(todoData.data))
       .catch((error) => {
         console.log("error:", error);
       });
@@ -94,7 +105,7 @@ const MainTodoList = () => {
   //Выбор статуса задачи
 
   const changeTaskStatus = (task) => {
-    fetch(`https://easydev.club/api/v1/todos/${task.id}`, {
+    fetch(`${API_URL}/${task.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isDone: !task.isDone, title: task.title }),
@@ -106,12 +117,12 @@ const MainTodoList = () => {
           );
         return response.json();
       })
-      .then((newStatusTask) => {
-        setTasksName((prev) =>
-          prev.map((oldTask) =>
-            oldTask.id === newStatusTask.id ? newStatusTask : oldTask
-          )
-        );
+      .then(() => {
+        return fetch(API_URL).then((response) => response.json());
+      })
+      .then((newObject) => {
+        setAllTask(newObject.data);
+        fetchTasksStatus(filteredTasks);
       })
       .then((error) => {
         console.log("error:", error);
@@ -131,7 +142,13 @@ const MainTodoList = () => {
   };
 
   const saveEditingTaskId = (task) => {
-    fetch(`https://easydev.club/api/v1/todos/${task.id}`, {
+    const titleName = editingTaskValue.trim();
+
+    if (titleName.length < 2 || titleName.length > 64) {
+      alert("Название задачи должно быть от 2 до 64 символов");
+      return;
+    }
+    fetch(`${API_URL}/${task.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: editingTaskValue }),
@@ -139,7 +156,7 @@ const MainTodoList = () => {
       .then((response) => {
         if (!response.ok)
           throw new Error(
-            `Статус ошибки при выборе статус задачи: ${response.status}`
+            `Статус ошибки редактировании задачи: ${response.status}`
           );
         return response.json();
       })
@@ -159,7 +176,7 @@ const MainTodoList = () => {
   //Удаление задачи
 
   const deleteTodoTask = (id) => {
-    fetch(`https://easydev.club/api/v1/todos/${id}`, {
+    fetch(`${API_URL}/${id}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -169,9 +186,11 @@ const MainTodoList = () => {
           );
       })
       .then(() => {
-        setTasksName((newArrayTasksName) =>
-          newArrayTasksName.filter((newTaskName) => newTaskName.id !== id)
-        );
+        return fetch(API_URL).then((response) => response.json());
+      })
+      .then((newObject) => {
+        setAllTask(newObject.data);
+        fetchTasksStatus(filteredTasks);
       })
       .catch((error) => {
         console.log("error:", error);
@@ -189,12 +208,17 @@ const MainTodoList = () => {
       </div>
 
       <div>
-        <FilteredTaskStatus setFilteredTask={setFilteredTask} />
+        <FilteredTaskStatus
+          setFilteredTask={setFilteredTask}
+          totalCount={totalCount}
+          inWorkCount={inWorkCount}
+          completedCount={completedCount}
+        />
       </div>
 
       <div>
         <DisplayTodoList
-          tasksName={tasksFiltrashion}
+          tasksName={tasksName}
           changeTaskStatus={changeTaskStatus}
           deleteTodoTask={deleteTodoTask}
           editingTaskName={editingTaskName}

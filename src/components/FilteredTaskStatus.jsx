@@ -1,6 +1,11 @@
 import styles from "./FilteredTaskStatus.module.css";
 
-const FilteredTaskStatus = ({ setFilteredTask }) => {
+const FilteredTaskStatus = ({
+  setFilteredTask,
+  inWorkCount,
+  totalCount,
+  completedCount,
+}) => {
   return (
     <>
       <div className={styles.button}>
@@ -8,19 +13,19 @@ const FilteredTaskStatus = ({ setFilteredTask }) => {
           className={styles.allButton}
           onClick={() => setFilteredTask("all")}
         >
-          Все
+          Все ({totalCount})
         </button>
         <button
           className={styles.inWorkButton}
           onClick={() => setFilteredTask("inWork")}
         >
-          В работе
+          В работе ({inWorkCount})
         </button>
         <button
           className={styles.completedButton}
           onClick={() => setFilteredTask("completed")}
         >
-          Сделано
+          Сделано ({completedCount})
         </button>
       </div>
     </>
