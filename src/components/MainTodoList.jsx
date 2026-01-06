@@ -46,6 +46,13 @@ const MainTodoList = () => {
         setTasksName((prev) => [...prev, newTask]);
         setInputValue("");
       })
+      .then(() => {
+        return fetch(API_URL).then((response) => response.json());
+      })
+      .then((newObject) => {
+        setAllTask(newObject.data);
+        fetchTasksStatus(filteredTasks);
+      })
       .catch((error) => {
         console.log("error:", error);
       });
