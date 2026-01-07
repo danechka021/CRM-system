@@ -225,6 +225,7 @@ const MainTodoList = () => {
           totalCount={totalCount}
           inWorkCount={inWorkCount}
           completedCount={completedCount}
+          filteredTasks={filteredTasks}
         />
       </div>
 
