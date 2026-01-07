@@ -125,13 +125,18 @@ const MainTodoList = () => {
         return response.json();
       })
       .then(() => {
-        return fetch(API_URL).then((response) => response.json());
+        return fetch(API_URL).then((response) => {
+          if (!response.ok) {
+            throw new Error(`ошибка при получении задач ${response.status}`);
+          }
+          return response.json();
+        });
       })
       .then((newObject) => {
         setAllTask(newObject.data);
         fetchTasksStatus(filteredTasks);
       })
-      .then((error) => {
+      .catch((error) => {
         console.log("error:", error);
       });
   };

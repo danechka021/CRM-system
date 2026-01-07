@@ -34,7 +34,6 @@ const DisplayTodoList = ({
                 <>
                   <label className={styles.mainCheckbox}>
                     <input
-                      onClick={() => changeTaskStatus(task)}
                       type="checkbox"
                       className={styles.inputCheckbox}
                       checked={task.isDone}
