@@ -1,6 +1,6 @@
-import styles from "./InputTaskName.module.css";
+import styles from "./AddTask.module.css";
 
-const InputTaskName = ({ inputValue, setInputValue, addTodoTasks }) => {
+const AddTask = ({ inputValue, setInputValue, addTodoTasks }) => {
   return (
     <>
       <div className={styles.mainContainer}>
@@ -23,4 +23,4 @@ const InputTaskName = ({ inputValue, setInputValue, addTodoTasks }) => {
   );
 };
 
-export default InputTaskName;
+export default AddTask;

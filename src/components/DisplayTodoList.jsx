@@ -27,7 +27,7 @@ const DisplayTodoList = ({
                     value={editingTaskValue}
                     setValue={setEditingTaskValue}
                     onCansel={canselEddit}
-                    onSave={() => saveEditingTaskId(task)}
+                    onSave={() => saveEditingTaskId(task, editingTaskValue)}
                   />
                 </>
               ) : (

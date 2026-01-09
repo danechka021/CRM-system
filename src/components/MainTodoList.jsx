@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  addTask,
+  fetchTasksByStatus,
+  getData,
+  changeTaskByStatus,
+  saveTask,
+  deleteByTask,
+} from "../api/tasks.api.js";
 
-import InputTaskName from "./InputTaskName";
-import FilteredTaskStatus from "./FilteredTaskStatus";
+import AddTask from "./AddTask";
+import FiltersTask from "./FiltersTask";
 import DisplayTodoList from "./DisplayTodoList";
 
 import styles from "./MainTodoList.module.css";
 
 const MainTodoList = () => {
-  const API_URL = "https://easydev.club/api/v1/todos";
-
   //Для отображения и добавления задач
   const [allTask, setAllTask] = useState([]);
   const [tasksName, setTasksName] = useState([]);
@@ -22,57 +28,35 @@ const MainTodoList = () => {
   const [filteredTasks, setFilteredTask] = useState("all");
 
   //Добавление задачи
+  const addTodoTasks = async ({ isDone, title }) => {
+    try {
+      const titleName = title.trim();
+      if (titleName.length < 2 || titleName.length > 64) {
+        alert("Название задачи должно быть от 2 до 64 символов");
+        return;
+      }
 
-  const addTodoTasks = ({ isDone, title }) => {
-    const titleName = title.trim();
+      const newTask = await addTask(titleName, isDone);
+      setTasksName((prev) => [...prev, newTask]);
+      setInputValue("");
 
-    if (titleName.length < 2 || titleName.length > 64) {
-      alert("Название задачи должно быть от 2 до 64 символов");
-      return;
+      const newObjectTasks = await getData();
+      setAllTask(newObjectTasks.data);
+      await fetchTasksStatus(filteredTasks);
+    } catch (error) {
+      console.log("error:", error);
     }
-    fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isDone, title }),
-    })
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Статус ошиюки при добавлении новой задачи: ${response.statuse} `
-          );
-        return response.json();
-      })
-      .then((newTask) => {
-        setTasksName((prev) => [...prev, newTask]);
-        setInputValue("");
-      })
-      .then(() => {
-        return fetch(API_URL).then((response) => response.json());
-      })
-      .then((newObject) => {
-        setAllTask(newObject.data);
-        fetchTasksStatus(filteredTasks);
-      })
-      .catch((error) => {
-        console.log("error:", error);
-      });
   };
 
   //Фильтрация задач по статусу
 
-  const fetchTasksStatus = (status) => {
-    fetch(`${API_URL}?filter=${status}`)
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Статус ошиюки при фильтрации по статусу задачи: ${response.status} `
-          );
-        return response.json();
-      })
-      .then((newFilteredTasksArray) => setTasksName(newFilteredTasksArray.data))
-      .catch((error) => {
-        console.log("error:", error);
-      });
+  const fetchTasksStatus = async (status) => {
+    try {
+      const newFilteredTasksArray = await fetchTasksByStatus(status);
+      setTasksName(newFilteredTasksArray.data);
+    } catch (error) {
+      console.log("error:", error);
+    }
   };
 
   useEffect(() => {
@@ -94,51 +78,29 @@ const MainTodoList = () => {
   //Отображение задач
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Статус ошибки при получении задачи с сервера: ${response.status}`
-          );
-
-        return response.json();
-      })
-      .then((todoData) => setAllTask(todoData.data))
-      .catch((error) => {
+    const displayTask = async () => {
+      try {
+        const todoData = await getData().then((todoData) =>
+          setAllTask(todoData.data)
+        );
+      } catch (error) {
         console.log("error:", error);
-      });
+      }
+    };
+    displayTask();
   }, []);
 
   //Выбор статуса задачи
 
-  const changeTaskStatus = (task) => {
-    fetch(`${API_URL}/${task.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isDone: !task.isDone, title: task.title }),
-    })
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Статус ошибки при выборе статус задачи: ${response.status}`
-          );
-        return response.json();
-      })
-      .then(() => {
-        return fetch(API_URL).then((response) => {
-          if (!response.ok) {
-            throw new Error(`ошибка при получении задач ${response.status}`);
-          }
-          return response.json();
-        });
-      })
-      .then((newObject) => {
-        setAllTask(newObject.data);
-        fetchTasksStatus(filteredTasks);
-      })
-      .catch((error) => {
-        console.log("error:", error);
-      });
+  const changeTaskStatus = async (task) => {
+    try {
+      await changeTaskByStatus(task);
+      const newObject = await getData();
+      setAllTask(newObject.data);
+      await fetchTasksStatus(filteredTasks);
+    } catch (error) {
+      console.log("error:", error);
+    }
   };
 
   //редактирование задачи
@@ -153,66 +115,41 @@ const MainTodoList = () => {
     setEditingTaskValue("");
   };
 
-  const saveEditingTaskId = (task) => {
-    const titleName = editingTaskValue.trim();
+  const saveEditingTaskId = async (task, editingTaskValue) => {
+    try {
+      const titleName = editingTaskValue.trim();
 
-    if (titleName.length < 2 || titleName.length > 64) {
-      alert("Название задачи должно быть от 2 до 64 символов");
-      return;
+      if (titleName.length < 2 || titleName.length > 64) {
+        alert("Название задачи должно быть от 2 до 64 символов");
+        return;
+      }
+      await saveTask(task, editingTaskValue);
+      const newObject = await getData();
+      setAllTask(newObject.data);
+      await fetchTasksStatus(filteredTasks);
+      canselEddit();
+    } catch (error) {
+      console.log("error:", error);
     }
-    fetch(`${API_URL}/${task.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editingTaskValue }),
-    })
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Статус ошибки редактировании задачи: ${response.status}`
-          );
-        return response.json();
-      })
-      .then((updateTaskName) => {
-        setTasksName((prev) =>
-          prev.map((oldTaskName) =>
-            oldTaskName.id === updateTaskName.id ? updateTaskName : oldTaskName
-          )
-        );
-        canselEddit();
-      })
-      .catch((error) => {
-        console.log("error:", error);
-      });
   };
 
   //Удаление задачи
 
-  const deleteTodoTask = (id) => {
-    fetch(`${API_URL}/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            `Статус ошибки при удалении задачи с сервера: ${response.status}`
-          );
-      })
-      .then(() => {
-        return fetch(API_URL).then((response) => response.json());
-      })
-      .then((newObject) => {
-        setAllTask(newObject.data);
-        fetchTasksStatus(filteredTasks);
-      })
-      .catch((error) => {
-        console.log("error:", error);
-      });
+  const deleteTodoTask = async (id) => {
+    try {
+      await deleteByTask(id);
+      const newObject = await getData();
+      setAllTask(newObject.data);
+      await fetchTasksStatus(filteredTasks);
+    } catch (error) {
+      console.log("error:", error);
+    }
   };
 
   return (
     <>
       <div className={styles.mainTaskName}>
-        <InputTaskName
+        <AddTask
           inputValue={inputValue}
           setInputValue={setInputValue}
           addTodoTasks={addTodoTasks}
@@ -220,7 +157,7 @@ const MainTodoList = () => {
       </div>
 
       <div>
-        <FilteredTaskStatus
+        <FiltersTask
           setFilteredTask={setFilteredTask}
           totalCount={totalCount}
           inWorkCount={inWorkCount}

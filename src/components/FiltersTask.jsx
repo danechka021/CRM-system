@@ -1,6 +1,6 @@
-import styles from "./FilteredTaskStatus.module.css";
+import styles from "./FiltersTask.module.css";
 
-const FilteredTaskStatus = ({
+const FiltersTask = ({
   setFilteredTask,
   inWorkCount,
   totalCount,
@@ -42,4 +42,4 @@ const FilteredTaskStatus = ({
   );
 };
 
-export default FilteredTaskStatus;
+export default FiltersTask;
