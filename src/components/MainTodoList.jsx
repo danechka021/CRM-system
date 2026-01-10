@@ -28,7 +28,7 @@ const MainTodoList = () => {
   const [filteredTasks, setFilteredTask] = useState("all");
 
   //Добавление задачи
-  const addTodoTasks = async ({ isDone, title }) => {
+  const addTodoTasks = async ({ title, isDone }) => {
     try {
       const titleName = title.trim();
       if (titleName.length < 2 || titleName.length > 64) {
@@ -80,9 +80,8 @@ const MainTodoList = () => {
   useEffect(() => {
     const displayTask = async () => {
       try {
-        const todoData = await getData().then((todoData) =>
-          setAllTask(todoData.data)
-        );
+        const todoData = await getData();
+        setAllTask(todoData.data);
       } catch (error) {
         console.log("error:", error);
       }
