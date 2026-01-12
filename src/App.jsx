@@ -1,10 +1,10 @@
-import MainTodoList from "./components/MainTodoList";
+import TodoList from "./pages/ToDoList";
 
 const App = () => {
   return (
     <>
       <div className="mainContainer">
-        <MainTodoList />
+        <TodoList />
       </div>
     </>
   );
