@@ -42,9 +42,12 @@ const TodoItem = ({
   const saveEditingTask = async (task) => {
     try {
       const titleTrim = editingTitle.trim();
-
-      if (titleTrim.length < 2 || titleTrim.length > 64) {
+      if (!titleTrim) {
+        throw new Error("Это поле не может быть пустым");
+      } else if (titleTrim.length < 2 || titleTrim.length > 64) {
         throw new Error("Название задачи должно быть от 2 до 64 символов");
+      } else if (titleTrim.length > 64) {
+        throw new Error("Максимальная длина текста 64 символа.");
       }
       await updatedTask(task.id, { title: titleTrim });
       await toggleTasksStatus(selectedTaskFilter);

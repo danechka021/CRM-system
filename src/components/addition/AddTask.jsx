@@ -8,8 +8,12 @@ const AddTask = ({ onAddTask, handleError }) => {
   const addNewTask = async () => {
     try {
       const titleTrim = taskName.trim();
-      if (titleTrim.length < 2 || titleTrim.length > 64) {
-        throw new Error("Название задачи должно быть от 2 до 64 символов");
+      if (!titleTrim) {
+        throw new Error("Это поле не может быть пустым");
+      } else if (titleTrim.length < 2) {
+        throw new Error("Минимальная длина текста 2 символа");
+      } else if (titleTrim.length > 64) {
+        throw new Error("Максимальная длина текста 64 символа.");
       }
 
       await addTask(titleTrim, false);
