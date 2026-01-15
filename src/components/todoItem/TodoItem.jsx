@@ -1,35 +1,92 @@
 import logoEdit from "../../assets/edit.png";
 import logoDel from "../../assets/delete.png";
 
+import { useState } from "react";
 import styles from "../todoItem/TodoItem.module.css";
+
+import { updatedTask, deleteTask } from "../../api/tasks";
 
 const TodoItem = ({
   task,
-  deleteTodoTask,
-  changeTaskStatus,
-  editingTaskName,
-  value,
-  setValue,
-  onSave,
-  onCansel,
-  startEditingTask,
+  handleError,
+  toggleTasksStatus,
+  selectedTaskFilter,
 }) => {
+  //Для редактирования задач
+  const [editingTitle, setEditingTitle] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
+  //Выбор статуса задачи
+
+  const changeTaskStatus = async (task) => {
+    try {
+      await updatedTask(task.id, { isDone: !task.isDone });
+      await toggleTasksStatus(selectedTaskFilter);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  //редактирование задачи
+
+  const startEditingTask = (task) => {
+    setEditingTitle(task.title || "");
+    setIsEditing(true);
+  };
+
+  const canselEditingTask = () => {
+    setEditingTitle("");
+    setIsEditing(false);
+  };
+
+  const saveEditingTask = async (task) => {
+    try {
+      const titleTrim = editingTitle.trim();
+
+      if (titleTrim.length < 2 || titleTrim.length > 64) {
+        throw new Error("Название задачи должно быть от 2 до 64 символов");
+      }
+      await updatedTask(task.id, { title: titleTrim });
+      await toggleTasksStatus(selectedTaskFilter);
+      canselEditingTask();
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  //Удаление задачи
+
+  const deleteTodoTask = async (id) => {
+    try {
+      await deleteTask(id);
+      await toggleTasksStatus(selectedTaskFilter);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
     <>
       <li className={styles.li} key={task.id}>
-        {editingTaskName === task.id ? (
+        {isEditing ? (
           <div className={styles.container}>
             <input
               className={styles.input}
               type="text"
-              value={value}
-              onChange={(event) => setValue(event.target.value)}
+              value={editingTitle}
+              onChange={(event) => setEditingTitle(event.target.value)}
             />
             <div className={styles.button}>
-              <button className={styles.buttonCancel} onClick={onCansel}>
+              <button
+                className={styles.buttonCancel}
+                onClick={canselEditingTask}
+              >
                 Отмена
               </button>
-              <button className={styles.buttonSave} onClick={onSave}>
+              <button
+                className={styles.buttonSave}
+                onClick={() => saveEditingTask(task, editingTitle)}
+              >
                 Сохранить
               </button>
             </div>

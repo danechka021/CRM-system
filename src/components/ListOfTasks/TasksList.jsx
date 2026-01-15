@@ -3,14 +3,9 @@ import TodoItem from "../todoItem/TodoItem";
 
 const TasksList = ({
   tasksList,
-  deleteTodoTask,
-  changeTaskStatus,
-  editingTaskId,
-  editingTitle,
-  setEditingTitle,
-  saveEditingTask,
-  canselEditingTask,
-  startEditingTask,
+  handleError,
+  toggleTasksStatus,
+  selectedTaskFilter,
 }) => {
   return (
     <>
@@ -20,14 +15,9 @@ const TasksList = ({
             <TodoItem
               key={task.id}
               task={task}
-              deleteTodoTask={deleteTodoTask}
-              changeTaskStatus={changeTaskStatus}
-              editingTaskName={editingTaskId}
-              value={editingTitle}
-              setValue={setEditingTitle}
-              onSave={() => saveEditingTask(task, editingTitle)}
-              onCansel={canselEditingTask}
-              startEditingTask={startEditingTask}
+              handleError={handleError}
+              toggleTasksStatus={toggleTasksStatus}
+              selectedTaskFilter={selectedTaskFilter}
             />
           ))}
         </ul>
