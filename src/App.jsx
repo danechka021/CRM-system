@@ -1,4 +1,4 @@
-import TodoList from "./pages/ToDoList";
+import TodoList from "./pages/TodoList.jsx";
 
 const App = () => {
   return (
