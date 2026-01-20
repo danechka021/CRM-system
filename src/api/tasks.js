@@ -11,16 +11,11 @@ export const addTask = async (title, isDone) => {
     });
     if (!response.ok)
       throw new Error(
-        `Статус ошиюки при добавлении новой задачи: ${response.status} `
+        `Статус ошиюки при добавлении новой задачи: ${response.status} `,
       );
 
-    try {
-      const data = await response.json();
-      return data;
-    } catch (errorJson) {
-      console.log("ошибка при парсе json:", errorJson.message);
-      throw errorJson;
-    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.log(error.message);
     throw error;
@@ -39,7 +34,7 @@ export const getTasks = async (status) => {
     const response = await fetch(url);
     if (!response.ok)
       throw new Error(
-        `Статус ошиюки при фильтрации по статусу задачи: ${response.status} `
+        `Статус ошиюки при фильтрации по статусу задачи: ${response.status} `,
       );
 
     const data = await response.json();
@@ -52,16 +47,16 @@ export const getTasks = async (status) => {
 
 // PUT запрос
 
-export const updatedTask = async (taskId, updates) => {
+export const updatedTask = async (taskId, updatedTodo) => {
   try {
     const response = await fetch(`${API_URL}/${taskId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updates),
+      body: JSON.stringify(updatedTodo),
     });
     if (!response.ok)
       throw new Error(
-        `Статус ошибки редактировании задачи: ${response.status}`
+        `Статус ошибки редактировании задачи: ${response.status}`,
       );
 
     const data = await response.json();
@@ -81,7 +76,7 @@ export const deleteTask = async (id) => {
     });
     if (!response.ok)
       throw new Error(
-        `Статус ошибки при удалении задачи с сервера: ${response.status}`
+        `Статус ошибки при удалении задачи с сервера: ${response.status}`,
       );
   } catch (error) {
     console.log(error.message);

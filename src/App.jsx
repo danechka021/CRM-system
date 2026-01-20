@@ -1,12 +1,10 @@
-import TodoList from "./pages/TodoList.jsx";
+import TodoListPage from "./pages/TodoListPage.jsx";
 
 const App = () => {
   return (
-    <>
-      <div className="mainContainer">
-        <TodoList />
-      </div>
-    </>
+    <div className="mainContainer">
+      <TodoListPage />
+    </div>
   );
 };
 

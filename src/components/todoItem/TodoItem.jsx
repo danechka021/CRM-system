@@ -5,13 +5,10 @@ import { useState } from "react";
 import styles from "../todoItem/TodoItem.module.css";
 
 import { updatedTask, deleteTask } from "../../api/tasks";
+import IconButton from "../../ui/IconButton/IconButton";
+import Checkbox from "../../ui/Checkbox/Checkbox";
 
-const TodoItem = ({
-  task,
-  handleError,
-  toggleTasksStatus,
-  selectedTaskFilter,
-}) => {
+const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
   //Для редактирования задач
   const [editingTitle, setEditingTitle] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -21,39 +18,41 @@ const TodoItem = ({
   const changeTaskStatus = async (task) => {
     try {
       await updatedTask(task.id, { isDone: !task.isDone });
-      await toggleTasksStatus(selectedTaskFilter);
+      await onUpdtaeTask();
     } catch (error) {
-      handleError(error);
+      alert(error.message || "Произошла ошибка");
+      console.log(error);
     }
   };
 
   //редактирование задачи
 
   const startEditingTask = (task) => {
-    setEditingTitle(task.title || "");
+    setEditingTitle(task.title);
     setIsEditing(true);
   };
 
   const canselEditingTask = () => {
-    setEditingTitle("");
     setIsEditing(false);
   };
 
   const saveEditingTask = async (task) => {
+    const error = correctRequest(editingTitle);
+
+    if (error) {
+      alert(error);
+      return;
+    }
+
     try {
       const titleTrim = editingTitle.trim();
-      if (!titleTrim) {
-        throw new Error("Это поле не может быть пустым");
-      } else if (titleTrim.length < 2 || titleTrim.length > 64) {
-        throw new Error("Название задачи должно быть от 2 до 64 символов");
-      } else if (titleTrim.length > 64) {
-        throw new Error("Максимальная длина текста 64 символа.");
-      }
+
       await updatedTask(task.id, { title: titleTrim });
-      await toggleTasksStatus(selectedTaskFilter);
+      await onUpdtaeTask();
       canselEditingTask();
     } catch (error) {
-      handleError(error);
+      alert(error.message || "Произошла ошибка");
+      console.log(error);
     }
   };
 
@@ -62,9 +61,10 @@ const TodoItem = ({
   const deleteTodoTask = async (id) => {
     try {
       await deleteTask(id);
-      await toggleTasksStatus(selectedTaskFilter);
+      await onUpdtaeTask();
     } catch (error) {
-      handleError(error);
+      alert(error.message || "Произошла ошибка");
+      console.log(error);
     }
   };
 
@@ -97,13 +97,10 @@ const TodoItem = ({
         ) : (
           <>
             <label className={styles.mainCheckbox}>
-              <input
-                type="checkbox"
-                className={styles.inputCheckbox}
-                checked={task.isDone}
+              <Checkbox
                 onChange={() => changeTaskStatus(task)}
+                checked={task.isDone}
               />
-              <span className={styles.spanCheckbox}></span>
             </label>
 
             <span
@@ -115,12 +112,12 @@ const TodoItem = ({
             </span>
 
             <div>
-              <button onClick={() => startEditingTask(task)}>
-                <img className={styles.imgEdit} src={logoEdit} />
-              </button>
-              <button onClick={() => deleteTodoTask(task.id)}>
-                <img className={styles.imgDel} src={logoDel} />
-              </button>
+              <IconButton onClick={() => startEditingTask(task)} src={logoEdit}>
+                <img src={logoEdit} />
+              </IconButton>
+              <IconButton onClick={() => deleteTodoTask(task.id)} src={logoDel}>
+                <img src={logoDel} />
+              </IconButton>
             </div>
           </>
         )}

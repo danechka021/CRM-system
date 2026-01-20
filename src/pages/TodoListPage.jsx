@@ -5,9 +5,9 @@ import AddTask from "../components/addition/AddTask.jsx";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.jsx";
 import TasksList from "../components/ListOfTasks/TasksList.jsx";
 
-import styles from "../pages/TodoList.module.css";
+import styles from "../pages/TodoListPage.module.css";
 
-const TodoList = () => {
+const TodoListPage = () => {
   const [tasksList, setTasksList] = useState([]);
 
   const [countTasks, setCountTasks] = useState({
@@ -18,16 +18,22 @@ const TodoList = () => {
 
   const [selectedTaskFilter, setSelectedTaskFilter] = useState("all");
 
-  const handleError = (error) => {
-    alert(error.message || "Произошла ошибка");
-    console.log(error);
+  const correctRequest = (title) => {
+    const titleTrim = title.trim();
+    if (!titleTrim) {
+      return "Это поле не может быть пустым";
+    } else if (titleTrim.length < 2) {
+      return "Минимальная длина текста 2 символа";
+    } else if (titleTrim.length > 64) {
+      return "Максимальная длина текста 64 символа.";
+    }
   };
 
   //Отображение по статусам
 
-  const toggleTasksStatus = async (status) => {
+  const updateTask = async () => {
     try {
-      const results = await getTasks(status);
+      const results = await getTasks(selectedTaskFilter);
       setTasksList(results.data);
 
       if (results.info) {
@@ -38,21 +44,19 @@ const TodoList = () => {
         });
       }
     } catch (error) {
-      handleError(error);
+      alert(error.message || "Произошла ошибка");
+      console.log(error);
     }
   };
 
   useEffect(() => {
-    toggleTasksStatus(selectedTaskFilter);
+    updateTask(selectedTaskFilter);
   }, [selectedTaskFilter]);
 
   return (
     <>
       <div className={styles.mainTaskName}>
-        <AddTask
-          onAddTask={() => toggleTasksStatus(selectedTaskFilter)}
-          handleError={handleError}
-        />
+        <AddTask onUpdtaeTask={updateTask} correctRequest={correctRequest} />
       </div>
 
       <div>
@@ -65,14 +69,13 @@ const TodoList = () => {
 
       <div>
         <TasksList
+          correctRequest={correctRequest}
           tasksList={tasksList}
-          handleError={handleError}
-          toggleTasksStatus={toggleTasksStatus}
-          selectedTaskFilter={selectedTaskFilter}
+          onUpdtaeTask={updateTask}
         />
       </div>
     </>
   );
 };
 
-export default TodoList;
+export default TodoListPage;

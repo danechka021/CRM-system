@@ -38,11 +38,11 @@
   outline: none;
   cursor: pointer;
   background: transparent;
-  color: rgb(63, 79, 79);
+  color: #3f4f4f;
   font-size: 16px;
 }
 
 .completedButton:hover {
-  color: blue;
+  color: #0000ff;
   text-decoration: underline;
 }

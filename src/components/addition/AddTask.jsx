@@ -2,43 +2,39 @@ import { useState } from "react";
 import styles from "./AddTask.module.css";
 import { addTask } from "../../api/tasks";
 
-const AddTask = ({ onAddTask, handleError }) => {
+import Button from "../../ui/Button/Button.jsx";
+import Input from "../../ui/Input/Input.jsx";
+
+const AddTask = ({ onUpdtaeTask, correctRequest }) => {
   const [taskName, setTaskName] = useState("");
 
   const addNewTask = async () => {
+    const error = correctRequest(taskName);
+
+    if (error) {
+      alert(error);
+      return;
+    }
     try {
       const titleTrim = taskName.trim();
-      if (!titleTrim) {
-        throw new Error("Это поле не может быть пустым");
-      } else if (titleTrim.length < 2) {
-        throw new Error("Минимальная длина текста 2 символа");
-      } else if (titleTrim.length > 64) {
-        throw new Error("Максимальная длина текста 64 символа.");
-      }
 
       await addTask(titleTrim, false);
       setTaskName("");
-      onAddTask();
+      onUpdtaeTask();
     } catch (error) {
-      handleError(error);
+      alert(error.message || "Произошла ошибка");
+      console.log(error);
     }
   };
   return (
-    <>
-      <div className={styles.mainContainer}>
-        <input
-          className={styles.input}
-          type="text"
-          value={taskName}
-          onChange={(event) => setTaskName(event.target.value)}
-          id="task"
-          placeholder="Task To Be Done..."
-        />
-        <button className={styles.button} onClick={addNewTask}>
-          Add
-        </button>
-      </div>
-    </>
+    <div className={styles.mainContainer}>
+      <Input
+        value={taskName}
+        onChange={(event) => setTaskName(event.target.value)}
+        placeholder="Task To Be Done..."
+      />
+      <Button onClick={addNewTask}>Add</Button>
+    </div>
   );
 };
 
