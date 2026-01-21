@@ -1,4 +1,5 @@
 import styles from "../TodoFilter/TasksStatusTabs.module.css";
+import Tab from "../../ui/Tab/Tab";
 
 const TasksStatusTabs = ({
   setSelectedTaskFilter,
@@ -7,33 +8,32 @@ const TasksStatusTabs = ({
 }) => {
   return (
     <div className={styles.button}>
-      <button
-        className={styles.allButton}
+      <Tab
         style={{
           color: selectedTaskFilter === "all" ? "blue" : "black",
         }}
         onClick={() => setSelectedTaskFilter("all")}
       >
         Все ({countTasks.all})
-      </button>
-      <button
-        className={styles.inWorkButton}
+      </Tab>
+
+      <Tab
         style={{
           color: selectedTaskFilter === "inWork" ? "blue" : "black",
         }}
         onClick={() => setSelectedTaskFilter("inWork")}
       >
         В работе ({countTasks.inWork})
-      </button>
-      <button
-        className={styles.completedButton}
+      </Tab>
+
+      <Tab
         style={{
           color: selectedTaskFilter === "completed" ? "blue" : "black",
         }}
         onClick={() => setSelectedTaskFilter("completed")}
       >
         Сделано ({countTasks.completed})
-      </button>
+      </Tab>
     </div>
   );
 };
