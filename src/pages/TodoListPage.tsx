@@ -7,8 +7,28 @@ import TasksList from "../components/ListOfTasks/TasksList.jsx";
 
 import styles from "../pages/TodoListPage.module.css";
 
+interface Task {
+  title: string;
+  id: number;
+  created: string;
+  isDone: boolean;
+}
+
+interface Results {
+  data: Task[];
+
+  info: {
+    all: number;
+    inWork: number;
+    completed: number;
+  };
+  meta?: {
+    totalAmount: number;
+  };
+}
+
 const TodoListPage = () => {
-  const [tasksList, setTasksList] = useState([]);
+  const [tasksList, setTasksList] = useState<Task[]>([]);
 
   const [countTasks, setCountTasks] = useState({
     all: 0,
@@ -18,7 +38,7 @@ const TodoListPage = () => {
 
   const [selectedTaskFilter, setSelectedTaskFilter] = useState("all");
 
-  const correctRequest = (title) => {
+  const correctRequest = (title: string): string | undefined => {
     const titleTrim = title.trim();
     if (!titleTrim) {
       return "Это поле не может быть пустым";
@@ -31,9 +51,9 @@ const TodoListPage = () => {
 
   //Отображение по статусам
 
-  const updateTask = async () => {
+  const updateTask = async (selectedTaskFilter: string): Promise<void> => {
     try {
-      const results = await getTasks(selectedTaskFilter);
+      const results: Results = await getTasks(selectedTaskFilter);
       setTasksList(results.data);
 
       if (results.info) {
@@ -43,9 +63,11 @@ const TodoListPage = () => {
           completed: results.info.completed,
         });
       }
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+      }
     }
   };
 

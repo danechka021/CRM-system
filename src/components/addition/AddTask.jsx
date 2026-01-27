@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./AddTask.module.css";
-import { addTask } from "../../api/tasks";
+import { addTask } from "../../api/tasks.js";
 
 import Button from "../../ui/Button/Button.jsx";
 import Input from "../../ui/Input/Input.jsx";
