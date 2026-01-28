@@ -1,6 +1,14 @@
 import styles from "../Tab/Tab.module.css";
 
-const Tab = ({ children, onClick, style }) => {
+interface TabProps {
+  children?: React.ReactNode;
+  onClick: () => void;
+  style: {
+    color: string;
+  };
+}
+
+const Tab = ({ children, onClick, style }: TabProps) => {
   return (
     <>
       <button className={styles.Tab} onClick={onClick} style={style}>

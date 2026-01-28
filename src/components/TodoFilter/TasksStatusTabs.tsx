@@ -1,11 +1,22 @@
 import styles from "../TodoFilter/TasksStatusTabs.module.css";
 import Tab from "../../ui/Tab/Tab";
+import { Dispatch } from "react";
+
+interface TasksStatusTabsProps {
+  setSelectedTaskFilter: Dispatch<React.SetStateAction<string>>;
+  selectedTaskFilter: string;
+  countTasks: {
+    all: number;
+    inWork: number;
+    completed: number;
+  };
+}
 
 const TasksStatusTabs = ({
   setSelectedTaskFilter,
   countTasks,
   selectedTaskFilter,
-}) => {
+}: TasksStatusTabsProps) => {
   return (
     <div className={styles.button}>
       <Tab

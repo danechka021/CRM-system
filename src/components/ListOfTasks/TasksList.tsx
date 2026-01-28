@@ -1,7 +1,18 @@
 import styles from "../ListOfTasks/TasksList.module.css";
 import TodoItem from "../todoItem/TodoItem";
+import { Task } from "../../pages/TodoListPage";
 
-const TasksList = ({ correctRequest, tasksList, onUpdtaeTask }) => {
+interface TasksListProps {
+  correctRequest: (title: string) => string | undefined;
+  tasksList: Task[];
+  onUpdateTask: () => void;
+}
+
+const TasksList = ({
+  correctRequest,
+  tasksList,
+  onUpdateTask,
+}: TasksListProps) => {
   return (
     <div className={styles.displayTask}>
       <ul className={styles.ul}>
@@ -10,7 +21,7 @@ const TasksList = ({ correctRequest, tasksList, onUpdtaeTask }) => {
             key={task.id}
             task={task}
             correctRequest={correctRequest}
-            onUpdtaeTask={onUpdtaeTask}
+            onUpdateTask={onUpdateTask}
           />
         ))}
       </ul>

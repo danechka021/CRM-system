@@ -7,14 +7,14 @@ import TasksList from "../components/ListOfTasks/TasksList.jsx";
 
 import styles from "../pages/TodoListPage.module.css";
 
-interface Task {
+export interface Task {
   title: string;
   id: number;
   created: string;
   isDone: boolean;
 }
 
-interface Results {
+export interface Results {
   data: Task[];
 
   info: {
@@ -66,7 +66,6 @@ const TodoListPage = () => {
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);
-      } else {
       }
     }
   };
@@ -78,7 +77,10 @@ const TodoListPage = () => {
   return (
     <>
       <div className={styles.mainTaskName}>
-        <AddTask onUpdtaeTask={updateTask} correctRequest={correctRequest} />
+        <AddTask
+          onUpdateTask={() => updateTask(selectedTaskFilter)}
+          correctRequest={correctRequest}
+        />
       </div>
 
       <div>
@@ -93,7 +95,7 @@ const TodoListPage = () => {
         <TasksList
           correctRequest={correctRequest}
           tasksList={tasksList}
-          onUpdtaeTask={updateTask}
+          onUpdateTask={() => updateTask(selectedTaskFilter)}
         />
       </div>
     </>

@@ -1,6 +1,11 @@
 import styles from "../Button/Button.module.css";
 
-const Button = ({ onClick, children }) => {
+interface ButtonProps {
+  onClick: () => void;
+  children?: React.ReactNode;
+}
+
+const Button = ({ onClick, children }: ButtonProps) => {
   return (
     <>
       <button className={styles.button} onClick={onClick}>

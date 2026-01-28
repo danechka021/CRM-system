@@ -7,27 +7,36 @@ import styles from "../todoItem/TodoItem.module.css";
 import { updatedTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
+import { Task } from "../../pages/TodoListPage";
 
-const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
+interface TodoItemProps {
+  task: Task;
+  onUpdateTask: () => void;
+  correctRequest: (title: string) => string | undefined;
+}
+
+const TodoItem = ({ task, onUpdateTask, correctRequest }: TodoItemProps) => {
   //Для редактирования задач
   const [editingTitle, setEditingTitle] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
   //Выбор статуса задачи
 
-  const changeTaskStatus = async (task) => {
+  const changeTaskStatus = async (task: Task): Promise<void> => {
     try {
       await updatedTask(task.id, { isDone: !task.isDone });
-      await onUpdtaeTask();
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+      await onUpdateTask();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message || "Произошла ошибка");
+        console.log(error);
+      }
     }
   };
 
   //редактирование задачи
 
-  const startEditingTask = (task) => {
+  const startEditingTask = (task: Task) => {
     setEditingTitle(task.title);
     setIsEditing(true);
   };
@@ -36,7 +45,7 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
     setIsEditing(false);
   };
 
-  const saveEditingTask = async (task) => {
+  const saveEditingTask = async (task: Task): Promise<void> => {
     const error = correctRequest(editingTitle);
 
     if (error) {
@@ -48,23 +57,27 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
       const titleTrim = editingTitle.trim();
 
       await updatedTask(task.id, { title: titleTrim });
-      await onUpdtaeTask();
+      await onUpdateTask();
       canselEditingTask();
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message || "Произошла ошибка");
+        console.log(error);
+      }
     }
   };
 
   //Удаление задачи
 
-  const deleteTodoTask = async (id) => {
+  const deleteTodoTask = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
-      await onUpdtaeTask();
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+      await onUpdateTask();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message || "Произошла ошибка");
+        console.log(error);
+      }
     }
   };
 
@@ -77,7 +90,9 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
               className={styles.input}
               type="text"
               value={editingTitle}
-              onChange={(event) => setEditingTitle(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setEditingTitle(event.target.value)
+              }
             />
             <div className={styles.button}>
               <button
@@ -88,7 +103,7 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
               </button>
               <button
                 className={styles.buttonSave}
-                onClick={() => saveEditingTask(task, editingTitle)}
+                onClick={() => saveEditingTask(task)}
               >
                 Сохранить
               </button>
