@@ -8,15 +8,13 @@ interface InputProps {
 
 const Input = ({ value, onChange, placeholder }: InputProps) => {
   return (
-    <>
-      <input
-        className={styles.input}
-        type="text"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder}
-      />
-    </>
+    <input
+      className={styles.input}
+      type="text"
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      placeholder={placeholder}
+    />
   );
 };
 

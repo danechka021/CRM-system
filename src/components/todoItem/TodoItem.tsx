@@ -7,15 +7,15 @@ import styles from "../todoItem/TodoItem.module.css";
 import { updatedTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
-import { Task } from "../../pages/TodoListPage";
+import { Task } from "../../interface";
+import { correctRequest } from "../../utils";
 
 interface TodoItemProps {
   task: Task;
   onUpdateTask: () => void;
-  correctRequest: (title: string) => string | undefined;
 }
 
-const TodoItem = ({ task, onUpdateTask, correctRequest }: TodoItemProps) => {
+const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   //Для редактирования задач
   const [editingTitle, setEditingTitle] = useState("");
   const [isEditing, setIsEditing] = useState(false);

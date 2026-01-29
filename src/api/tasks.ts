@@ -1,4 +1,4 @@
-import { Task, Results } from "../pages/TodoListPage";
+import { Task, Results } from "../interface";
 
 const API_URL = "https://easydev.club/api/v1/todos";
 

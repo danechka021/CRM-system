@@ -1,31 +1,12 @@
 import { useEffect, useState } from "react";
 import { getTasks } from "../api/tasks.js";
+import { Task, Results } from "../interface.js";
 
 import AddTask from "../components/addition/AddTask.jsx";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.jsx";
 import TasksList from "../components/ListOfTasks/TasksList.jsx";
 
 import styles from "../pages/TodoListPage.module.css";
-
-export interface Task {
-  title: string;
-  id: number;
-  created: string;
-  isDone: boolean;
-}
-
-export interface Results {
-  data: Task[];
-
-  info: {
-    all: number;
-    inWork: number;
-    completed: number;
-  };
-  meta?: {
-    totalAmount: number;
-  };
-}
 
 const TodoListPage = () => {
   const [tasksList, setTasksList] = useState<Task[]>([]);
@@ -37,17 +18,6 @@ const TodoListPage = () => {
   });
 
   const [selectedTaskFilter, setSelectedTaskFilter] = useState("all");
-
-  const correctRequest = (title: string): string | undefined => {
-    const titleTrim = title.trim();
-    if (!titleTrim) {
-      return "Это поле не может быть пустым";
-    } else if (titleTrim.length < 2) {
-      return "Минимальная длина текста 2 символа";
-    } else if (titleTrim.length > 64) {
-      return "Максимальная длина текста 64 символа.";
-    }
-  };
 
   //Отображение по статусам
 
@@ -77,10 +47,7 @@ const TodoListPage = () => {
   return (
     <>
       <div className={styles.mainTaskName}>
-        <AddTask
-          onUpdateTask={() => updateTask(selectedTaskFilter)}
-          correctRequest={correctRequest}
-        />
+        <AddTask onUpdateTask={() => updateTask(selectedTaskFilter)} />
       </div>
 
       <div>
@@ -93,7 +60,6 @@ const TodoListPage = () => {
 
       <div>
         <TasksList
-          correctRequest={correctRequest}
           tasksList={tasksList}
           onUpdateTask={() => updateTask(selectedTaskFilter)}
         />

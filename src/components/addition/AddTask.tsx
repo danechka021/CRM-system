@@ -4,13 +4,13 @@ import { addTask } from "../../api/tasks";
 
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import { correctRequest } from "../../utils";
 
 interface AddTaskProps {
   onUpdateTask: () => void;
-  correctRequest: (title: string) => string | undefined;
 }
 
-const AddTask = ({ onUpdateTask, correctRequest }: AddTaskProps) => {
+const AddTask = ({ onUpdateTask }: AddTaskProps) => {
   const [taskName, setTaskName] = useState("");
 
   const addNewTask = async (): Promise<void> => {
@@ -40,7 +40,9 @@ const AddTask = ({ onUpdateTask, correctRequest }: AddTaskProps) => {
         onChange={(value: string) => setTaskName(value)}
         placeholder="Task To Be Done..."
       />
-      <Button onClick={addNewTask}>Add</Button>
+      <Button choiseOption="add" onClick={addNewTask}>
+        Add
+      </Button>
     </div>
   );
 };

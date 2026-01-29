@@ -1,16 +1,19 @@
 .button {
-  border: 1px solid #2563eb;
   width: 60px;
   height: 30px;
   font-size: 12px;
   margin: 6px;
-  border-radius: 4px;
-  background-color: #2563eb;
   cursor: pointer;
   color: #ffffff;
 }
 
-.button:hover {
+.add {
+  border-radius: 4px;
+  background-color: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.add:hover {
   background-color: #1d4ed8;
   border: none;
 }
