@@ -1,4 +1,4 @@
-export const correctRequest = (title: string): string | undefined => {
+export const correctVlidation = (title: string): string | undefined => {
   const titleTrim = title.trim();
   if (!titleTrim) {
     return "Это поле не может быть пустым";

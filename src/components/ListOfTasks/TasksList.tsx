@@ -1,6 +1,6 @@
 import styles from "../ListOfTasks/TasksList.module.css";
 import TodoItem from "../todoItem/TodoItem";
-import { Task } from "../../interface";
+import { Task } from "../../types";
 
 interface TasksListProps {
   tasksList: Task[];

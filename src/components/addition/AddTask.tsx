@@ -4,7 +4,7 @@ import { addTask } from "../../api/tasks";
 
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
-import { correctRequest } from "../../utils";
+import { correctVlidation } from "../../utils";
 
 interface AddTaskProps {
   onUpdateTask: () => void;
@@ -14,7 +14,7 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
   const [taskName, setTaskName] = useState("");
 
   const addNewTask = async (): Promise<void> => {
-    const error = correctRequest(taskName);
+    const error = correctVlidation(taskName);
 
     if (error) {
       alert(error);
@@ -28,9 +28,8 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
       onUpdateTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message || "Произошла ошибка");
-        console.log(error);
-      }
+        alert(error.message);
+      } else alert("Неизвестная ошибка");
     }
   };
   return (

@@ -7,8 +7,8 @@ import styles from "../todoItem/TodoItem.module.css";
 import { updatedTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
-import { Task } from "../../interface";
-import { correctRequest } from "../../utils";
+import { Task } from "../../types";
+import { correctVlidation } from "../../utils";
 
 interface TodoItemProps {
   task: Task;
@@ -17,8 +17,8 @@ interface TodoItemProps {
 
 const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   //Для редактирования задач
-  const [editingTitle, setEditingTitle] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingTitle, setEditingTitle] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   //Выбор статуса задачи
 
@@ -28,9 +28,8 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
       await onUpdateTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message || "Произошла ошибка");
-        console.log(error);
-      }
+        alert(error.message);
+      } else alert("Неизвестная ошибка");
     }
   };
 
@@ -46,7 +45,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   };
 
   const saveEditingTask = async (task: Task): Promise<void> => {
-    const error = correctRequest(editingTitle);
+    const error = correctVlidation(editingTitle);
 
     if (error) {
       alert(error);
@@ -61,23 +60,21 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
       canselEditingTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message || "Произошла ошибка");
-        console.log(error);
-      }
+        alert(error.message);
+      } else alert("Неизвестаня ошибка");
     }
   };
 
   //Удаление задачи
 
-  const deleteTodoTask = async (id: number): Promise<void> => {
+  const deleteTodo = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
       await onUpdateTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message || "Произошла ошибка");
-        console.log(error);
-      }
+        alert(error.message);
+      } else "Неизыестная ошибка";
     }
   };
 
@@ -130,7 +127,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
               <IconButton onClick={() => startEditingTask(task)} src={logoEdit}>
                 <img src={logoEdit} />
               </IconButton>
-              <IconButton onClick={() => deleteTodoTask(task.id)} src={logoDel}>
+              <IconButton onClick={() => deleteTodo(task.id)} src={logoDel}>
                 <img src={logoDel} />
               </IconButton>
             </div>

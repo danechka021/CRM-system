@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getTasks } from "../api/tasks.js";
-import { Task, Results } from "../interface.js";
+import { Task, Results } from "../types.js";
 
 import AddTask from "../components/addition/AddTask.jsx";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.jsx";
@@ -11,13 +11,17 @@ import styles from "../pages/TodoListPage.module.css";
 const TodoListPage = () => {
   const [tasksList, setTasksList] = useState<Task[]>([]);
 
-  const [countTasks, setCountTasks] = useState({
+  const [countTasks, setCountTasks] = useState<{
+    all: number;
+    completed: number;
+    inWork: number;
+  }>({
     all: 0,
     completed: 0,
     inWork: 0,
   });
 
-  const [selectedTaskFilter, setSelectedTaskFilter] = useState("all");
+  const [selectedTaskFilter, setSelectedTaskFilter] = useState<string>("all");
 
   //Отображение по статусам
 
