@@ -1,0 +1,13 @@
+.Tab {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(63, 79, 79);
+  font-size: 16px;
+}
+
+.Tab:hover {
+  color: blue;
+  text-decoration: underline;
+}
