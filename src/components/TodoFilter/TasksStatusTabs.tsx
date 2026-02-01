@@ -1,15 +1,13 @@
 import styles from "../TodoFilter/TasksStatusTabs.module.css";
 import Tab from "../../ui/Tab/Tab";
 import { Dispatch } from "react";
+import { TodoInfo } from "../../types";
+import { TaskStatus } from "../enums/task-status.enum";
 
 interface TasksStatusTabsProps {
-  setSelectedTaskFilter: Dispatch<React.SetStateAction<string>>;
-  selectedTaskFilter: string;
-  countTasks: {
-    all: number;
-    inWork: number;
-    completed: number;
-  };
+  setSelectedTaskFilter: Dispatch<React.SetStateAction<TaskStatus>>;
+  selectedTaskFilter: TaskStatus;
+  countTasks: TodoInfo;
 }
 
 const TasksStatusTabs = ({
@@ -21,27 +19,36 @@ const TasksStatusTabs = ({
     <div className={styles.button}>
       <Tab
         style={{
-          color: selectedTaskFilter === "all" ? "blue" : "black",
+          color:
+            selectedTaskFilter === TaskStatus.ALL
+              ? ColorText.BLUE
+              : ColorText.BLACK,
         }}
-        onClick={() => setSelectedTaskFilter("all")}
+        onClick={() => setSelectedTaskFilter(TaskStatus.ALL)}
       >
         Все ({countTasks.all})
       </Tab>
 
       <Tab
         style={{
-          color: selectedTaskFilter === "inWork" ? "blue" : "black",
+          color:
+            selectedTaskFilter === TaskStatus.IN_WORK
+              ? ColorText.BLUE
+              : ColorText.BLACK,
         }}
-        onClick={() => setSelectedTaskFilter("inWork")}
+        onClick={() => setSelectedTaskFilter(TaskStatus.IN_WORK)}
       >
         В работе ({countTasks.inWork})
       </Tab>
 
       <Tab
         style={{
-          color: selectedTaskFilter === "completed" ? "blue" : "black",
+          color:
+            selectedTaskFilter === TaskStatus.COMPLETED
+              ? ColorText.BLUE
+              : ColorText.BLACK,
         }}
-        onClick={() => setSelectedTaskFilter("completed")}
+        onClick={() => setSelectedTaskFilter(TaskStatus.COMPLETED)}
       >
         Сделано ({countTasks.completed})
       </Tab>

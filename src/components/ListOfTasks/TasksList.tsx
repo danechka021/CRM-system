@@ -1,9 +1,9 @@
 import styles from "../ListOfTasks/TasksList.module.css";
 import TodoItem from "../todoItem/TodoItem";
-import { Task } from "../../types";
+import { Todo } from "../../types";
 
 interface TasksListProps {
-  tasksList: Task[];
+  tasksList: Todo[];
   onUpdateTask: () => void;
 }
 

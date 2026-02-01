@@ -1,4 +1,4 @@
-import { Task, Results, TodoRequest } from "../types";
+import { Todo, MetaResponse, TodoRequest, TodoInfo } from "../types";
 
 const API_URL = "https://easydev.club/api/v1/todos";
 
@@ -7,7 +7,7 @@ const API_URL = "https://easydev.club/api/v1/todos";
 export const addTask = async ({
   title,
   isDone,
-}: TodoRequest): Promise<Task> => {
+}: TodoRequest): Promise<Todo> => {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -18,13 +18,15 @@ export const addTask = async ({
       `Статус ошиюки при добавлении новой задачи: ${response.status} `,
     );
 
-  const data: Task = await response.json();
+  const data: Todo = await response.json();
   return data;
 };
 
 // GET запрос
 
-export const getTasks = async (status: string): Promise<Results> => {
+export const getTasks = async (
+  status: string,
+): Promise<MetaResponse<Todo, TodoInfo>> => {
   let url = API_URL;
   if (status) {
     url += `?filter=${status}`;
@@ -36,7 +38,7 @@ export const getTasks = async (status: string): Promise<Results> => {
       `Статус ошиюки при фильтрации по статусу задачи: ${response.status} `,
     );
 
-  const data: Results = await response.json();
+  const data: MetaResponse<Todo, TodoInfo> = await response.json();
   return data;
 };
 
@@ -44,8 +46,8 @@ export const getTasks = async (status: string): Promise<Results> => {
 
 export const updatedTask = async (
   taskId: number,
-  updatedTodo: Partial<Task>,
-): Promise<Task> => {
+  updatedTodo: Partial<Todo>,
+): Promise<Todo> => {
   const response = await fetch(`${API_URL}/${taskId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -54,7 +56,7 @@ export const updatedTask = async (
   if (!response.ok)
     throw new Error(`Статус ошибки редактировании задачи: ${response.status}`);
 
-  const data: Task = await response.json();
+  const data: Todo = await response.json();
   return data;
 };
 

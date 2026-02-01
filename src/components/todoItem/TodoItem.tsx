@@ -7,11 +7,11 @@ import styles from "../todoItem/TodoItem.module.css";
 import { updatedTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
-import { Task } from "../../types";
+import { Todo } from "../../types";
 import { correctVlidation } from "../../utils";
 
 interface TodoItemProps {
-  task: Task;
+  task: Todo;
   onUpdateTask: () => void;
 }
 
@@ -22,7 +22,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
 
   //Выбор статуса задачи
 
-  const changeTaskStatus = async (task: Task): Promise<void> => {
+  const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
       await updatedTask(task.id, { isDone: !task.isDone });
       await onUpdateTask();
@@ -35,7 +35,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
 
   //редактирование задачи
 
-  const startEditingTask = (task: Task) => {
+  const startEditingTask = (task: Todo) => {
     setEditingTitle(task.title);
     setIsEditing(true);
   };
@@ -44,7 +44,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
     setIsEditing(false);
   };
 
-  const saveEditingTask = async (task: Task): Promise<void> => {
+  const saveEditingTask = async (task: Todo): Promise<void> => {
     const error = correctVlidation(editingTitle);
 
     if (error) {
