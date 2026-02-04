@@ -11,3 +11,11 @@
   color: blue;
   text-decoration: underline;
 }
+
+.active {
+  color: blue;
+}
+
+.notActive {
+  color: black;
+}

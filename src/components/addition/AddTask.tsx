@@ -4,7 +4,7 @@ import { addTask } from "../../api/tasks";
 
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
-import { correctVlidation } from "../../utils";
+import { correctValidation } from "../../utils";
 
 interface AddTaskProps {
   onUpdateTask: () => void;
@@ -13,8 +13,8 @@ interface AddTaskProps {
 const AddTask = ({ onUpdateTask }: AddTaskProps) => {
   const [taskName, setTaskName] = useState("");
 
-  const addNewTask = async (): Promise<void> => {
-    const error = correctVlidation(taskName);
+  const handleAddTask = async (): Promise<void> => {
+    const error = correctValidation(taskName);
 
     if (error) {
       alert(error);
@@ -39,7 +39,7 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
         onChange={(value: string) => setTaskName(value)}
         placeholder="Task To Be Done..."
       />
-      <Button choiseOption="add" onClick={addNewTask}>
+      <Button choiceOption="add" onClick={handleAddTask}>
         Add
       </Button>
     </div>

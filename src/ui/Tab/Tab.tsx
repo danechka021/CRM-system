@@ -3,15 +3,16 @@ import styles from "../Tab/Tab.module.css";
 interface TabProps {
   children?: React.ReactNode;
   onClick: () => void;
-  style: {
-    color: string;
-  };
+  isActive: boolean;
 }
 
-const Tab = ({ children, onClick, style }: TabProps) => {
+const Tab = ({ children, onClick, isActive }: TabProps) => {
   return (
     <>
-      <button className={styles.Tab} onClick={onClick} style={style}>
+      <button
+        className={`${styles.Tab} ${isActive ? styles.active : styles.notActive}`}
+        onClick={onClick}
+      >
         {children}
       </button>
     </>

@@ -3,14 +3,14 @@ import styles from "../Button/Button.module.css";
 interface ButtonProps {
   onClick: () => void;
   children?: React.ReactNode;
-  choiseOption?: "add";
+  choiceOption?: "add";
 }
 
-const Button = ({ onClick, children, choiseOption }: ButtonProps) => {
+const Button = ({ onClick, children, choiceOption }: ButtonProps) => {
   return (
     <>
       <button
-        className={`${styles.button} ${choiseOption ? styles[choiseOption] : ""} `}
+        className={`${styles.button} ${choiceOption ? styles[choiceOption] : ""} `}
         onClick={onClick}
       >
         {children}

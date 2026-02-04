@@ -15,5 +15,5 @@
 
 .add:hover {
   background-color: #1d4ed8;
-  border: none;
+  border-color: transparent;
 }

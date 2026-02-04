@@ -25,3 +25,9 @@ export interface TodoRequest {
   title?: string;
   isDone?: boolean;
 }
+
+export enum TaskStatus {
+  ALL = "all",
+  IN_WORK = "inWork",
+  COMPLETED = "completed",
+}

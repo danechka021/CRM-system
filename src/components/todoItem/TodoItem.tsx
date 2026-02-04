@@ -4,11 +4,11 @@ import logoDel from "../../assets/delete.png";
 import { useState } from "react";
 import styles from "../todoItem/TodoItem.module.css";
 
-import { updatedTask, deleteTask } from "../../api/tasks";
+import { updatesTheTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
 import { Todo } from "../../types";
-import { correctVlidation } from "../../utils";
+import { correctValidation } from "../../utils";
 
 interface TodoItemProps {
   task: Todo;
@@ -24,7 +24,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
 
   const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
-      await updatedTask(task.id, { isDone: !task.isDone });
+      await updatesTheTask(task.id, { isDone: !task.isDone });
       await onUpdateTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -35,17 +35,17 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
 
   //редактирование задачи
 
-  const startEditingTask = (task: Todo) => {
+  const handleStartEditingTask = (task: Todo) => {
     setEditingTitle(task.title);
     setIsEditing(true);
   };
 
-  const canselEditingTask = () => {
+  const handleCanselEditingTask = () => {
     setIsEditing(false);
   };
 
-  const saveEditingTask = async (task: Todo): Promise<void> => {
-    const error = correctVlidation(editingTitle);
+  const handleSaveEditingTask = async (task: Todo): Promise<void> => {
+    const error = correctValidation(editingTitle);
 
     if (error) {
       alert(error);
@@ -55,9 +55,9 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
     try {
       const titleTrim = editingTitle.trim();
 
-      await updatedTask(task.id, { title: titleTrim });
+      await updatesTheTask(task.id, { title: titleTrim });
       await onUpdateTask();
-      canselEditingTask();
+      handleCanselEditingTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);
@@ -67,7 +67,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
 
   //Удаление задачи
 
-  const deleteTodo = async (id: number): Promise<void> => {
+  const handleDeleteTask = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
       await onUpdateTask();
@@ -94,13 +94,13 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
             <div className={styles.button}>
               <button
                 className={styles.buttonCancel}
-                onClick={canselEditingTask}
+                onClick={handleCanselEditingTask}
               >
                 Отмена
               </button>
               <button
                 className={styles.buttonSave}
-                onClick={() => saveEditingTask(task)}
+                onClick={() => handleSaveEditingTask(task)}
               >
                 Сохранить
               </button>
@@ -124,10 +124,16 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
             </span>
 
             <div>
-              <IconButton onClick={() => startEditingTask(task)} src={logoEdit}>
+              <IconButton
+                onClick={() => handleStartEditingTask(task)}
+                src={logoEdit}
+              >
                 <img src={logoEdit} />
               </IconButton>
-              <IconButton onClick={() => deleteTodo(task.id)} src={logoDel}>
+              <IconButton
+                onClick={() => handleDeleteTask(task.id)}
+                src={logoDel}
+              >
                 <img src={logoDel} />
               </IconButton>
             </div>

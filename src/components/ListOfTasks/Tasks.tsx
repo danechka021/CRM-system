@@ -1,17 +1,17 @@
-import styles from "../ListOfTasks/TasksList.module.css";
+import styles from "../ListOfTasks/Tasks.module.css";
 import TodoItem from "../todoItem/TodoItem";
 import { Todo } from "../../types";
 
 interface TasksListProps {
-  tasksList: Todo[];
+  tasks: Todo[];
   onUpdateTask: () => void;
 }
 
-const TasksList = ({ tasksList, onUpdateTask }: TasksListProps) => {
+const TasksList = ({ tasks, onUpdateTask }: TasksListProps) => {
   return (
     <div className={styles.displayTask}>
       <ul className={styles.ul}>
-        {tasksList.map((task) => (
+        {tasks.map((task) => (
           <TodoItem key={task.id} task={task} onUpdateTask={onUpdateTask} />
         ))}
       </ul>

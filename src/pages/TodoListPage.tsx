@@ -4,13 +4,13 @@ import { Todo, MetaResponse, TodoInfo } from "../types.js";
 
 import AddTask from "../components/addition/AddTask.jsx";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.js";
-import TasksList from "../components/ListOfTasks/TasksList.jsx";
+import TasksList from "../components/ListOfTasks/Tasks.js";
 
 import styles from "../pages/TodoListPage.module.css";
-import { TaskStatus } from "../components/enums/task-status.enum.js";
+import { TaskStatus } from "../types.js";
 
 const TodoListPage = () => {
-  const [tasksList, setTasksList] = useState<Todo[]>([]);
+  const [tasks, setTasks] = useState<Todo[]>([]);
 
   const [countTasks, setCountTasks] = useState<TodoInfo>({
     all: 0,
@@ -24,11 +24,13 @@ const TodoListPage = () => {
 
   //Отображение по статусам
 
-  const updateTask = async (selectedTaskFilter: string): Promise<void> => {
+  const updateTask = async (
+    selectedTaskFilter: "all" | "inWork" | "completed",
+  ): Promise<void> => {
     try {
       const results: MetaResponse<Todo, TodoInfo> =
         await getTasks(selectedTaskFilter);
-      setTasksList(results.data);
+      setTasks(results.data);
 
       if (results.info) {
         setCountTasks({
@@ -64,7 +66,7 @@ const TodoListPage = () => {
 
       <div>
         <TasksList
-          tasksList={tasksList}
+          tasks={tasks}
           onUpdateTask={() => updateTask(selectedTaskFilter)}
         />
       </div>

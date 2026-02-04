@@ -4,14 +4,11 @@ const API_URL = "https://easydev.club/api/v1/todos";
 
 // POST (Отправка задачи на сервер)
 
-export const addTask = async ({
-  title,
-  isDone,
-}: TodoRequest): Promise<Todo> => {
+export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, isDone }),
+    body: JSON.stringify(todoRequest),
   });
   if (!response.ok)
     throw new Error(
@@ -25,12 +22,10 @@ export const addTask = async ({
 // GET запрос
 
 export const getTasks = async (
-  status: string,
+  status: "all" | "inWork" | "completed",
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
   let url = API_URL;
-  if (status) {
-    url += `?filter=${status}`;
-  }
+  url += `?filter=${status}`;
 
   const response = await fetch(url);
   if (!response.ok)
@@ -44,7 +39,7 @@ export const getTasks = async (
 
 // PUT запрос
 
-export const updatedTask = async (
+export const updatesTheTask = async (
   taskId: number,
   updatedTodo: Partial<Todo>,
 ): Promise<Todo> => {
