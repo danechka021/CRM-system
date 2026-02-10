@@ -8,7 +8,7 @@ import { updatesTheTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
 import { Todo } from "../../types";
-import { correctValidation } from "../../utils";
+import { validateTodoTitle } from "../../utils";
 
 interface TodoItemProps {
   task: Todo;
@@ -45,7 +45,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   };
 
   const handleSaveEditingTask = async (task: Todo): Promise<void> => {
-    const error = correctValidation(editingTitle);
+    const error = validateTodoTitle(editingTitle);
 
     if (error) {
       alert(error);

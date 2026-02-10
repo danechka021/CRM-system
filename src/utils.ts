@@ -1,4 +1,4 @@
-export const correctValidation = (title: string): string | undefined => {
+export const validateTodoTitle = (title: string): string => {
   const titleTrim = title.trim();
   if (!titleTrim) {
     return "Это поле не может быть пустым";
@@ -7,4 +7,5 @@ export const correctValidation = (title: string): string | undefined => {
   } else if (titleTrim.length > 64) {
     return "Максимальная длина текста 64 символа.";
   }
+  return "";
 };

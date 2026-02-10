@@ -1,4 +1,10 @@
-import { Todo, MetaResponse, TodoRequest, TodoInfo } from "../types";
+import {
+  Todo,
+  MetaResponse,
+  TodoRequest,
+  TodoInfo,
+  TaskStatus,
+} from "../types";
 
 const API_URL = "https://easydev.club/api/v1/todos";
 
@@ -22,7 +28,7 @@ export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
 // GET запрос
 
 export const getTasks = async (
-  status: "all" | "inWork" | "completed",
+  status: TaskStatus,
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
   let url = API_URL;
   url += `?filter=${status}`;

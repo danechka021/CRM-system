@@ -24,9 +24,7 @@ const TodoListPage = () => {
 
   //Отображение по статусам
 
-  const updateTask = async (
-    selectedTaskFilter: "all" | "inWork" | "completed",
-  ): Promise<void> => {
+  const updateTask = async (selectedTaskFilter: TaskStatus): Promise<void> => {
     try {
       const results: MetaResponse<Todo, TodoInfo> =
         await getTasks(selectedTaskFilter);
