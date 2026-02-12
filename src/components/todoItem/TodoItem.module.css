@@ -17,64 +17,13 @@
 }
 
 .input {
-  width: 100%;
-  padding: 4px;
-  border: none;
-  border-bottom: 1px solid;
-  outline: none;
-  background: transparent;
-  font-size: 13px;
-  padding-top: 15px;
+  height: 100%;
 }
 
 .button {
   display: flex;
   flex-direction: row;
   gap: 6px;
-}
-
-.buttonSave {
-  background-color: #0000ff;
-  color: #ffffff;
-  border-radius: 4px;
-  background-color: #0000ff;
-  border: 1px solid #2323d3;
-  cursor: pointer;
-}
-
-.buttonSave:hover {
-  background-color: #0606ad;
-  border: transparent;
-}
-
-.buttonCancel {
-  background-color: #0000ff;
-  color: #ffffff;
-  border-radius: 4px;
-  background-color: #0000ff;
-  border: 1px solid #0000ff;
-  cursor: pointer;
-}
-
-.buttonCancel:hover {
-  background-color: #6868ed;
-  border: transparent;
-}
-
-.iconButton {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  border: none;
-  display: block;
-}
-
-.iconButton {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  border: none;
-  display: block;
 }
 
 .taskText {
@@ -86,4 +35,15 @@
 .taskTextDone {
   text-decoration: line-through;
   color: #808080;
+}
+
+.customIcon {
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
 }

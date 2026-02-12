@@ -1,12 +1,10 @@
-import logoEdit from "../../assets/edit.png";
-import logoDel from "../../assets/delete.png";
+import { useState, useRef, useEffect } from "react";
 
-import { useState } from "react";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { Checkbox, Button, Input, message, InputRef } from "antd";
+
 import styles from "../todoItem/TodoItem.module.css";
-
 import { updatesTheTask, deleteTask } from "../../api/tasks";
-import IconButton from "../../ui/IconButton/IconButton";
-import Checkbox from "../../ui/Checkbox/Checkbox";
 import { Todo } from "../../types";
 import { validateTodoTitle } from "../../utils";
 
@@ -19,6 +17,14 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   //Для редактирования задач
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const inputRef = useRef<InputRef>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+    }
+  }, [isEditing]);
 
   //Выбор статуса задачи
 
@@ -48,7 +54,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
     const error = validateTodoTitle(editingTitle);
 
     if (error) {
-      alert(error);
+      message.error(error);
       return;
     }
 
@@ -79,31 +85,27 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   };
 
   return (
-    <>
+    <div>
       <li className={styles.li} key={task.id}>
         {isEditing ? (
           <div className={styles.container}>
-            <input
-              className={styles.input}
+            <Input
+              ref={inputRef}
               type="text"
               value={editingTitle}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 setEditingTitle(event.target.value)
               }
+              placeholder="Task to be done..."
+              variant="underlined"
+              className={styles.input}
             />
+
             <div className={styles.button}>
-              <button
-                className={styles.buttonCancel}
-                onClick={handleCanselEditingTask}
-              >
-                Отмена
-              </button>
-              <button
-                className={styles.buttonSave}
-                onClick={() => handleSaveEditingTask(task)}
-              >
-                Сохранить
-              </button>
+              <Button onClick={handleCanselEditingTask}>Отмена</Button>
+              <Button onClick={() => handleSaveEditingTask(task)}>
+                Сохрнаить
+              </Button>
             </div>
           </div>
         ) : (
@@ -123,24 +125,22 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
               {task.title}
             </span>
 
-            <div>
-              <IconButton
+            <div className={styles.buttonGroup}>
+              <EditTwoTone
                 onClick={() => handleStartEditingTask(task)}
-                src={logoEdit}
-              >
-                <img src={logoEdit} />
-              </IconButton>
-              <IconButton
+                className={styles.customIcon}
+              />
+
+              <DeleteTwoTone
+                className={styles.customIcon}
                 onClick={() => handleDeleteTask(task.id)}
-                src={logoDel}
-              >
-                <img src={logoDel} />
-              </IconButton>
+                twoToneColor="red"
+              />
             </div>
           </>
         )}
       </li>
-    </>
+    </div>
   );
 };
 

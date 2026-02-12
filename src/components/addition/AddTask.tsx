@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./AddTask.module.css";
 import { addTask } from "../../api/tasks";
+import { Button, Input, message, InputRef } from "antd";
 
-import Button from "../../ui/Button/Button";
-import Input from "../../ui/Input/Input";
 import { validateTodoTitle } from "../../utils";
 
 interface AddTaskProps {
@@ -12,12 +11,17 @@ interface AddTaskProps {
 
 const AddTask = ({ onUpdateTask }: AddTaskProps) => {
   const [taskName, setTaskName] = useState("");
+  const inputRef = useRef<InputRef>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleAddTask = async (): Promise<void> => {
     const error = validateTodoTitle(taskName);
 
     if (error) {
-      alert(error);
+      message.error(error);
       return;
     }
     try {
@@ -26,6 +30,7 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
       await addTask({ title: titleTrim, isDone: false });
       setTaskName("");
       onUpdateTask();
+      inputRef.current?.focus();
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);
@@ -33,16 +38,24 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
     }
   };
   return (
-    <div className={styles.mainContainer}>
+    <form className={styles.formControl}>
       <Input
+        ref={inputRef}
+        placeholder="Task to be done..."
+        variant="underlined"
         value={taskName}
-        onChange={(value: string) => setTaskName(value)}
-        placeholder="Task To Be Done..."
+        onChange={(event) => setTaskName(event.target.value)}
+        className={styles.controlHeight}
       />
-      <Button choiceOption="add" onClick={handleAddTask}>
+
+      <Button
+        type="primary"
+        onClick={handleAddTask}
+        className={styles.controlHeight}
+      >
         Add
       </Button>
-    </div>
+    </form>
   );
 };
 
