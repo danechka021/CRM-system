@@ -1,6 +1,11 @@
 import styles from "../Checkbox/Checkbox.module.css";
 
-const Checkbox = ({ onChange, checked }) => {
+interface CheckboxProps {
+  onChange: () => void;
+  checked: boolean;
+}
+
+const Checkbox = ({ onChange, checked }: CheckboxProps) => {
   return (
     <span className={styles.mainCheckbox}>
       <input
