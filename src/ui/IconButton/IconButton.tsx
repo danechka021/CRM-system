@@ -1,5 +1,12 @@
 import styles from "../IconButton/IconButton.module.css";
-const IconButton = ({ onClick, src }) => {
+
+interface IconButtonProps {
+  onClick: () => void;
+  src: string;
+  children?: React.ReactNode;
+}
+
+const IconButton = ({ onClick, src }: IconButtonProps) => {
   return (
     <button onClick={onClick}>
       <img src={src} className={styles.iconButton} />

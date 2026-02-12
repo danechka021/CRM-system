@@ -4,40 +4,48 @@ import logoDel from "../../assets/delete.png";
 import { useState } from "react";
 import styles from "../todoItem/TodoItem.module.css";
 
-import { updatedTask, deleteTask } from "../../api/tasks";
+import { updatesTheTask, deleteTask } from "../../api/tasks";
 import IconButton from "../../ui/IconButton/IconButton";
 import Checkbox from "../../ui/Checkbox/Checkbox";
+import { Todo } from "../../types";
+import { validateTodoTitle } from "../../utils";
 
-const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
+interface TodoItemProps {
+  task: Todo;
+  onUpdateTask: () => void;
+}
+
+const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   //Для редактирования задач
-  const [editingTitle, setEditingTitle] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingTitle, setEditingTitle] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   //Выбор статуса задачи
 
-  const changeTaskStatus = async (task) => {
+  const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
-      await updatedTask(task.id, { isDone: !task.isDone });
-      await onUpdtaeTask();
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+      await updatesTheTask(task.id, { isDone: !task.isDone });
+      await onUpdateTask();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else alert("Неизвестная ошибка");
     }
   };
 
   //редактирование задачи
 
-  const startEditingTask = (task) => {
+  const handleStartEditingTask = (task: Todo) => {
     setEditingTitle(task.title);
     setIsEditing(true);
   };
 
-  const canselEditingTask = () => {
+  const handleCanselEditingTask = () => {
     setIsEditing(false);
   };
 
-  const saveEditingTask = async (task) => {
-    const error = correctRequest(editingTitle);
+  const handleSaveEditingTask = async (task: Todo): Promise<void> => {
+    const error = validateTodoTitle(editingTitle);
 
     if (error) {
       alert(error);
@@ -47,24 +55,26 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
     try {
       const titleTrim = editingTitle.trim();
 
-      await updatedTask(task.id, { title: titleTrim });
-      await onUpdtaeTask();
-      canselEditingTask();
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+      await updatesTheTask(task.id, { title: titleTrim });
+      await onUpdateTask();
+      handleCanselEditingTask();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else alert("Неизвестаня ошибка");
     }
   };
 
   //Удаление задачи
 
-  const deleteTodoTask = async (id) => {
+  const handleDeleteTask = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
-      await onUpdtaeTask();
-    } catch (error) {
-      alert(error.message || "Произошла ошибка");
-      console.log(error);
+      await onUpdateTask();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else "Неизыестная ошибка";
     }
   };
 
@@ -77,18 +87,20 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
               className={styles.input}
               type="text"
               value={editingTitle}
-              onChange={(event) => setEditingTitle(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setEditingTitle(event.target.value)
+              }
             />
             <div className={styles.button}>
               <button
                 className={styles.buttonCancel}
-                onClick={canselEditingTask}
+                onClick={handleCanselEditingTask}
               >
                 Отмена
               </button>
               <button
                 className={styles.buttonSave}
-                onClick={() => saveEditingTask(task, editingTitle)}
+                onClick={() => handleSaveEditingTask(task)}
               >
                 Сохранить
               </button>
@@ -112,10 +124,16 @@ const TodoItem = ({ task, onUpdtaeTask, correctRequest }) => {
             </span>
 
             <div>
-              <IconButton onClick={() => startEditingTask(task)} src={logoEdit}>
+              <IconButton
+                onClick={() => handleStartEditingTask(task)}
+                src={logoEdit}
+              >
                 <img src={logoEdit} />
               </IconButton>
-              <IconButton onClick={() => deleteTodoTask(task.id)} src={logoDel}>
+              <IconButton
+                onClick={() => handleDeleteTask(task.id)}
+                src={logoDel}
+              >
                 <img src={logoDel} />
               </IconButton>
             </div>
