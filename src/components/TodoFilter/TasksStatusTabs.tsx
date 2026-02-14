@@ -23,17 +23,21 @@ const TasksStatusTabs = ({
         onChange={handleChange}
         size="large"
         centered
-      >
-        <Tabs.TabPane tab={`Все (${countTasks.all})`} key={TaskStatus.ALL} />
-        <Tabs.TabPane
-          tab={`В работе (${countTasks.inWork})`}
-          key={TaskStatus.IN_WORK}
-        />
-        <Tabs.TabPane
-          tab={`Сделано (${countTasks.completed})`}
-          key={TaskStatus.COMPLETED}
-        />
-      </Tabs>
+        items={[
+          {
+            key: TaskStatus.ALL,
+            label: `Все (${countTasks.all})`,
+          },
+          {
+            key: TaskStatus.IN_WORK,
+            label: `В работе (${countTasks.inWork})`,
+          },
+          {
+            key: TaskStatus.COMPLETED,
+            label: `Сделанно (${countTasks.completed})`,
+          },
+        ]}
+      ></Tabs>
     </>
   );
 };

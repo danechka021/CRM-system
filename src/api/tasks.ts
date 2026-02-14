@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import {
   Todo,
   MetaResponse,
@@ -11,18 +13,22 @@ const API_URL = "https://easydev.club/api/v1/todos";
 // POST (Отправка задачи на сервер)
 
 export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(todoRequest),
-  });
-  if (!response.ok)
-    throw new Error(
-      `Статус ошиюки при добавлении новой задачи: ${response.status} `,
-    );
+  try {
+    const { data } = await axios.post<Todo>(API_URL, todoRequest);
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw new Error(
+          `Ошибка при доюавлении задачи ${error.response?.status}`,
+        );
+      } else if (error.request) {
+        throw new Error(`Сервер не отечает`);
+      }
+    }
 
-  const data: Todo = await response.json();
-  return data;
+    throw error;
+  }
 };
 
 // GET запрос
@@ -32,15 +38,21 @@ export const getTasks = async (
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
   let url = API_URL;
   url += `?filter=${status}`;
-
-  const response = await fetch(url);
-  if (!response.ok)
-    throw new Error(
-      `Статус ошиюки при фильтрации по статусу задачи: ${response.status} `,
-    );
-
-  const data: MetaResponse<Todo, TodoInfo> = await response.json();
-  return data;
+  try {
+    const { data } = await axios.get<MetaResponse<Todo, TodoInfo>>(url);
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw new Error(
+          `Ошибка при получении задачи ${error.response?.status}`,
+        );
+      } else if (error.request) {
+        throw new Error(`Сервер не отечает`);
+      }
+    }
+    throw error;
+  }
 };
 
 // PUT запрос
@@ -49,26 +61,39 @@ export const updatesTheTask = async (
   taskId: number,
   updatedTodo: Partial<Todo>,
 ): Promise<Todo> => {
-  const response = await fetch(`${API_URL}/${taskId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedTodo),
-  });
-  if (!response.ok)
-    throw new Error(`Статус ошибки редактировании задачи: ${response.status}`);
+  try {
+    const { data } = await axios.put<Todo>(`${API_URL}/${taskId}`, updatedTodo);
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw new Error(
+          `Ошибка при измненении статуса задачи ${error.response?.status}`,
+        );
+      } else if (error.request) {
+        throw new Error(`Сервер не отечает`);
+      }
+    }
 
-  const data: Todo = await response.json();
-  return data;
+    throw error;
+  }
 };
 
 // DELETE запрос
 
 export const deleteTask = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
-  if (!response.ok)
-    throw new Error(
-      `Статус ошибки при удалении задачи с сервера: ${response.status}`,
-    );
+  try {
+    await axios.delete(`${API_URL}/${id}`);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        throw new Error(
+          `Ошибка при удалении  задачи ${error.response?.status}`,
+        );
+      } else if (error.request) {
+        throw new Error(`Сервер не отечает`);
+      }
+    }
+    throw error;
+  }
 };

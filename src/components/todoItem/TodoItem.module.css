@@ -1,3 +1,10 @@
+.container {
+  display: flex;
+  gap: 80px;
+  align-items: stretch;
+  justify-content: center;
+}
+
 .li {
   display: flex;
   align-items: center;
@@ -7,13 +14,6 @@
   padding: 0 10px;
   height: 50px;
   border-radius: 4px;
-}
-
-.container {
-  display: flex;
-  gap: 80px;
-  align-items: stretch;
-  justify-content: center;
 }
 
 .input {

@@ -9,8 +9,6 @@ import TasksList from "../components/ListOfTasks/Tasks.js";
 import styles from "../pages/TodoListPage.module.css";
 import { TaskStatus } from "../types.js";
 
-
-
 const TodoListPage = () => {
   const [tasks, setTasks] = useState<Todo[]>([]);
 
@@ -47,11 +45,14 @@ const TodoListPage = () => {
   };
 
   useEffect(() => {
-    updateTask(selectedTaskFilter);
+    const fetchAndUpdate = () => updateTask(selectedTaskFilter);
+    fetchAndUpdate();
+    const interval = setInterval(fetchAndUpdate, 5000);
+    return () => clearInterval(interval);
   }, [selectedTaskFilter]);
 
   return (
-    <>
+    <div className={styles.mainContainer}>
       <div className={styles.mainTaskName}>
         <AddTask onUpdateTask={() => updateTask(selectedTaskFilter)} />
       </div>
@@ -70,7 +71,7 @@ const TodoListPage = () => {
           onUpdateTask={() => updateTask(selectedTaskFilter)}
         />
       </div>
-    </>
+    </div>
   );
 };
 

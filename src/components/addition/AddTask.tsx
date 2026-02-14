@@ -51,7 +51,7 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
       <Button
         type="primary"
         onClick={handleAddTask}
-        className={styles.controlHeight}
+        className={styles.heightControl}
       >
         Add
       </Button>
