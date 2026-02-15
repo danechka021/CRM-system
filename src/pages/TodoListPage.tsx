@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTasks } from "../api/tasks.js";
 import { Todo, MetaResponse, TodoInfo } from "../types.js";
+import { useLocation } from "react-router-dom";
 
 import AddTask from "../components/addition/AddTask.jsx";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.js";
@@ -8,6 +9,7 @@ import TasksList from "../components/ListOfTasks/Tasks.js";
 
 import styles from "../pages/TodoListPage.module.css";
 import { TaskStatus } from "../types.js";
+import { Outlet } from "react-router-dom";
 
 const TodoListPage = () => {
   const [tasks, setTasks] = useState<Todo[]>([]);
@@ -21,6 +23,10 @@ const TodoListPage = () => {
   const [selectedTaskFilter, setSelectedTaskFilter] = useState<TaskStatus>(
     TaskStatus.ALL,
   );
+
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+
+  const location = useLocation();
 
   //Отображение по статусам
 
@@ -45,11 +51,15 @@ const TodoListPage = () => {
   };
 
   useEffect(() => {
+    if (editingTaskId !== null && location.pathname === "/todos") return;
+
     const fetchAndUpdate = () => updateTask(selectedTaskFilter);
     fetchAndUpdate();
     const interval = setInterval(fetchAndUpdate, 5000);
-    return () => clearInterval(interval);
-  }, [selectedTaskFilter]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [selectedTaskFilter, editingTaskId, location.pathname]);
 
   return (
     <div className={styles.mainContainer}>
@@ -69,8 +79,10 @@ const TodoListPage = () => {
         <TasksList
           tasks={tasks}
           onUpdateTask={() => updateTask(selectedTaskFilter)}
+          setEditingTaskId={setEditingTaskId}
         />
       </div>
+      <Outlet />
     </div>
   );
 };

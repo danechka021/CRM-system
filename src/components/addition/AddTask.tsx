@@ -45,7 +45,7 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
         variant="underlined"
         value={taskName}
         onChange={(event) => setTaskName(event.target.value)}
-        className={styles.controlHeight}
+        className={styles.inputForm}
       />
 
       <Button

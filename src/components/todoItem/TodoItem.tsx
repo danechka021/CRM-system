@@ -11,9 +11,9 @@ import { validateTodoTitle } from "../../utils";
 interface TodoItemProps {
   task: Todo;
   onUpdateTask: () => void;
+  setEditingTaskId: (id: number | null) => void;
 }
-
-const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
+const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
   //Для редактирования задач
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -44,10 +44,12 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   const handleStartEditingTask = (task: Todo) => {
     setEditingTitle(task.title);
     setIsEditing(true);
+    setEditingTaskId(task.id);
   };
 
   const handleCanselEditingTask = () => {
     setIsEditing(false);
+    setEditingTaskId(null);
   };
 
   const handleSaveEditingTask = async (task: Todo): Promise<void> => {
@@ -64,6 +66,7 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
       await updatesTheTask(task.id, { title: titleTrim });
       await onUpdateTask();
       handleCanselEditingTask();
+      setEditingTaskId(null);
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);

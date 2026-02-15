@@ -5,6 +5,11 @@
   justify-content: center;
 }
 
+.inputForm {
+  width: 300px;
+  margin-left: 30px;
+}
+
 .heightControl {
   height: 40px;
 }

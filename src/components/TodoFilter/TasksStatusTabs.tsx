@@ -1,6 +1,7 @@
 import { Dispatch } from "react";
 import { TodoInfo, TaskStatus } from "../../types";
 import { Tabs } from "antd";
+import styles from "./TasksStatusTabs.module.css";
 
 interface TasksStatusTabsProps {
   setSelectedTaskFilter: Dispatch<React.SetStateAction<TaskStatus>>;
@@ -37,6 +38,7 @@ const TasksStatusTabs = ({
             label: `Сделанно (${countTasks.completed})`,
           },
         ]}
+        className={styles.formControl}
       ></Tabs>
     </>
   );

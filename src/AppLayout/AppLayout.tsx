@@ -25,21 +25,24 @@ const AppLayout = () => {
 
   return (
     <Layout>
-      <Sider collapsible>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          onClick={(e) => navigate(e.key)}
-          items={sections}
-        />
-      </Sider>
+      <Layout>
+        <Sider collapsible>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            onClick={(e) => navigate(e.key)}
+            items={sections}
+          />
+        </Sider>
+      </Layout>
 
       <Layout>
         <Content>
           <Routes>
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/todos" element={<TodoListPage />} />
+            <Route path="*" element={<TodoListPage />} />
           </Routes>
         </Content>
       </Layout>
