@@ -5,6 +5,7 @@ import Sider from "antd/es/layout/Sider";
 import { useLocation, useNavigate, Route, Routes } from "react-router-dom";
 import UserProfile from "../profile/UserProfile";
 import TodoListPage from "../pages/TodoListPage";
+import styles from "../AppLayout/AppLayout.module.css";
 
 const AppLayout = () => {
   const navigate = useNavigate();
@@ -24,20 +25,18 @@ const AppLayout = () => {
   ];
 
   return (
-    <Layout>
-      <Layout>
-        <Sider collapsible>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={[location.pathname]}
-            onClick={(e) => navigate(e.key)}
-            items={sections}
-          />
-        </Sider>
-      </Layout>
+    <Layout className={styles.layoutContainer}>
+      <Sider collapsible>
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          onClick={(e) => navigate(e.key)}
+          items={sections}
+        />
+      </Sider>
 
-      <Layout>
+      <Layout className={styles.layoutContainer}>
         <Content>
           <Routes>
             <Route path="/profile" element={<UserProfile />} />
