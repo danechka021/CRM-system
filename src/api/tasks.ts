@@ -8,13 +8,17 @@ import {
   TaskStatus,
 } from "../types";
 
-const API_URL = "https://easydev.club/api/v1/todos";
+const api = axios.create({
+  baseURL: "https://easydev.club/api/v1/todos",
+  timeout: 5000,
+  headers: { "Content-Type": "application/json" },
+});
 
 // POST (Отправка задачи на сервер)
 
 export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
   try {
-    const { data } = await axios.post<Todo>(API_URL, todoRequest);
+    const { data } = await api.post<Todo>("", todoRequest);
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -36,10 +40,10 @@ export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
 export const getTasks = async (
   status: TaskStatus,
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
-  let url = API_URL;
-  url += `?filter=${status}`;
   try {
-    const { data } = await axios.get<MetaResponse<Todo, TodoInfo>>(url);
+    const { data } = await api.get<MetaResponse<Todo, TodoInfo>>("", {
+      params: { filter: status },
+    });
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -62,7 +66,7 @@ export const updatesTheTask = async (
   updatedTodo: Partial<Todo>,
 ): Promise<Todo> => {
   try {
-    const { data } = await axios.put<Todo>(`${API_URL}/${taskId}`, updatedTodo);
+    const { data } = await api.put<Todo>(`/${taskId}`, updatedTodo);
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -83,7 +87,7 @@ export const updatesTheTask = async (
 
 export const deleteTask = async (id: number): Promise<void> => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    await api.delete(`/${id}`);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {

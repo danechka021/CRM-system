@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import { Checkbox, Button, Input, message, InputRef } from "antd";
+import { Checkbox, Button, Input, message, InputRef, Form } from "antd";
 
 import styles from "../todoItem/TodoItem.module.css";
 import { updatesTheTask, deleteTask } from "../../api/tasks";
@@ -91,26 +91,29 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
     <div>
       <li className={styles.li} key={task.id}>
         {isEditing ? (
-          <div className={styles.container}>
-            <Input
-              ref={inputRef}
-              type="text"
-              value={editingTitle}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setEditingTitle(event.target.value)
-              }
-              placeholder="Task to be done..."
-              variant="underlined"
-              className={styles.input}
-            />
+          <Form onFinish={handleCanselEditingTask}>
+            <div className={styles.container}>
+              <Input
+                size="large"
+                ref={inputRef}
+                type="text"
+                value={editingTitle}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setEditingTitle(event.target.value)
+                }
+                placeholder="Task to be done..."
+                variant="underlined"
+                className={styles.input}
+              />
 
-            <div className={styles.button}>
-              <Button onClick={handleCanselEditingTask}>Отмена</Button>
-              <Button onClick={() => handleSaveEditingTask(task)}>
-                Сохрнаить
-              </Button>
+              <div className={styles.button}>
+                <Button htmlType="submit">Отмена</Button>
+                <Button onClick={() => handleSaveEditingTask(task)}>
+                  Сохрнаить
+                </Button>
+              </div>
             </div>
-          </div>
+          </Form>
         ) : (
           <>
             <label className={styles.mainCheckbox}>

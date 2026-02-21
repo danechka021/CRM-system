@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./AddTask.module.css";
 import { addTask } from "../../api/tasks";
-import { Button, Input, message, InputRef } from "antd";
+import { Button, Input, message, InputRef, Form } from "antd";
 
 import { validateTodoTitle } from "../../utils";
 
@@ -38,24 +38,23 @@ const AddTask = ({ onUpdateTask }: AddTaskProps) => {
     }
   };
   return (
-    <form className={styles.formControl}>
-      <Input
-        ref={inputRef}
-        placeholder="Task to be done..."
-        variant="underlined"
-        value={taskName}
-        onChange={(event) => setTaskName(event.target.value)}
-        className={styles.inputForm}
-      />
+    <Form onFinish={handleAddTask} className={styles.formControl}>
+      <Form.Item name="title">
+        <Input
+          ref={inputRef}
+          placeholder="Task to be done..."
+          variant="underlined"
+          value={taskName}
+          onChange={(event) => setTaskName(event.target.value)}
+          className={styles.inputForm}
+          size="large"
+        />
+      </Form.Item>
 
-      <Button
-        type="primary"
-        onClick={handleAddTask}
-        className={styles.heightControl}
-      >
+      <Button htmlType="submit" type="primary" className={styles.heightControl}>
         Add
       </Button>
-    </form>
+    </Form>
   );
 };
 

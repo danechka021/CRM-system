@@ -8,6 +8,8 @@
 .inputForm {
   width: 300px;
   margin-left: 30px;
+  margin-bottom: 0;
+  height: 40px;
 }
 
 .heightControl {
