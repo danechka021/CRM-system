@@ -61,7 +61,7 @@ export const getTasks = async (
 
 // PUT запрос
 
-export const updatesTheTask = async (
+export const updatesTask = async (
   taskId: number,
   updatedTodo: Partial<Todo>,
 ): Promise<Todo> => {

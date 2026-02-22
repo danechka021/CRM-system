@@ -1,10 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import { Checkbox, Button, Input, message, InputRef, Form } from "antd";
+import {
+  Checkbox,
+  Button,
+  Input,
+  message,
+  InputRef,
+  Form,
+  notification,
+} from "antd";
 
 import styles from "../todoItem/TodoItem.module.css";
-import { updatesTheTask, deleteTask } from "../../api/tasks";
+import { updatesTask, deleteTask } from "../../api/tasks";
 import { Todo } from "../../types";
 import { validateTodoTitle } from "../../utils";
 
@@ -15,9 +22,8 @@ interface TodoItemProps {
 }
 const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
   //Для редактирования задач
-  const [editingTitle, setEditingTitle] = useState<string>("");
+  const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState<boolean>(false);
-
   const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
@@ -30,21 +36,28 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
 
   const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
-      await updatesTheTask(task.id, { isDone: !task.isDone });
+      await updatesTask(task.id, { isDone: !task.isDone });
       await onUpdateTask();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
-      } else alert("Неизвестная ошибка");
+        const descriptions =
+          error instanceof Error ? error.message : "Попробуйте позже";
+
+        notification.error({
+          message: "Ошибка при добавлении задачи",
+          description: descriptions,
+          placement: "topRight",
+        });
+      }
     }
   };
 
   //редактирование задачи
 
   const handleStartEditingTask = (task: Todo) => {
-    setEditingTitle(task.title);
     setIsEditing(true);
     setEditingTaskId(task.id);
+    form.setFieldsValue({ title: task.title });
   };
 
   const handleCanselEditingTask = () => {
@@ -52,8 +65,11 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
     setEditingTaskId(null);
   };
 
-  const handleSaveEditingTask = async (task: Todo): Promise<void> => {
-    const error = validateTodoTitle(editingTitle);
+  const handleSaveEditingTask = async (values: {
+    title: string;
+  }): Promise<void> => {
+    const { title } = values;
+    const error = validateTodoTitle(title);
 
     if (error) {
       message.error(error);
@@ -61,12 +77,10 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
     }
 
     try {
-      const titleTrim = editingTitle.trim();
-
-      await updatesTheTask(task.id, { title: titleTrim });
+      const titleTrim = title.trim();
+      await updatesTask(task.id, { title: titleTrim });
       await onUpdateTask();
       handleCanselEditingTask();
-      setEditingTaskId(null);
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);
@@ -91,24 +105,26 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
     <div>
       <li className={styles.li} key={task.id}>
         {isEditing ? (
-          <Form onFinish={handleCanselEditingTask}>
+          <Form
+            form={form}
+            onFinish={handleSaveEditingTask}
+            initialValues={{ title: task.title }}
+          >
             <div className={styles.container}>
-              <Input
-                size="large"
-                ref={inputRef}
-                type="text"
-                value={editingTitle}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setEditingTitle(event.target.value)
-                }
-                placeholder="Task to be done..."
-                variant="underlined"
-                className={styles.input}
-              />
+              <Form.Item name="title" noStyle>
+                <Input
+                  size="large"
+                  ref={inputRef}
+                  placeholder="Task to be done..."
+                  variant="underlined"
+                  className={styles.input}
+                />
+              </Form.Item>
 
               <div className={styles.button}>
-                <Button htmlType="submit">Отмена</Button>
-                <Button onClick={() => handleSaveEditingTask(task)}>
+                <Button onClick={handleCanselEditingTask}>Отмена</Button>
+
+                <Button type="primary" htmlType="submit">
                   Сохрнаить
                 </Button>
               </div>
