@@ -14,14 +14,14 @@ const TasksStatusTabs = ({
   countTasks,
   selectedTaskFilter,
 }: TasksStatusTabsProps) => {
-  const handleChange = (key: string) => {
+  const handleFilterChange = (key: string) => {
     setSelectedTaskFilter(key as TaskStatus);
   };
   return (
     <>
       <Tabs
         activeKey={selectedTaskFilter}
-        onChange={handleChange}
+        onChange={handleFilterChange}
         size="large"
         centered
         items={[
@@ -35,7 +35,7 @@ const TasksStatusTabs = ({
           },
           {
             key: TaskStatus.COMPLETED,
-            label: `Сделанно (${countTasks.completed})`,
+            label: `Сделано (${countTasks.completed})`,
           },
         ]}
         className={styles.formControl}

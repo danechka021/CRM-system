@@ -3,7 +3,9 @@ import { getTasks } from "../api/tasks.js";
 import { Todo, MetaResponse, TodoInfo } from "../types.js";
 import { useLocation } from "react-router-dom";
 
-import AddTask from "../components/addition/AddTask.jsx";
+import { notification } from "antd";
+
+import AddTask from "../components/addition/AddTask.js";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.js";
 import TasksList from "../components/ListOfTasks/Tasks.js";
 
@@ -30,7 +32,7 @@ const TodoListPage = () => {
 
   //Отображение по статусам
 
-  const updateTask = async (selectedTaskFilter: TaskStatus): Promise<void> => {
+  const fetchTodos = async (selectedTaskFilter: TaskStatus): Promise<void> => {
     try {
       const results: MetaResponse<Todo, TodoInfo> =
         await getTasks(selectedTaskFilter);
@@ -45,7 +47,14 @@ const TodoListPage = () => {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        const descriptions =
+          error instanceof Error ? error.message : "Попробуйте позже";
+
+        notification.error({
+          message: "Ошибка при отображении задач",
+          description: descriptions,
+          placement: "topRight",
+        });
       }
     }
   };
@@ -53,7 +62,7 @@ const TodoListPage = () => {
   useEffect(() => {
     if (editingTaskId !== null && location.pathname === "/todos") return;
 
-    const fetchAndUpdate = () => updateTask(selectedTaskFilter);
+    const fetchAndUpdate = () => fetchTodos(selectedTaskFilter);
     fetchAndUpdate();
     const interval = setInterval(fetchAndUpdate, 5000);
     return () => {
@@ -64,7 +73,7 @@ const TodoListPage = () => {
   return (
     <div className={styles.mainContainer}>
       <div className={styles.mainTaskName}>
-        <AddTask onUpdateTask={() => updateTask(selectedTaskFilter)} />
+        <AddTask onUpdateTask={() => fetchTodos(selectedTaskFilter)} />
       </div>
 
       <div>
@@ -78,7 +87,7 @@ const TodoListPage = () => {
       <div>
         <TasksList
           tasks={tasks}
-          onUpdateTask={() => updateTask(selectedTaskFilter)}
+          fetchTodos={() => fetchTodos(selectedTaskFilter)}
           setEditingTaskId={setEditingTaskId}
         />
       </div>

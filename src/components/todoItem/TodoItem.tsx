@@ -1,29 +1,26 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, JSX } from "react";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import {
-  Checkbox,
-  Button,
-  Input,
-  message,
-  InputRef,
-  Form,
-  notification,
-} from "antd";
+import { Checkbox, Button, Input, InputRef, Form, notification } from "antd";
 
 import styles from "../todoItem/TodoItem.module.css";
-import { updatesTask, deleteTask } from "../../api/tasks";
+import { updateTasks, deleteTask } from "../../api/tasks";
 import { Todo } from "../../types";
 import { validateTodoTitle } from "../../utils";
 
 interface TodoItemProps {
   task: Todo;
-  onUpdateTask: () => void;
+  fetchTodos: () => void;
   setEditingTaskId: (id: number | null) => void;
 }
-const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
+const TodoItem = ({
+  task,
+  fetchTodos,
+  setEditingTaskId,
+}: TodoItemProps): JSX.Element => {
   //Для редактирования задач
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
@@ -36,8 +33,8 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
 
   const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
-      await updatesTask(task.id, { isDone: !task.isDone });
-      await onUpdateTask();
+      await updateTasks(task.id, { isDone: !task.isDone });
+      await fetchTodos();
     } catch (error: unknown) {
       if (error instanceof Error) {
         const descriptions =
@@ -60,31 +57,36 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
     form.setFieldsValue({ title: task.title });
   };
 
-  const handleCanselEditingTask = () => {
+  const handleCancelEditingTask = () => {
     setIsEditing(false);
     setEditingTaskId(null);
+    form.resetFields();
   };
 
   const handleSaveEditingTask = async (values: {
     title: string;
   }): Promise<void> => {
-    const { title } = values;
-    const error = validateTodoTitle(title);
+    const error = validateTodoTitle(values.title || "");
 
     if (error) {
-      message.error(error);
+      notification.error({
+        message: "Ошибка валидации",
+        description: error,
+        placement: "topRight",
+      });
       return;
     }
+    setLoading(true);
 
     try {
-      const titleTrim = title.trim();
-      await updatesTask(task.id, { title: titleTrim });
-      await onUpdateTask();
-      handleCanselEditingTask();
+      await updateTasks(task.id, { title: values.title.trim() });
+      await fetchTodos();
+      handleCancelEditingTask();
+      notification.success({ message: "Задача обновлена" });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else alert("Неизвестаня ошибка");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,11 +95,14 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
   const handleDeleteTask = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
-      await onUpdateTask();
+      await fetchTodos();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else "Неизыестная ошибка";
+      const descriptions =
+        error instanceof Error ? error.message : "Попробуйте позже";
+      notification.error({
+        message: "Ошибка удаления",
+        description: descriptions,
+      });
     }
   };
 
@@ -118,14 +123,22 @@ const TodoItem = ({ task, onUpdateTask, setEditingTaskId }: TodoItemProps) => {
                   placeholder="Task to be done..."
                   variant="underlined"
                   className={styles.input}
+                  disabled={loading}
                 />
               </Form.Item>
 
               <div className={styles.button}>
-                <Button onClick={handleCanselEditingTask}>Отмена</Button>
+                <Button size="large" onClick={handleCancelEditingTask}>
+                  Отмена
+                </Button>
 
-                <Button type="primary" htmlType="submit">
-                  Сохрнаить
+                <Button
+                  size="large"
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                >
+                  Сохранить
                 </Button>
               </div>
             </div>

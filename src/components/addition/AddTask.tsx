@@ -1,66 +1,87 @@
-import { useEffect, useRef, useState } from "react";
+import { JSX, useEffect, useRef, useState } from "react";
 import styles from "./AddTask.module.css";
 import { addTask } from "../../api/tasks";
-import { Button, Input, message, InputRef, Form, notification } from "antd";
-
+import { Button, Input, InputRef, Form, notification } from "antd";
 import { validateTodoTitle } from "../../utils";
 
 interface AddTaskProps {
   onUpdateTask: () => void;
 }
 
-const AddTask = ({ onUpdateTask }: AddTaskProps) => {
-  const [form] = Form.useForm();
+interface TaskFormValues {
+  title: string;
+}
+
+const AddTask: React.FC<AddTaskProps> = ({
+  onUpdateTask,
+}: AddTaskProps): JSX.Element => {
+  const [form] = Form.useForm<TaskFormValues>();
+  const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const handleAddTask = async (values: { title: string }): Promise<void> => {
-    const title = values.title || "";
+  const handleAddTask = async (values: TaskFormValues): Promise<void> => {
+    setLoading(true);
 
-    const error = validateTodoTitle(title);
-    if (error) {
-      message.error(error);
-      return;
-    }
     try {
-      const titleTrim = title.trim();
-
-      await addTask({ title: titleTrim, isDone: false });
+      await addTask({
+        title: values.title.trim(),
+        isDone: false,
+      });
 
       form.resetFields();
       onUpdateTask();
       inputRef.current?.focus();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        const descriptions =
-          error instanceof Error ? error.message : "Попробуйте позже";
-
-        notification.error({
-          message: "Ошибка при добавлении задачи",
-          description: descriptions,
-          placement: "topRight",
-        });
-      }
+      notification.error({
+        message: "Ошибка",
+        description: error instanceof Error ? error.message : "Ошибка сервера",
+      });
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <Form form={form} onFinish={handleAddTask} className={styles.formControl}>
-      <Form.Item name="title">
+      <Form.Item
+        name="title"
+        className={styles.titleItem}
+        rules={[
+          {
+            validator: (_, value) => {
+              const errorTeaxt = validateTodoTitle(value || "");
+
+              if (errorTeaxt) {
+                return Promise.reject(new Error(errorTeaxt));
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+      >
         <Input
           ref={inputRef}
           placeholder="Task to be done..."
-          variant="underlined"
           className={styles.inputForm}
           size="large"
+          disabled={loading}
+          variant="borderless"
         />
       </Form.Item>
-
-      <Button htmlType="submit" type="primary" className={styles.heightControl}>
-        Add
-      </Button>
+      <Form.Item>
+        <Button
+          htmlType="submit"
+          type="primary"
+          loading={loading}
+          className={styles.heightControl}
+        >
+          Add
+        </Button>
+      </Form.Item>
     </Form>
   );
 };

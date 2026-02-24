@@ -1,17 +1,25 @@
 import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, MenuProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { useLocation, useNavigate, Route, Routes } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import UserProfile from "../profile/UserProfile";
 import TodoListPage from "../pages/TodoListPage";
 import styles from "../AppLayout/AppLayout.module.css";
 
-const AppLayout = () => {
+type MenuItem = Required<MenuProps>["items"][number];
+
+const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const sections = [
+  const sections: MenuItem[] = [
     {
       key: "/profile",
       icon: <UserOutlined />,
@@ -24,6 +32,10 @@ const AppLayout = () => {
     },
   ];
 
+  const handleMenuClick: MenuProps["onClick"] = (e) => {
+    navigate(e.key);
+  };
+
   return (
     <Layout className={styles.layoutContainer}>
       <Sider collapsible>
@@ -31,7 +43,7 @@ const AppLayout = () => {
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
-          onClick={(e) => navigate(e.key)}
+          onClick={handleMenuClick}
           items={sections}
         />
       </Sider>

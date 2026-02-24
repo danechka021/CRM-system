@@ -1,18 +1,19 @@
 import styles from "../ListOfTasks/Tasks.module.css";
 import TodoItem from "../todoItem/TodoItem";
 import { Todo } from "../../types";
+import { JSX } from "react";
 
-interface TasksListProps {
+interface TasksList {
   tasks: Todo[];
-  onUpdateTask: () => void;
+  fetchTodos: () => void;
   setEditingTaskId: (id: number | null) => void;
 }
 
 const TasksList = ({
   tasks,
-  onUpdateTask,
+  fetchTodos,
   setEditingTaskId,
-}: TasksListProps) => {
+}: TasksList): JSX.Element => {
   return (
     <div className={styles.displayTask}>
       <ul className={styles.ul}>
@@ -20,7 +21,7 @@ const TasksList = ({
           <TodoItem
             key={task.id}
             task={task}
-            onUpdateTask={onUpdateTask}
+            fetchTodos={fetchTodos}
             setEditingTaskId={setEditingTaskId}
           />
         ))}
