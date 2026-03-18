@@ -122,9 +122,12 @@ const TodoItem = ({
                 className={styles.titleItem}
                 rules={[
                   { required: true, message: "Пустое поле" },
-                  { whitespace: true, message: "Только пробелы" },
-                  { min: 2, message: "Минимум 2 симв." },
-                  { max: 64, message: "Максимум 64 симв." },
+                  {
+                    whitespace: true,
+                    message: "Это поле не может быть пустым",
+                  },
+                  { min: 2, message: "Минимум 2 символа" },
+                  { max: 64, message: "Максимум 64 символа" },
                 ]}
               >
                 <Input
