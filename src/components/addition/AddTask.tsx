@@ -2,7 +2,6 @@ import { JSX, useEffect, useRef, useState } from "react";
 import styles from "./AddTask.module.css";
 import { addTask } from "../../api/tasks";
 import { Button, Input, InputRef, Form, notification } from "antd";
-import { validateTodoTitle } from "../../utils";
 
 interface AddTaskProps {
   onUpdateTask: () => void;
@@ -51,15 +50,18 @@ const AddTask: React.FC<AddTaskProps> = ({
         name="title"
         className={styles.titleItem}
         rules={[
+          { required: true, message: "Это поле не может быть пустым" },
           {
-            validator: (_, value) => {
-              const errorTeaxt = validateTodoTitle(value || "");
-
-              if (errorTeaxt) {
-                return Promise.reject(new Error(errorTeaxt));
-              }
-              return Promise.resolve();
-            },
+            whitespace: true,
+            message: "Это поле не может быть пустым",
+          },
+          {
+            min: 2,
+            message: "Минимальня длина текста 2 символа",
+          },
+          {
+            max: 64,
+            message: "Максимальная длина текста 64 символа",
           },
         ]}
       >

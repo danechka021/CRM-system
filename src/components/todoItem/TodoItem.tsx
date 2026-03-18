@@ -1,11 +1,23 @@
 import { useState, useRef, useEffect, JSX } from "react";
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import { Checkbox, Button, Input, InputRef, Form, notification } from "antd";
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
+import {
+  Checkbox,
+  Button,
+  Input,
+  InputRef,
+  Form,
+  notification,
+  Tooltip,
+} from "antd";
 
 import styles from "../todoItem/TodoItem.module.css";
 import { updateTasks, deleteTask } from "../../api/tasks";
 import { Todo } from "../../types";
-import { validateTodoTitle } from "../../utils";
 
 interface TodoItemProps {
   task: Todo;
@@ -37,13 +49,10 @@ const TodoItem = ({
       await fetchTodos();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        const descriptions =
-          error instanceof Error ? error.message : "Попробуйте позже";
-
         notification.error({
           message: "Ошибка при добавлении задачи",
-          description: descriptions,
-          placement: "topRight",
+          description:
+            error instanceof Error ? error.message : "Попробуйте позже",
         });
       }
     }
@@ -66,16 +75,6 @@ const TodoItem = ({
   const handleSaveEditingTask = async (values: {
     title: string;
   }): Promise<void> => {
-    const error = validateTodoTitle(values.title || "");
-
-    if (error) {
-      notification.error({
-        message: "Ошибка валидации",
-        description: error,
-        placement: "topRight",
-      });
-      return;
-    }
     setLoading(true);
 
     try {
@@ -84,7 +83,10 @@ const TodoItem = ({
       handleCancelEditingTask();
       notification.success({ message: "Задача обновлена" });
     } catch (error: unknown) {
-      console.error(error);
+      notification.error({
+        message: "Ошибка",
+        description: error instanceof Error ? error.message : "Ошибка сервера",
+      });
     } finally {
       setLoading(false);
     }
@@ -97,11 +99,10 @@ const TodoItem = ({
       await deleteTask(id);
       await fetchTodos();
     } catch (error: unknown) {
-      const descriptions =
-        error instanceof Error ? error.message : "Попробуйте позже";
       notification.error({
         message: "Ошибка удаления",
-        description: descriptions,
+        description:
+          error instanceof Error ? error.message : "Попробуйте позже",
       });
     }
   };
@@ -116,7 +117,16 @@ const TodoItem = ({
             initialValues={{ title: task.title }}
           >
             <div className={styles.container}>
-              <Form.Item name="title" noStyle>
+              <Form.Item
+                name="title"
+                className={styles.titleItem}
+                rules={[
+                  { required: true, message: "Пустое поле" },
+                  { whitespace: true, message: "Только пробелы" },
+                  { min: 2, message: "Минимум 2 симв." },
+                  { max: 64, message: "Максимум 64 симв." },
+                ]}
+              >
                 <Input
                   size="large"
                   ref={inputRef}
@@ -128,18 +138,23 @@ const TodoItem = ({
               </Form.Item>
 
               <div className={styles.button}>
-                <Button size="large" onClick={handleCancelEditingTask}>
-                  Отмена
-                </Button>
+                <Tooltip title="Отмена">
+                  <Button
+                    icon={<CloseOutlined />}
+                    size="large"
+                    onClick={handleCancelEditingTask}
+                  />
+                </Tooltip>
 
-                <Button
-                  size="large"
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                >
-                  Сохранить
-                </Button>
+                <Tooltip title="Сохрнаить">
+                  <Button
+                    size="large"
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    icon={<CheckOutlined />}
+                  />
+                </Tooltip>
               </div>
             </div>
           </Form>
@@ -161,16 +176,21 @@ const TodoItem = ({
             </span>
 
             <div className={styles.buttonGroup}>
-              <EditTwoTone
-                onClick={() => handleStartEditingTask(task)}
-                className={styles.customIcon}
-              />
+              <Tooltip>
+                <Button
+                  icon={<EditTwoTone />}
+                  size="large"
+                  onClick={() => handleStartEditingTask(task)}
+                />
+              </Tooltip>
 
-              <DeleteTwoTone
-                className={styles.customIcon}
-                onClick={() => handleDeleteTask(task.id)}
-                twoToneColor="red"
-              />
+              <Tooltip>
+                <Button
+                  icon={<DeleteTwoTone twoToneColor="red" />}
+                  size="large"
+                  onClick={() => handleDeleteTask(task.id)}
+                />
+              </Tooltip>
             </div>
           </>
         )}

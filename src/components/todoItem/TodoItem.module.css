@@ -1,8 +1,9 @@
 .container {
   display: flex;
-  gap: 80px;
-  align-items: stretch;
-  justify-content: center;
+  gap: 75px;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .li {
@@ -11,9 +12,22 @@
   justify-content: space-between;
   background-color: #ffffff;
   margin: 10px 0;
-  padding: 0 10px;
-  height: 50px;
+  padding: 8px 10px;
+  min-height: 50px;
+  height: auto;
   border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.titleItem {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
+
+.titleItem :global(.ant-form-item-explain) {
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.2;
 }
 
 .input {

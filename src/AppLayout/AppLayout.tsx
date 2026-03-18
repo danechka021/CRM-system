@@ -2,13 +2,7 @@ import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { Layout, Menu, MenuProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import {
-  useLocation,
-  useNavigate,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { useLocation, useNavigate, Route, Routes } from "react-router-dom";
 import UserProfile from "../profile/UserProfile";
 import TodoListPage from "../pages/TodoListPage";
 import styles from "../AppLayout/AppLayout.module.css";
