@@ -1,8 +1,7 @@
-import styles from "../TodoFilter/TasksStatusTabs.module.css";
-import Tab from "../../ui/Tab/Tab";
 import { Dispatch } from "react";
-import { TodoInfo } from "../../types";
-import { TaskStatus } from "../../types";
+import { TodoInfo, TaskStatus } from "../../types";
+import { Tabs } from "antd";
+import styles from "./TasksStatusTabs.module.css";
 
 interface TasksStatusTabsProps {
   setSelectedTaskFilter: Dispatch<React.SetStateAction<TaskStatus>>;
@@ -15,29 +14,33 @@ const TasksStatusTabs = ({
   countTasks,
   selectedTaskFilter,
 }: TasksStatusTabsProps) => {
+  const handleFilterChange = (key: string) => {
+    setSelectedTaskFilter(key as TaskStatus);
+  };
   return (
-    <div className={styles.button}>
-      <Tab
-        isActive={selectedTaskFilter === TaskStatus.ALL}
-        onClick={() => setSelectedTaskFilter(TaskStatus.ALL)}
-      >
-        Все ({countTasks.all})
-      </Tab>
-
-      <Tab
-        isActive={selectedTaskFilter === TaskStatus.IN_WORK}
-        onClick={() => setSelectedTaskFilter(TaskStatus.IN_WORK)}
-      >
-        В работе ({countTasks.inWork})
-      </Tab>
-
-      <Tab
-        isActive={selectedTaskFilter === TaskStatus.COMPLETED}
-        onClick={() => setSelectedTaskFilter(TaskStatus.COMPLETED)}
-      >
-        Сделано ({countTasks.completed})
-      </Tab>
-    </div>
+    <>
+      <Tabs
+        activeKey={selectedTaskFilter}
+        onChange={handleFilterChange}
+        size="large"
+        centered
+        items={[
+          {
+            key: TaskStatus.ALL,
+            label: `Все (${countTasks.all})`,
+          },
+          {
+            key: TaskStatus.IN_WORK,
+            label: `В работе (${countTasks.inWork})`,
+          },
+          {
+            key: TaskStatus.COMPLETED,
+            label: `Сделано (${countTasks.completed})`,
+          },
+        ]}
+        className={styles.formControl}
+      ></Tabs>
+    </>
   );
 };
 

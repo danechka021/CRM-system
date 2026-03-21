@@ -1,10 +1,11 @@
-import TodoListPage from "./pages/TodoListPage";
+import { BrowserRouter } from "react-router-dom";
+import AppLayout from "./AppLayout/AppLayout";
 
 const App = () => {
   return (
-    <div className="mainContainer">
-      <TodoListPage />
-    </div>
+    <BrowserRouter>
+      <AppLayout />
+    </BrowserRouter>
   );
 };
 

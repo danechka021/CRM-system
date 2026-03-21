@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { getTasks } from "../api/tasks.js";
 import { Todo, MetaResponse, TodoInfo } from "../types.js";
+import { useLocation } from "react-router-dom";
 
-import AddTask from "../components/addition/AddTask.jsx";
+import { notification } from "antd";
+
+import AddTask from "../components/addition/AddTask.js";
 import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.js";
 import TasksList from "../components/ListOfTasks/Tasks.js";
 
 import styles from "../pages/TodoListPage.module.css";
 import { TaskStatus } from "../types.js";
+import { Outlet } from "react-router-dom";
 
 const TodoListPage = () => {
   const [tasks, setTasks] = useState<Todo[]>([]);
@@ -22,9 +26,13 @@ const TodoListPage = () => {
     TaskStatus.ALL,
   );
 
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+
+  const location = useLocation();
+
   //Отображение по статусам
 
-  const updateTask = async (selectedTaskFilter: TaskStatus): Promise<void> => {
+  const fetchTodos = async (selectedTaskFilter: TaskStatus): Promise<void> => {
     try {
       const results: MetaResponse<Todo, TodoInfo> =
         await getTasks(selectedTaskFilter);
@@ -39,19 +47,33 @@ const TodoListPage = () => {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
+        const descriptions =
+          error instanceof Error ? error.message : "Попробуйте позже";
+
+        notification.error({
+          message: "Ошибка при отображении задач",
+          description: descriptions,
+          placement: "topRight",
+        });
       }
     }
   };
 
   useEffect(() => {
-    updateTask(selectedTaskFilter);
-  }, [selectedTaskFilter]);
+    if (editingTaskId !== null && location.pathname === "/todos") return;
+
+    const fetchAndUpdate = () => fetchTodos(selectedTaskFilter);
+    fetchAndUpdate();
+    const interval = setInterval(fetchAndUpdate, 5000);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [selectedTaskFilter, editingTaskId, location.pathname]);
 
   return (
-    <>
+    <div className={styles.mainContainer}>
       <div className={styles.mainTaskName}>
-        <AddTask onUpdateTask={() => updateTask(selectedTaskFilter)} />
+        <AddTask onUpdateTask={() => fetchTodos(selectedTaskFilter)} />
       </div>
 
       <div>
@@ -65,10 +87,12 @@ const TodoListPage = () => {
       <div>
         <TasksList
           tasks={tasks}
-          onUpdateTask={() => updateTask(selectedTaskFilter)}
+          fetchTodos={() => fetchTodos(selectedTaskFilter)}
+          setEditingTaskId={setEditingTaskId}
         />
       </div>
-    </>
+      <Outlet />
+    </div>
   );
 };
 

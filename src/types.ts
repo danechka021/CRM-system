@@ -1,5 +1,3 @@
-// или так type TodoRequest = Partial<Omit<Todo, "id" | "created">>;
-
 export interface Todo {
   id: number;
   title: string;

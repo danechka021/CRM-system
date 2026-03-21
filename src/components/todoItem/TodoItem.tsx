@@ -1,67 +1,94 @@
-import logoEdit from "../../assets/edit.png";
-import logoDel from "../../assets/delete.png";
+import { useState, useRef, useEffect, JSX } from "react";
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
+import {
+  Checkbox,
+  Button,
+  Input,
+  InputRef,
+  Form,
+  notification,
+  Tooltip,
+} from "antd";
 
-import { useState } from "react";
 import styles from "../todoItem/TodoItem.module.css";
-
-import { updatesTheTask, deleteTask } from "../../api/tasks";
-import IconButton from "../../ui/IconButton/IconButton";
-import Checkbox from "../../ui/Checkbox/Checkbox";
+import { updateTasks, deleteTask } from "../../api/tasks";
 import { Todo } from "../../types";
-import { validateTodoTitle } from "../../utils";
 
 interface TodoItemProps {
   task: Todo;
-  onUpdateTask: () => void;
+  fetchTodos: () => void;
+  setEditingTaskId: (id: number | null) => void;
 }
-
-const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
+const TodoItem = ({
+  task,
+  fetchTodos,
+  setEditingTaskId,
+}: TodoItemProps): JSX.Element => {
   //Для редактирования задач
-  const [editingTitle, setEditingTitle] = useState<string>("");
+  const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const inputRef = useRef<InputRef>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+    }
+  }, [isEditing]);
 
   //Выбор статуса задачи
 
   const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
-      await updatesTheTask(task.id, { isDone: !task.isDone });
-      await onUpdateTask();
+      await updateTasks(task.id, { isDone: !task.isDone });
+      await fetchTodos();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message);
-      } else alert("Неизвестная ошибка");
+        notification.error({
+          message: "Ошибка при добавлении задачи",
+          description:
+            error instanceof Error ? error.message : "Попробуйте позже",
+        });
+      }
     }
   };
 
   //редактирование задачи
 
   const handleStartEditingTask = (task: Todo) => {
-    setEditingTitle(task.title);
     setIsEditing(true);
+    setEditingTaskId(task.id);
+    form.setFieldsValue({ title: task.title });
   };
 
-  const handleCanselEditingTask = () => {
+  const handleCancelEditingTask = () => {
     setIsEditing(false);
+    setEditingTaskId(null);
+    form.resetFields();
   };
 
-  const handleSaveEditingTask = async (task: Todo): Promise<void> => {
-    const error = validateTodoTitle(editingTitle);
-
-    if (error) {
-      alert(error);
-      return;
-    }
+  const handleSaveEditingTask = async (values: {
+    title: string;
+  }): Promise<void> => {
+    setLoading(true);
 
     try {
-      const titleTrim = editingTitle.trim();
-
-      await updatesTheTask(task.id, { title: titleTrim });
-      await onUpdateTask();
-      handleCanselEditingTask();
+      await updateTasks(task.id, { title: values.title.trim() });
+      await fetchTodos();
+      handleCancelEditingTask();
+      notification.success({ message: "Задача обновлена" });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else alert("Неизвестаня ошибка");
+      notification.error({
+        message: "Ошибка",
+        description: error instanceof Error ? error.message : "Ошибка сервера",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,42 +97,70 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
   const handleDeleteTask = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
-      await onUpdateTask();
+      await fetchTodos();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else "Неизыестная ошибка";
+      notification.error({
+        message: "Ошибка удаления",
+        description:
+          error instanceof Error ? error.message : "Попробуйте позже",
+      });
     }
   };
 
   return (
-    <>
+    <div>
       <li className={styles.li} key={task.id}>
         {isEditing ? (
-          <div className={styles.container}>
-            <input
-              className={styles.input}
-              type="text"
-              value={editingTitle}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setEditingTitle(event.target.value)
-              }
-            />
-            <div className={styles.button}>
-              <button
-                className={styles.buttonCancel}
-                onClick={handleCanselEditingTask}
+          <Form
+            form={form}
+            onFinish={handleSaveEditingTask}
+            initialValues={{ title: task.title }}
+          >
+            <div className={styles.container}>
+              <Form.Item
+                name="title"
+                className={styles.titleItem}
+                rules={[
+                  { required: true, message: "Пустое поле" },
+                  {
+                    whitespace: true,
+                    message: "Это поле не может быть пустым",
+                  },
+                  { min: 2, message: "Минимум 2 символа" },
+                  { max: 64, message: "Максимум 64 символа" },
+                ]}
               >
-                Отмена
-              </button>
-              <button
-                className={styles.buttonSave}
-                onClick={() => handleSaveEditingTask(task)}
-              >
-                Сохранить
-              </button>
+                <Input
+                  size="large"
+                  ref={inputRef}
+                  placeholder="Task to be done..."
+                  variant="underlined"
+                  className={styles.input}
+                  disabled={loading}
+                />
+              </Form.Item>
+
+              <div className={styles.button}>
+                <Tooltip title="Отмена">
+                  <Button
+                    icon={<CloseOutlined />}
+                    size="large"
+                    onClick={handleCancelEditingTask}
+                  />
+                </Tooltip>
+
+                <Tooltip title="Сохрнаить">
+                  <Button
+                    size="large"
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    icon={<CheckOutlined />}
+                  />
+                </Tooltip>
+              </div>
             </div>
-          </div>
+          </Form>
         ) : (
           <>
             <label className={styles.mainCheckbox}>
@@ -123,24 +178,27 @@ const TodoItem = ({ task, onUpdateTask }: TodoItemProps) => {
               {task.title}
             </span>
 
-            <div>
-              <IconButton
-                onClick={() => handleStartEditingTask(task)}
-                src={logoEdit}
-              >
-                <img src={logoEdit} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleDeleteTask(task.id)}
-                src={logoDel}
-              >
-                <img src={logoDel} />
-              </IconButton>
+            <div className={styles.buttonGroup}>
+              <Tooltip>
+                <Button
+                  icon={<EditTwoTone />}
+                  size="large"
+                  onClick={() => handleStartEditingTask(task)}
+                />
+              </Tooltip>
+
+              <Tooltip>
+                <Button
+                  icon={<DeleteTwoTone twoToneColor="red" />}
+                  size="large"
+                  onClick={() => handleDeleteTask(task.id)}
+                />
+              </Tooltip>
             </div>
           </>
         )}
       </li>
-    </>
+    </div>
   );
 };
 

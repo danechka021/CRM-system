@@ -1,23 +1,30 @@
-.mainContainer {
+.formControl {
   display: flex;
-  margin-bottom: 10px;
-  align-items: stretch;
+  margin-bottom: 12px;
+  align-items: flex-start;
   justify-content: center;
+  position: relative;
+}
+.formControl :global(.ant-form-item-explain-error) {
+  margin-bottom: 0 !important;
+}
+.formControl :global(.ant-form-item-explain) {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  width: 100%;
 }
 
-.input {
-  margin: 10px;
-  padding: 0;
-  padding-bottom: 2px;
-  line-height: 2;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  outline: none;
-  background: transparent;
-  font-size: 12px;
-  width: 70%;
+.inputForm {
+  width: 300px;
+  margin-left: 30px;
+  margin-bottom: 0;
+  height: 40px;
+  border-bottom: 1px solid #1677ff;
 }
 
-.input:focus {
-  border-bottom: 1.5px solid #2563eb;
+.heightControl {
+  height: 40px;
 }
