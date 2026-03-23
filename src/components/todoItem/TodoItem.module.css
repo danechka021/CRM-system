@@ -1,0 +1,63 @@
+.container {
+  display: flex;
+  gap: 75px;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  margin: 10px 0;
+  padding: 8px 10px;
+  min-height: 50px;
+  height: auto;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.titleItem {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
+
+.titleItem :global(.ant-form-item-explain) {
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.2;
+}
+
+.input {
+  height: 100%;
+}
+
+.button {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.taskText {
+  flex: 1;
+  margin: 0 10px;
+  overflow: auto;
+}
+
+.taskTextDone {
+  text-decoration: line-through;
+  color: #808080;
+}
+
+.customIcon {
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+}
