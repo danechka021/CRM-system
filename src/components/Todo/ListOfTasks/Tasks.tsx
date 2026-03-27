@@ -1,6 +1,6 @@
 import styles from "../ListOfTasks/Tasks.module.css";
 import TodoItem from "../todoItem/TodoItem";
-import { Todo } from "../../types";
+import { Todo } from "../../../types";
 import { JSX } from "react";
 
 interface TasksList {

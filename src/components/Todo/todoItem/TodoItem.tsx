@@ -16,8 +16,8 @@ import {
 } from "antd";
 
 import styles from "../todoItem/TodoItem.module.css";
-import { updateTasks, deleteTask } from "../../api/tasks";
-import { Todo } from "../../types";
+import { updateTasks, deleteTask } from "../../../api/tasks";
+import { Todo } from "../../../types";
 
 interface TodoItemProps {
   task: Todo;

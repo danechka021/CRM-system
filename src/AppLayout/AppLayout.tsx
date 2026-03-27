@@ -4,7 +4,9 @@ import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { useLocation, useNavigate, Route, Routes } from "react-router-dom";
 import UserProfile from "../profile/UserProfile";
-import TodoListPage from "../pages/TodoListPage";
+import TodoListPage from "../pages/todo/TodoListPage";
+import AuthorizationPage from "../pages/auth/AuthorizationPage";
+import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -23,6 +25,14 @@ const AppLayout: React.FC = () => {
       key: "/todos",
       icon: <UnorderedListOutlined />,
       label: "ToDo List",
+    },
+    {
+      key: "/auth",
+      label: "Авторизоваться",
+    },
+    {
+      key: "/regi",
+      label: "Регистрация",
     },
   ];
 
@@ -45,9 +55,13 @@ const AppLayout: React.FC = () => {
       <Layout className={styles.layoutContainer}>
         <Content>
           <Routes>
-            <Route path="/profile" element={<UserProfile />} />
+            <>
+              <Route path="/profile" element={<UserProfile />} />
+            </>
             <Route path="/todos" element={<TodoListPage />} />
-            <Route path="*" element={<TodoListPage />} />
+            <Route path="/regi" element={<RegistrationPage />} />
+            <Route path="auth" element={<AuthorizationPage />} />
+            <Route path="*" element={<AuthorizationPage />} />
           </Routes>
         </Content>
       </Layout>

@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { TodoInfo, TaskStatus } from "../../types";
+import { TodoInfo, TaskStatus } from "../../../types";
 import { Tabs } from "antd";
 import styles from "./TasksStatusTabs.module.css";
 

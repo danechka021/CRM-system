@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { getTasks } from "../api/tasks.js";
-import { Todo, MetaResponse, TodoInfo } from "../types.js";
+import { getTasks } from "../../api/tasks.js";
+import { Todo, MetaResponse, TodoInfo } from "../../types.js";
 import { useLocation } from "react-router-dom";
 
 import { notification } from "antd";
 
-import AddTask from "../components/addition/AddTask.js";
-import TasksStatusTabs from "../components/TodoFilter/TasksStatusTabs.js";
-import TasksList from "../components/ListOfTasks/Tasks.js";
+import AddTask from "../../components/Todo/addition/AddTask.js";
+import TasksStatusTabs from "../../components/Todo/TodoFilter/TasksStatusTabs.js";
+import TasksList from "../../components/Todo/ListOfTasks/Tasks.js";
 
-import styles from "../pages/TodoListPage.module.css";
-import { TaskStatus } from "../types.js";
+import styles from "../todo/TodoListPage.module.css";
+import { TaskStatus } from "../../types.js";
 import { Outlet } from "react-router-dom";
 
 const TodoListPage = () => {

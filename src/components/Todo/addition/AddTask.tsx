@@ -1,6 +1,6 @@
 import { JSX, useEffect, useRef, useState } from "react";
 import styles from "./AddTask.module.css";
-import { addTask } from "../../api/tasks";
+import { addTask } from "../../../api/tasks";
 import { Button, Input, InputRef, Form, notification } from "antd";
 
 interface AddTaskProps {
