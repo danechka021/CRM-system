@@ -1,0 +1,124 @@
+:root {
+  --colorImageText: rgb(104, 0, 104);
+  --borderRadius: 16px;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --labelColor: grey;
+}
+
+.pageLayout {
+  background-color: rgb(250, 231, 195);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+}
+
+.auth {
+  display: flex;
+  height: 650px;
+  width: 95%;
+  max-width: 1200px;
+  background-color: white;
+  border-radius: var(--borderRadius);
+  box-shadow: var(--box-shadow);
+}
+
+.imageForm {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(250, 231, 195);
+  margin: 10px;
+  border-radius: var(--borderRadius);
+  box-shadow: var(--box-shadow);
+  width: 700px;
+}
+
+.img {
+  margin: 20px;
+  height: auto;
+  max-height: 520px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.textImageForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.slogan {
+  margin: 0;
+  font-size: 22px;
+  color: var(--colorImageText);
+}
+
+.promoText {
+  margin: 0;
+  font-size: 16px;
+  color: var(--colorImageText);
+}
+
+.authForm {
+  flex: 1;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerAuthForm {
+  display: flex;
+  flex-direction: column;
+  margin: 30px;
+}
+
+.authTitle {
+  font-size: 38px;
+  margin: 0;
+}
+
+.formSubtitle {
+  margin: 0;
+}
+
+.inputValidateForm {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 60px;
+}
+
+.formOptions {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 6px;
+  color: var(--labelColor);
+}
+
+.checkbox {
+  accent-color: purple;
+}
+
+.footerAuth {
+  display: flex;
+  align-items: center;
+}
+
+.footerText {
+  color: var(--labelColor);
+}

@@ -31,7 +31,7 @@ const AppLayout: React.FC = () => {
       label: "Авторизоваться",
     },
     {
-      key: "/regi",
+      key: "/register",
       label: "Регистрация",
     },
   ];
@@ -52,14 +52,14 @@ const AppLayout: React.FC = () => {
         />
       </Sider>
 
-      <Layout className={styles.layoutContainer}>
+      <Layout>
         <Content>
           <Routes>
             <>
               <Route path="/profile" element={<UserProfile />} />
             </>
             <Route path="/todos" element={<TodoListPage />} />
-            <Route path="/regi" element={<RegistrationPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
             <Route path="auth" element={<AuthorizationPage />} />
             <Route path="*" element={<AuthorizationPage />} />
           </Routes>

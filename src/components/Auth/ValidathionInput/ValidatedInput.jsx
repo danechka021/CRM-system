@@ -1,14 +1,34 @@
-const ValidatedInput = ({ label, placeholder, type, id, isRequired }) => {
+import styles from "../ValidathionInput/ValidathionInput.module.css";
+import { Input, Form } from "antd";
+
+const ValidatedInput = ({
+  placeholder,
+  label,
+  name,
+  isRequired,
+  dependecies,
+  rules = [],
+  ...rest
+}) => {
   return (
-    <div>
-      <label htmlFor={id}> {label} </label>
-      <input
-        type={type}
+    <Form.Item
+      label={label}
+      name={name}
+      dependencies={dependecies}
+      layout="vertical"
+      rules={[
+        { required: isRequired, message: `Введите ${label}` },
+        ...(rules || []),
+      ]}
+      className={styles.inputForm}
+    >
+      <Input
+        {...rest}
         placeholder={placeholder}
-        id={id}
-        required={isRequired}
+        size="large"
+        className={styles.customInput}
       />
-    </div>
+    </Form.Item>
   );
 };
 

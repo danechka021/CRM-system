@@ -1,7 +1,11 @@
-const LinkButton = ({ name }) => {
+import styles from "../LinkButton/LinkButton.module.css";
+
+const LinkButton = ({ name, onClick }) => {
   return (
     <div>
-      <button>{name}</button>
+      <button onClick={onClick} className={styles.buttonStyles}>
+        {name}
+      </button>
     </div>
   );
 };

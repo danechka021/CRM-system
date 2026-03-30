@@ -1,0 +1,7 @@
+.buttonStyles {
+  border: none;
+  cursor: pointer;
+  color: purple;
+  background-color: transparent;
+  font-size: 14px;
+}
