@@ -1,15 +1,28 @@
-import { Form, Button, Input, message } from "antd";
+import { Form, Button, message } from "antd";
 
 import ValidatedInput from "../ValidathionInput/ValidatedInput";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 import { useNavigate } from "react-router-dom";
+import { registrstionUser } from "../../../api/auth";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    navigate("/auth");
-    console.log("Данные пользователя:", values);
+  const onFinish = async (values) => {
+    try {
+      const filteredData = {
+        login: values.login,
+        username: values.username,
+        password: values.password,
+        email: values.email,
+        phoneNumber: values.phoneNumber || "",
+      };
+      await registrstionUser(filteredData);
+      message.success("Регистарция прошла успешно!");
+      navigate("/auth");
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   return (
@@ -38,10 +51,10 @@ const RegistrationForm = () => {
         <ValidatedInput
           label="Логин"
           placeholder="Введите логин"
-          name="login-input"
+          name="login"
           isRequired={true}
           rules={[
-            { pattern: /^[a-zA-Z0-9_-]+$/, message: "Только английские буквы" },
+            { pattern: /^[a-zA-Z]+$/, message: "Только английские буквы" },
             { required: true, message: "Поле обязательно для заполнения" },
             { min: 2, message: "Минимальная длина 2 символ " },
             { max: 60, message: "Максимальная длина 60 символов" },
@@ -50,7 +63,7 @@ const RegistrationForm = () => {
         <ValidatedInput
           label="Пароль"
           placeholder="Введите пароль"
-          name="passwordId-input"
+          name="password"
           isRequired={true}
           rules={[
             { required: true, message: "Поле обязательно для заполнения" },
@@ -62,13 +75,13 @@ const RegistrationForm = () => {
           label="Повторите пароль"
           placeholder="Введите пароль"
           type="password"
-          name="returnpassword-input"
+          name="returnpasswordId"
           isRequired={true}
-          dependencies={["passwordId-input"]}
+          dependencies={["password"]}
           rules={[
             ({ getFieldValue }) => ({
               validator: (_, value) =>
-                !value || getFieldValue("passwordId-input") === value
+                !value || getFieldValue("password") === value
                   ? Promise.resolve()
                   : Promise.reject(new Error("Пароли не совпадают!")),
             }),
@@ -78,14 +91,14 @@ const RegistrationForm = () => {
           label="Почтовый адрес"
           placeholder="Введите почтовый адрес"
           type="email"
-          name="email-input2"
+          name="email"
           isRequired={true}
         />
         <ValidatedInput
           label="Телефон"
           placeholder="Введите телефон"
           type="tel"
-          name="number-input"
+          name="phoneNumber"
           isRequired={false}
           rules={[
             {
