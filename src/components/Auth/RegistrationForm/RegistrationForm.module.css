@@ -14,9 +14,12 @@
   align-items: center;
   justify-content: center;
   height: auto;
+  min-width: 400px;
   width: 500px;
   background-color: rgb(255, 255, 255);
   border-radius: 10px;
+  padding-top: 30px;
+  overflow: hidden;
 }
 
 .submitBtn {

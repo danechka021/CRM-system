@@ -17,7 +17,7 @@ const ValidatedInput = ({
       dependencies={dependecies}
       layout="vertical"
       rules={[
-        { required: isRequired, message: `Введите ${label}` },
+        { required: isRequired, message: `Поле обязаьельно для заполнения!` },
         ...(rules || []),
       ]}
       className={styles.inputForm}

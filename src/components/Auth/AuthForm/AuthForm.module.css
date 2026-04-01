@@ -17,16 +17,19 @@
 
 .auth {
   display: flex;
-  height: 650px;
+  min-height: 650px;
   width: 95%;
   max-width: 1200px;
   background-color: white;
   border-radius: var(--borderRadius);
   box-shadow: var(--box-shadow);
+  overflow: hidden;
+  position: relative;
 }
 
 .imageForm {
   flex: 1.2;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,7 +37,6 @@
   margin: 10px;
   border-radius: var(--borderRadius);
   box-shadow: var(--box-shadow);
-  width: 700px;
 }
 
 .img {

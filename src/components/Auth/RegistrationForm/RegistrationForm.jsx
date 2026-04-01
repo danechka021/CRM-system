@@ -42,7 +42,7 @@ const RegistrationForm = () => {
               pattern: /^[А-Яа-яЁёa-zA-Z0-9\s]+$/,
               message: "Допускаются только русские и английские буквы",
             },
-            { required: true, message: "Поле обязательно для заполнения" },
+            { required: true, message: "" },
             { min: 1, message: "Минимальная длина 1 символ " },
             { max: 60, message: "Максимальная длина 60 символов" },
           ]}
@@ -55,7 +55,7 @@ const RegistrationForm = () => {
           isRequired={true}
           rules={[
             { pattern: /^[a-zA-Z]+$/, message: "Только английские буквы" },
-            { required: true, message: "Поле обязательно для заполнения" },
+            { required: true, message: "" },
             { min: 2, message: "Минимальная длина 2 символ " },
             { max: 60, message: "Максимальная длина 60 символов" },
           ]}
@@ -66,7 +66,7 @@ const RegistrationForm = () => {
           name="password"
           isRequired={true}
           rules={[
-            { required: true, message: "Поле обязательно для заполнения" },
+            { required: true, message: "" },
             { min: 6, message: "Минимальная длина 6 символ " },
             { max: 60, message: "Максимальная длина 60 символов" },
           ]}
