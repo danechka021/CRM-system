@@ -3,7 +3,9 @@ import styles from "../AuthButton/AuthBotton.module.css";
 const AuthButton = () => {
   return (
     <div className={styles.authBottomForm}>
-      <button className={styles.stylesLogin}>Login</button>
+      <button className={styles.stylesLogin} type="submit">
+        Login
+      </button>
     </div>
   );
 };

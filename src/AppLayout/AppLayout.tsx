@@ -16,6 +16,7 @@ import TodoListPage from "../pages/todo/TodoListPage";
 import AuthorizationPage from "../pages/auth/AuthorizationPage";
 import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
+import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -77,8 +78,10 @@ const AppLayout: React.FC = () => {
       <Layout>
         <Content>
           <Routes>
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/todos" element={<TodoListPage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/todos" element={<TodoListPage />} />
+            </Route>
           </Routes>
         </Content>
       </Layout>

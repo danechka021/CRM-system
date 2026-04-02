@@ -1,15 +1,18 @@
-const API_auth = "https://easydev.club/api/v1";
+import axios from "axios";
 
-export const registrstionUser = async (userData) => {
-  const response = await fetch(`${API_auth}/auth/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userData),
-  });
-  if (!response.ok) {
-    throw new Error(`Ошибка регистрации пользователя `);
-  }
-  return await response.json();
+const api = axios.create({
+  baseURL: "https://easydev.club/api/v1",
+  headers: { "Content-Type": "application/json" },
+});
+
+export const registrationUser = async (registrationDetails) => {
+  console.log("zalupa");
+  const { data } = await api.post(`/auth/signup`, registrationDetails);
+  return data;
 };
+
+export const authorizeUser = async (loginDetails) => {
+  const { data } = await api.post("/auth/signin", loginDetails);
+  return data;
+};
+

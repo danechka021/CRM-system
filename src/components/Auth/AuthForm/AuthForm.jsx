@@ -3,11 +3,30 @@ import LinkButton from "../LinkButton/LinkButton";
 import ValidatedInput from "../ValidathionInput/ValidatedInput";
 import styles from "../AuthForm/AuthForm.module.css";
 import authImg from "../../../assets/image_auth.jpg";
+import { authorizeUser } from "../../../api/auth";
 
 import { useNavigate } from "react-router-dom";
+import { Form, message } from "antd";
 
 const AuthForm = () => {
   const navigate = useNavigate();
+  const [form] = Form.useForm();
+
+  const onFinish = async (values) => {
+    console.log(values);
+    try {
+      const data = await authorizeUser({
+        login: values.login,
+        password: values.password,
+      });
+
+      localStorage.setItem("accessToken", data.accessToken);
+      message.success("Вход выполнен успешно!");
+      navigate("/todos");
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
 
   const openRegistrationPage = (event) => {
     event.preventDefault();
@@ -16,7 +35,7 @@ const AuthForm = () => {
 
   return (
     <>
-      <form className={styles.pageLayout}>
+      <div className={styles.pageLayout}>
         <div className={styles.auth}>
           <div className={styles.imageForm}>
             <img src={authImg} alt="Auth" className={styles.img} />
@@ -31,7 +50,12 @@ const AuthForm = () => {
             </div>
           </div>
 
-          <div className={styles.authForm}>
+          <Form
+            form={form}
+            onFinish={onFinish}
+            layout="vertical"
+            className={styles.authForm}
+          >
             <div className={styles.headerAuthForm}>
               <h1 className={styles.authTitle}>Login to your Account</h1>
               <p className={styles.formSubtitle}>
@@ -42,12 +66,14 @@ const AuthForm = () => {
             <div className={styles.inputValidateForm}>
               <div>
                 <ValidatedInput
-                  label="Email"
+                  name="login"
+                  label="email"
                   placeholder="mail@abc.ru"
-                  type="email"
+                  type="text"
                   id="email-input"
                 />
                 <ValidatedInput
+                  name="password"
                   label="Password"
                   placeholder="*********"
                   type="password"
@@ -79,9 +105,9 @@ const AuthForm = () => {
                 onClick={openRegistrationPage}
               />
             </div>
-          </div>
+          </Form>
         </div>
-      </form>
+      </div>
     </>
   );
 };

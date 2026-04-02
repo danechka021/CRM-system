@@ -1,27 +1,31 @@
 import { Form, Button, message } from "antd";
+import { useState } from "react";
 
 import ValidatedInput from "../ValidathionInput/ValidatedInput";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
-import { useNavigate } from "react-router-dom";
-import { registrstionUser } from "../../../api/auth";
+import { Link } from "react-router-dom";
+import { registrationUser } from "../../../api/auth";
 
 const RegistrationForm = () => {
-  const navigate = useNavigate();
+  const [isRegistreted, setIsRegistrated] = useState(false);
 
   const onFinish = async (values) => {
     try {
       const filteredData = {
-        login: values.login,
         username: values.username,
+        login: values.login,
         password: values.password,
         email: values.email,
         phoneNumber: values.phoneNumber || "",
       };
-      await registrstionUser(filteredData);
+      await registrationUser(filteredData);
       message.success("Регистарция прошла успешно!");
-      navigate("/auth");
+      setIsRegistrated(true);
     } catch (error) {
-      message.error(error.message);
+      let userMessage =
+        "Ошибка регистрации, введенные данные должны быть уникальными";
+      message.error(userMessage);
+      setIsRegistrated(false);
     }
   };
 
@@ -111,15 +115,23 @@ const RegistrationForm = () => {
           }}
         />
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="large"
-            block
-            className={styles.submitBtn}
-          >
-            Зарегистрироваться
-          </Button>
+          {!isRegistreted ? (
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              className={styles.submitBtn}
+            >
+              Зарегистрироваться
+            </Button>
+          ) : (
+            <div>
+              <Link to="/auth">
+                Перейти на страницу авторизации для входа в систему
+              </Link>
+            </div>
+          )}
         </Form.Item>
       </Form>
     </div>
