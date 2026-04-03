@@ -13,7 +13,6 @@ const AuthForm = () => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    console.log(values);
     try {
       const data = await authorizeUser({
         login: values.login,
@@ -21,10 +20,12 @@ const AuthForm = () => {
       });
 
       localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
       message.success("Вход выполнен успешно!");
       navigate("/todos");
     } catch (error) {
-      message.error(error.message);
+      const textMessage = "“Неверные логин или пароль”";
+      message.error(textMessage);
     }
   };
 
@@ -67,8 +68,8 @@ const AuthForm = () => {
               <div>
                 <ValidatedInput
                   name="login"
-                  label="email"
-                  placeholder="mail@abc.ru"
+                  label="Login"
+                  placeholder="Login"
                   type="text"
                   id="email-input"
                 />
