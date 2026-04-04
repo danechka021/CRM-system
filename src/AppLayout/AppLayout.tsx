@@ -1,9 +1,5 @@
-import {
-  UserOutlined,
-  UnorderedListOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu, MenuProps, Button, Popconfirm } from "antd";
+import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { Layout, Menu, MenuProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import {
@@ -21,7 +17,6 @@ import AuthorizationPage from "../pages/auth/AuthorizationPage";
 import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
 import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
-import { logoutUser } from "../api/auth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -78,18 +73,6 @@ const AppLayout: React.FC = () => {
           onClick={handleMenuClick}
           items={sections}
         />
-        <Popconfirm
-          title="Выйти из ситсемы"
-          description="Вы учерены, что хотите выйти?"
-          onConfirm={logoutUser}
-          okText="Да"
-          cancelText="Нет"
-          placement="rightBottom"
-        >
-          <Button type="primary" danger icon={<LogoutOutlined />} block>
-            Выйти
-          </Button>
-        </Popconfirm>
       </Sider>
 
       <Layout>
@@ -97,7 +80,8 @@ const AppLayout: React.FC = () => {
           <Routes>
             <Route element={<PrivateRoute />}>
               <Route path="/profile" element={<UserProfile />} />
-              <Route path="/todos" element={<TodoListPage />} />
+              <Route path="/todos" element={<TodoListPage />} />{" "}
+              <Route path="*" element={<Navigate to="/todos" replace />} />
             </Route>
           </Routes>
         </Content>

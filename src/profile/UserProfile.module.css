@@ -6,6 +6,13 @@
   justify-content: center;
   width: auto;
   max-width: 410px;
-  padding: 20px;
+  padding-top: 80px;
   margin: 10px auto 0;
+}
+
+.spinStyle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 }

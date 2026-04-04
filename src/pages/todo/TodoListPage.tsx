@@ -71,27 +71,29 @@ const TodoListPage = () => {
   }, [selectedTaskFilter, editingTaskId, location.pathname]);
 
   return (
-    <div className={styles.mainContainer}>
-      <div className={styles.mainTaskName}>
-        <AddTask onUpdateTask={() => fetchTodos(selectedTaskFilter)} />
-      </div>
+    <div className={styles.todoPage}>
+      <div className={styles.mainContainer}>
+        <div className={styles.mainTaskName}>
+          <AddTask onUpdateTask={() => fetchTodos(selectedTaskFilter)} />
+        </div>
 
-      <div>
-        <TasksStatusTabs
-          setSelectedTaskFilter={setSelectedTaskFilter}
-          countTasks={countTasks}
-          selectedTaskFilter={selectedTaskFilter}
-        />
-      </div>
+        <div>
+          <TasksStatusTabs
+            setSelectedTaskFilter={setSelectedTaskFilter}
+            countTasks={countTasks}
+            selectedTaskFilter={selectedTaskFilter}
+          />
+        </div>
 
-      <div>
-        <TasksList
-          tasks={tasks}
-          fetchTodos={() => fetchTodos(selectedTaskFilter)}
-          setEditingTaskId={setEditingTaskId}
-        />
+        <div>
+          <TasksList
+            tasks={tasks}
+            fetchTodos={() => fetchTodos(selectedTaskFilter)}
+            setEditingTaskId={setEditingTaskId}
+          />
+        </div>
+        <Outlet />
       </div>
-      <Outlet />
     </div>
   );
 };

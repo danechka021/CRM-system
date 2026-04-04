@@ -1,6 +1,7 @@
-import styles from "../AuthButton/AuthBotton.module.css";
+import { JSX } from "react";
+import styles from "../AuthButton/AuthButton.module.css";
 
-const AuthButton = () => {
+const AuthButton = (): JSX.Element => {
   return (
     <div className={styles.authBottomForm}>
       <button className={styles.stylesLogin} type="submit">

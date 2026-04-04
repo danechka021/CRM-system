@@ -1,24 +1,20 @@
 import { Form, Button, message } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import ValidatedInput from "../ValidathionInput/ValidatedInput";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 import { Link } from "react-router-dom";
 import { registrationUser } from "../../../api/auth";
+import { UserRegistration } from "../../../types";
 
 const RegistrationForm = () => {
   const [isRegistreted, setIsRegistrated] = useState(false);
 
-  const onFinish = async (values) => {
+  const onFinish = async (
+    registrationData: UserRegistration,
+  ): Promise<void> => {
     try {
-      const filteredData = {
-        username: values.username,
-        login: values.login,
-        password: values.password,
-        email: values.email,
-        phoneNumber: values.phoneNumber || "",
-      };
-      await registrationUser(filteredData);
+      await registrationUser(registrationData);
       message.success("Регистарция прошла успешно!");
       setIsRegistrated(true);
     } catch (error) {
@@ -110,7 +106,7 @@ const RegistrationForm = () => {
               message: "Введите корректный номер",
             },
           ]}
-          onInput={(event) => {
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             event.target.value = event.target.value.replace(/[^0-9+]/g, "");
           }}
         />

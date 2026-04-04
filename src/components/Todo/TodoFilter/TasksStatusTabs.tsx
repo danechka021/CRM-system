@@ -18,7 +18,7 @@ const TasksStatusTabs = ({
     setSelectedTaskFilter(key as TaskStatus);
   };
   return (
-    <>
+    <div className={styles.taskForm}>
       <Tabs
         activeKey={selectedTaskFilter}
         onChange={handleFilterChange}
@@ -40,7 +40,7 @@ const TasksStatusTabs = ({
         ]}
         className={styles.formControl}
       ></Tabs>
-    </>
+    </div>
   );
 };
 

@@ -1,9 +1,11 @@
+import React from "react";
 import AuthButton from "../AuthButton/AuthButton";
 import LinkButton from "../LinkButton/LinkButton";
 import ValidatedInput from "../ValidathionInput/ValidatedInput";
 import styles from "../AuthForm/AuthForm.module.css";
 import authImg from "../../../assets/image_auth.jpg";
 import { authorizeUser } from "../../../api/auth";
+import { AuthData } from "../../../types";
 
 import { useNavigate } from "react-router-dom";
 import { Form, message } from "antd";
@@ -12,12 +14,9 @@ const AuthForm = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
-  const onFinish = async (values) => {
+  const onFinish = async (authData: AuthData): Promise<void> => {
     try {
-      const data = await authorizeUser({
-        login: values.login,
-        password: values.password,
-      });
+      const data = await authorizeUser(authData);
 
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
@@ -29,7 +28,7 @@ const AuthForm = () => {
     }
   };
 
-  const openRegistrationPage = (event) => {
+  const openRegistrationPage = (event: React.MouseEvent<HTMLElement>): void => {
     event.preventDefault();
     navigate("/register");
   };
@@ -65,22 +64,20 @@ const AuthForm = () => {
             </div>
 
             <div className={styles.inputValidateForm}>
-              <div>
-                <ValidatedInput
-                  name="login"
-                  label="Login"
-                  placeholder="Login"
-                  type="text"
-                  id="email-input"
-                />
-                <ValidatedInput
-                  name="password"
-                  label="Password"
-                  placeholder="*********"
-                  type="password"
-                  id="password-input"
-                />
-              </div>
+              <ValidatedInput
+                name="login"
+                label="Login"
+                placeholder="Login"
+                type="text"
+                id="email-input"
+              />
+              <ValidatedInput
+                name="password"
+                label="Password"
+                placeholder="*********"
+                type="password"
+                id="password-input"
+              />
 
               <div className={styles.formOptions}>
                 <div className={styles.checkboxGroup}>
