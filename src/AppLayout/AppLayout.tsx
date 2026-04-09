@@ -10,28 +10,29 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { isAuthorization } from "../api/auth";
 
 import UserProfile from "../profile/UserProfile";
 import TodoListPage from "../pages/todo/TodoListPage";
 import AuthorizationPage from "../pages/auth/AuthorizationPage";
 import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
-import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const AppLayout: React.FC = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(
-    !!localStorage.getItem("accessToken"),
-  );
+  const [isAuth, setIsAuth] = useState<boolean>(isAuthorization);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    setIsAuth(!!token);
-  }, [location.pathname]);
+    const syncAuth = () => setIsAuth(isAuthorization);
+    window.addEventListener("authChange", syncAuth);
+    syncAuth();
+
+    return () => window.removeEventListener("authChange", syncAuth);
+  }, []);
 
   const sections: MenuItem[] = [
     {
@@ -78,11 +79,9 @@ const AppLayout: React.FC = () => {
       <Layout>
         <Content>
           <Routes>
-            <Route element={<PrivateRoute />}>
-              <Route path="/profile" element={<UserProfile />} />
-              <Route path="/todos" element={<TodoListPage />} />{" "}
-              <Route path="*" element={<Navigate to="/todos" replace />} />
-            </Route>
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/todos" element={<TodoListPage />} />{" "}
+            <Route path="*" element={<Navigate to="/todos" replace />} />
           </Routes>
         </Content>
       </Layout>

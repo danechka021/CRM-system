@@ -7,11 +7,20 @@ import {
   Token,
   Profile,
 } from "../types";
+import { accessToken } from "../types";
 
 const baseURL = "https://easydev.club/api/v1";
 
+export let isAuthorization = false;
+export const setAuthState = (state: boolean) => {
+  isAuthorization = state;
+  window.dispatchEvent(new Event("authChange"));
+};
+
 export const logoutUser = (): void => {
-  localStorage.clear();
+  accessToken.clearToken();
+  localStorage.removeItem("refreshToken");
+  setAuthState(false);
   window.location.href = "/auth";
 };
 
@@ -21,7 +30,7 @@ const isAuthError = (error: any): boolean => {
 };
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = accessToken.getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -50,8 +59,9 @@ api.interceptors.response.use(
         refreshToken: refreshToken,
       } as RefreshToken);
 
-      localStorage.setItem("accessToken", data.accessToken);
+      accessToken.setToken(data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
+      setAuthState(true);
 
       originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
       return api(originalRequest);
@@ -71,10 +81,14 @@ export const registrationUser = async (
 
 export const authorizeUser = async (loginDetails: AuthData): Promise<Token> => {
   const { data } = await api.post("/auth/signin", loginDetails);
+  accessToken.setToken(data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
+  setAuthState(true);
   return data;
 };
 
 export const getUserProfile = async (): Promise<Profile> => {
   const { data } = await api.get(`/user/profile`);
+
   return data;
 };

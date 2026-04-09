@@ -16,15 +16,13 @@ const AuthForm = () => {
 
   const onFinish = async (authData: AuthData): Promise<void> => {
     try {
-      const data = await authorizeUser(authData);
-
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      await authorizeUser(authData);
       message.success("Вход выполнен успешно!");
-      navigate("/todos");
+      setTimeout(() => {
+        navigate("/todos");
+      }, 0);
     } catch (error) {
-      const textMessage = "“Неверные логин или пароль”";
-      message.error(textMessage);
+      message.error("Неверные логин или пароль");
     }
   };
 
