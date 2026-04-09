@@ -1,27 +1,37 @@
-import { Form, Button, message } from "antd";
+import { Form, Button, message, Modal } from "antd";
 import React, { useState } from "react";
-
 import ValidatedInput from "../ValidathionInput/ValidatedInput";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
-import { Link } from "react-router-dom";
 import { registrationUser } from "../../../api/auth";
 import { UserRegistration } from "../../../types";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
-  const [isRegistreted, setIsRegistrated] = useState(false);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (
     registrationData: UserRegistration,
   ): Promise<void> => {
+    setLoading(true);
     try {
       await registrationUser(registrationData);
-      message.success("Регистарция прошла успешно!");
-      setIsRegistrated(true);
+
+      Modal.success({
+        title: "Регистраци прошла успешно!",
+        content: "Теперь вы можете войти в систему используя логин и пароль.",
+        okText: "Перейти к авторизации",
+        centered: true,
+        onOk: () => {
+          navigate("/auth");
+        },
+      });
     } catch (error) {
-      let userMessage =
-        "Ошибка регистрации, введенные данные должны быть уникальными";
-      message.error(userMessage);
-      setIsRegistrated(false);
+      message.error(
+        "Ошибка регистрации, введенные данные должны быть уникальными",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,24 +121,29 @@ const RegistrationForm = () => {
           }}
         />
         <Form.Item>
-          {!isRegistreted ? (
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              className={styles.submitBtn}
-            >
-              Зарегистрироваться
-            </Button>
-          ) : (
-            <div>
-              <Link to="/auth">
-                Перейти на страницу авторизации для входа в систему
-              </Link>
-            </div>
-          )}
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            block
+            loading={loading}
+            className={styles.submitBtn}
+          >
+            Зарегистрироваться
+          </Button>
         </Form.Item>
+
+        <Button
+          type="primary"
+          danger
+          htmlType="button"
+          size="large"
+          block
+          className={styles.submitBtn}
+          onClick={() => navigate("/auth")}
+        >
+          Выйти
+        </Button>
       </Form>
     </div>
   );
