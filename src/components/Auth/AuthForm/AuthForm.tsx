@@ -89,11 +89,10 @@ const AuthForm = () => {
                 <LinkButton name="Forgot Password?" />
               </div>
 
-              <div>
+              <div className={styles.authLog}>
                 <AuthButton />
               </div>
             </div>
-
             <div className={styles.footerAuth}>
               <p className={styles.footerText}>Not Registered Yet?</p>
               <LinkButton
