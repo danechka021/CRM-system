@@ -1,5 +1,5 @@
 import axios from "axios";
-import { api } from "./api";
+import { api } from "./basicApi";
 import {
   UserRegistration,
   AuthData,
@@ -7,7 +7,7 @@ import {
   Token,
   Profile,
 } from "../types";
-import { accessToken } from "../types";
+import { accessToken } from "../authService";
 
 const baseURL = "https://easydev.club/api/v1";
 

@@ -12,7 +12,7 @@ import {
 import { useState, useEffect } from "react";
 import { isAuthorization } from "../api/auth";
 
-import UserProfile from "../profile/UserProfile";
+import UserProfile from "../pages/profile/UserProfilePage";
 import TodoListPage from "../pages/todo/TodoListPage";
 import AuthorizationPage from "../pages/auth/AuthorizationPage";
 import RegistrationPage from "../pages/registration/RegistrationPage";

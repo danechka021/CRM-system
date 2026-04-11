@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const onFinish = async (
     registrationData: UserRegistration,

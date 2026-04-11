@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Card, Descriptions, Spin, message, Button, Popconfirm } from "antd";
 
-import { getUserProfile } from "../api/auth";
-import { Profile } from "../types";
-import styles from "../profile/UserProfile.module.css";
+import { getUserProfile } from "../../api/auth";
+import { Profile } from "../../types";
+import styles from "../profile/UserProfilePage.module.css";
 import {
   MailOutlined,
   PhoneOutlined,
   UserOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { logoutUser } from "../api/auth";
+import { logoutUser } from "../../api/auth";
 
 const UserProfile = () => {
   const [user, setUser] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -24,12 +24,12 @@ const UserProfile = () => {
       } catch (error) {
         message.error("Не удалось загрузить данные пользователя");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     loadProfile();
   }, []);
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={styles.spinStyle}>
         <Spin size="large"> </Spin>
