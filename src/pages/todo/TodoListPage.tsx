@@ -85,7 +85,7 @@ const TodoListPage = () => {
           />
         </div>
 
-        <div>
+        <div className={styles.bottomIndent}>
           <TasksList
             tasks={tasks}
             fetchTodos={() => fetchTodos(selectedTaskFilter)}

@@ -43,7 +43,7 @@ const AppLayout: React.FC = () => {
     {
       key: "/todos",
       icon: <UnorderedListOutlined />,
-      label: "ToDo List",
+      label: "Список дел",
     },
   ];
 
