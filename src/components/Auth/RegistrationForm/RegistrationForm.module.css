@@ -19,12 +19,13 @@
   background-color: #1a2b48;
   border: 1px solid #f0f4f8;
   backdrop-filter: blur(10px);
-  border-radius: 10px;
+  border-radius: 16px;
   padding-top: 30px;
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  margin: 30px 0 30px 0;
 }
 
 .submitBtn {
-  margin-top: 24px;
+  margin-top: 20px;
 }
