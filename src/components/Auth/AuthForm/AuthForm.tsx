@@ -1,14 +1,16 @@
 import React from "react";
 import AuthButton from "../AuthButton/AuthButton";
 import LinkButton from "../LinkButton/LinkButton";
-import ValidatedInput from "../ValidathionInput/ValidatedInput";
+import ValidatedInput from "../ValidationInput/ValidatedInput";
 import styles from "../AuthForm/AuthForm.module.css";
 import authImg from "../../../assets/image_auth.jpg";
 import { authorizeUser } from "../../../api/auth";
 import { AuthData } from "../../../types";
-
+import { accessToken } from "../../../authService";
 import { useNavigate } from "react-router-dom";
-import { Form, message } from "antd";
+import { ConfigProvider, Form, message } from "antd";
+import { setAuthState } from "../../../api/auth";
+import Checkbox from "antd/es/checkbox/Checkbox";
 
 const AuthForm = () => {
   const navigate = useNavigate();
@@ -16,7 +18,11 @@ const AuthForm = () => {
 
   const onFinish = async (authData: AuthData): Promise<void> => {
     try {
-      await authorizeUser(authData);
+      const data = await authorizeUser(authData);
+      accessToken.value = data.accessToken;
+      localStorage.setItem("refreshToken", data.refreshToken);
+      setAuthState(true);
+
       message.success("Вход выполнен успешно!");
       setTimeout(() => {
         navigate("/todos");
@@ -26,7 +32,9 @@ const AuthForm = () => {
     }
   };
 
-  const openRegistrationPage = (event: React.MouseEvent<HTMLElement>): void => {
+  const handleRegistrationPageOpen = (
+    event: React.MouseEvent<HTMLElement>,
+  ): void => {
     event.preventDefault();
     navigate("/register");
   };
@@ -78,14 +86,21 @@ const AuthForm = () => {
               />
 
               <div className={styles.formOptions}>
-                <div className={styles.checkboxGroup}>
-                  <label htmlFor="Remember-me">Remember me</label>
-                  <input
-                    type="checkbox"
-                    id="Remember-me"
-                    className={styles.checkbox}
-                  />
-                </div>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: "#a435f0",
+                    },
+
+                    components: {
+                      Checkbox: {
+                        colorText: "purple",
+                      },
+                    },
+                  }}
+                >
+                  <Checkbox>Remember me</Checkbox>
+                </ConfigProvider>
                 <LinkButton name="Forgot Password?" />
               </div>
 
@@ -97,7 +112,7 @@ const AuthForm = () => {
               <p className={styles.footerText}>Not Registered Yet?</p>
               <LinkButton
                 name="Create an Account"
-                onClick={openRegistrationPage}
+                onClick={handleRegistrationPageOpen}
               />
             </div>
           </Form>

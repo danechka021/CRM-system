@@ -10,7 +10,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { isAuthorization } from "../api/auth";
+import { isAuthorized } from "../api/auth";
 
 import UserProfile from "../pages/profile/UserProfilePage";
 import TodoListPage from "../pages/todo/TodoListPage";
@@ -21,17 +21,17 @@ import styles from "../AppLayout/AppLayout.module.css";
 type MenuItem = Required<MenuProps>["items"][number];
 
 const AppLayout: React.FC = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(isAuthorization);
+  const [isAuthorization, setIsAuthorization] = useState<boolean>(isAuthorized);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const syncAuth = () => setIsAuth(isAuthorization);
-    window.addEventListener("authChange", syncAuth);
-    syncAuth();
+    const syncAuthorization = () => setIsAuthorization(isAuthorized);
+    window.addEventListener("authChange", syncAuthorization);
+    syncAuthorization();
 
-    return () => window.removeEventListener("authChange", syncAuth);
+    return () => window.removeEventListener("authChange", syncAuthorization);
   }, []);
 
   const sections: MenuItem[] = [
@@ -47,11 +47,11 @@ const AppLayout: React.FC = () => {
     },
   ];
 
-  const handleMenuClick: MenuProps["onClick"] = (e) => {
+  const handleNavigate: MenuProps["onClick"] = (e) => {
     navigate(e.key);
   };
 
-  if (!isAuth) {
+  if (!isAuthorization) {
     return (
       <Layout className={styles.layoutContainer}>
         <Content>
@@ -71,7 +71,7 @@ const AppLayout: React.FC = () => {
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
-          onClick={handleMenuClick}
+          onClick={handleNavigate}
           items={sections}
         />
       </Sider>

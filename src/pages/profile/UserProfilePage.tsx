@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Card, Descriptions, Spin, message, Button, Popconfirm } from "antd";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  Descriptions,
+  Spin,
+  Button,
+  Popconfirm,
+  notification,
+} from "antd";
 
 import { getUserProfile } from "../../api/auth";
 import { Profile } from "../../types";
@@ -16,13 +23,37 @@ const UserProfile = () => {
   const [user, setUser] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const handleLogout = () => {
+    logoutUser();
+  };
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const data = await getUserProfile();
         setUser(data);
       } catch (error) {
-        message.error("Не удалось загрузить данные пользователя");
+        const key = `Open ${Date.now()}`;
+
+        notification.error({
+          message: "Ошибка при загрузке данных",
+          description: "Не удалсь загрузить данные пользователя",
+          placement: "topRight",
+          key,
+          duration: 0,
+          btn: (
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                notification.destroy(key);
+                loadProfile();
+              }}
+            >
+              Попробовать снова
+            </Button>
+          ),
+        });
       } finally {
         setIsLoading(false);
       }
@@ -71,9 +102,9 @@ const UserProfile = () => {
         </Descriptions>
       </Card>
       <Popconfirm
-        title="Выйти из ситсемы"
-        description="Вы учерены, что хотите выйти?"
-        onConfirm={logoutUser}
+        title="Выйти из системы"
+        description="Вы уверены, что хотите выйти?"
+        onConfirm={handleLogout}
         okText="Да"
         cancelText="Нет"
         placement="rightBottom"

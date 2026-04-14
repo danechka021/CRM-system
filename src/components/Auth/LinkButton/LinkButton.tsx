@@ -1,5 +1,5 @@
 import React, { JSX } from "react";
-import styles from "../LinkButton/LinkButton.module.css";
+import { Button, ConfigProvider } from "antd";
 
 interface LinkButtonProps {
   name: string;
@@ -9,9 +9,21 @@ interface LinkButtonProps {
 const LinkButton = ({ name, onClick }: LinkButtonProps): JSX.Element => {
   return (
     <div>
-      <button onClick={onClick} className={styles.buttonStyles} type="button">
-        {name}
-      </button>
+      <ConfigProvider
+        theme={{
+          components: {
+            Button: {
+              colorLink: "purple",
+              colorLinkHover: "#a435f0",
+              colorLinkActive: "#520994",
+            },
+          },
+        }}
+      >
+        <Button onClick={onClick} htmlType="submit" type="link">
+          {name}
+        </Button>
+      </ConfigProvider>
     </div>
   );
 };

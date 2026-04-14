@@ -6,11 +6,5 @@
 }
 
 .stylesLogin {
-  color: white;
-  background-color: purple;
   width: 100%;
-  cursor: pointer;
-  height: 40px;
-  font-size: 16px;
-  border-radius: 6px;
 }

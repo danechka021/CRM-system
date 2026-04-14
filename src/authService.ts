@@ -1,16 +1,16 @@
 class AccessTokenStorage {
-  private accessToken: string | null = null;
+  private _value: string | null = null;
 
-  setToken(token: string) {
-    this.accessToken = token;
+  set value(token: string | null) {
+    this._value = token;
   }
 
-  getToken() {
-    return this.accessToken;
+  get value(): string | null {
+    return this._value;
   }
 
-  clearToken() {
-    this.accessToken = null;
+  clear() {
+    this._value = null;
   }
 }
 

@@ -26,7 +26,7 @@ export interface TodoRequest {
   isDone?: boolean;
 }
 
-export enum TaskStatus {
+export enum TodoStatus {
   ALL = "all",
   IN_WORK = "inWork",
   COMPLETED = "completed",
@@ -45,7 +45,7 @@ export interface AuthData {
   password: string;
 }
 
-export interface RefreshToken {
+export interface RefreshServise {
   refreshToken: string;
 }
 

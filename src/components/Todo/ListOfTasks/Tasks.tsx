@@ -2,7 +2,6 @@ import styles from "../ListOfTasks/Tasks.module.css";
 import TodoItem from "../todoItem/TodoItem";
 import { Todo } from "../../../types";
 import { JSX } from "react";
-import { Button } from "antd";
 
 interface TasksList {
   tasks: Todo[];

@@ -1,11 +1,11 @@
 import { Dispatch } from "react";
-import { TodoInfo, TaskStatus } from "../../../types";
+import { TodoInfo, TodoStatus } from "../../../types";
 import { Tabs } from "antd";
 import styles from "./TasksStatusTabs.module.css";
 
 interface TasksStatusTabsProps {
-  setSelectedTaskFilter: Dispatch<React.SetStateAction<TaskStatus>>;
-  selectedTaskFilter: TaskStatus;
+  setSelectedTaskFilter: Dispatch<React.SetStateAction<TodoStatus>>;
+  selectedTaskFilter: TodoStatus;
   countTasks: TodoInfo;
 }
 
@@ -15,7 +15,7 @@ const TasksStatusTabs = ({
   selectedTaskFilter,
 }: TasksStatusTabsProps) => {
   const handleFilterChange = (key: string) => {
-    setSelectedTaskFilter(key as TaskStatus);
+    setSelectedTaskFilter(key as TodoStatus);
   };
   return (
     <div className={styles.taskForm}>
@@ -26,15 +26,15 @@ const TasksStatusTabs = ({
         centered
         items={[
           {
-            key: TaskStatus.ALL,
+            key: TodoStatus.ALL,
             label: `Все (${countTasks.all})`,
           },
           {
-            key: TaskStatus.IN_WORK,
+            key: TodoStatus.IN_WORK,
             label: `В работе (${countTasks.inWork})`,
           },
           {
-            key: TaskStatus.COMPLETED,
+            key: TodoStatus.COMPLETED,
             label: `Сделано (${countTasks.completed})`,
           },
         ]}

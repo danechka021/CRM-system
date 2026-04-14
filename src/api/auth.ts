@@ -3,22 +3,20 @@ import { api } from "./basicApi";
 import {
   UserRegistration,
   AuthData,
-  RefreshToken,
+  RefreshServise,
   Token,
   Profile,
 } from "../types";
 import { accessToken } from "../authService";
 
-const baseURL = "https://easydev.club/api/v1";
-
-export let isAuthorization = false;
+export let isAuthorized = false;
 export const setAuthState = (state: boolean) => {
-  isAuthorization = state;
+  isAuthorized = state;
   window.dispatchEvent(new Event("authChange"));
 };
 
 export const logoutUser = (): void => {
-  accessToken.clearToken();
+  accessToken.clear();
   localStorage.removeItem("refreshToken");
   setAuthState(false);
   window.location.href = "/auth";
@@ -30,7 +28,7 @@ const isAuthError = (error: any): boolean => {
 };
 
 api.interceptors.request.use((config) => {
-  const token = accessToken.getToken();
+  const token = accessToken.value;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -55,11 +53,11 @@ api.interceptors.response.use(
 
     try {
       const refreshToken = localStorage.getItem("refreshToken");
-      const { data } = await axios.post(`${baseURL}/auth/refresh`, {
+      const { data } = await api.post(`/auth/refresh`, {
         refreshToken: refreshToken,
-      } as RefreshToken);
+      } as RefreshServise);
 
-      accessToken.setToken(data.accessToken);
+      accessToken.value = data.accessToken;
       localStorage.setItem("refreshToken", data.refreshToken);
       setAuthState(true);
 
@@ -81,9 +79,6 @@ export const registrationUser = async (
 
 export const authorizeUser = async (loginDetails: AuthData): Promise<Token> => {
   const { data } = await api.post("/auth/signin", loginDetails);
-  accessToken.setToken(data.accessToken);
-  localStorage.setItem("refreshToken", data.refreshToken);
-  setAuthState(true);
   return data;
 };
 

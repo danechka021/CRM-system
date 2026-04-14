@@ -46,7 +46,7 @@ const TodoItem = ({
   const changeTaskStatus = async (task: Todo): Promise<void> => {
     try {
       await updateTasks(task.id, { isDone: !task.isDone });
-      await fetchTodos();
+      fetchTodos();
     } catch (error: unknown) {
       if (error instanceof Error) {
         notification.error({
@@ -79,7 +79,7 @@ const TodoItem = ({
 
     try {
       await updateTasks(task.id, { title: values.title.trim() });
-      await fetchTodos();
+      fetchTodos();
       handleCancelEditingTask();
       notification.success({ message: "Задача обновлена" });
     } catch (error: unknown) {
@@ -97,7 +97,7 @@ const TodoItem = ({
   const handleDeleteTask = async (id: number): Promise<void> => {
     try {
       await deleteTask(id);
-      await fetchTodos();
+      fetchTodos();
     } catch (error: unknown) {
       notification.error({
         message: "Ошибка удаления",
