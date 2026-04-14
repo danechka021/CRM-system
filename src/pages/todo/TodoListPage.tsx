@@ -10,7 +10,7 @@ import TasksStatusTabs from "../../components/Todo/TodoFilter/TasksStatusTabs.js
 import TasksList from "../../components/Todo/ListOfTasks/Tasks.js";
 
 import styles from "../todo/TodoListPage.module.css";
-import { TaskStatus } from "../../types.js";
+import { TodoStatus } from "../../types.js";
 import { Outlet } from "react-router-dom";
 
 const TodoListPage = () => {
@@ -22,8 +22,8 @@ const TodoListPage = () => {
     inWork: 0,
   });
 
-  const [selectedTaskFilter, setSelectedTaskFilter] = useState<TaskStatus>(
-    TaskStatus.ALL,
+  const [selectedTaskFilter, setSelectedTaskFilter] = useState<TodoStatus>(
+    TodoStatus.ALL,
   );
 
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -32,7 +32,7 @@ const TodoListPage = () => {
 
   //Отображение по статусам
 
-  const fetchTodos = async (selectedTaskFilter: TaskStatus): Promise<void> => {
+  const fetchTodos = async (selectedTaskFilter: TodoStatus): Promise<void> => {
     try {
       const results: MetaResponse<Todo, TodoInfo> =
         await getTasks(selectedTaskFilter);
