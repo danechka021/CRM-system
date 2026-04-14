@@ -1,4 +1,3 @@
-import axios from "axios";
 import { api } from "./basicApi";
 import {
   UserRegistration,
@@ -8,17 +7,13 @@ import {
   Profile,
 } from "../types";
 import { accessToken } from "../authService";
-
-export let isAuthorized = false;
-export const setAuthState = (state: boolean) => {
-  isAuthorized = state;
-  window.dispatchEvent(new Event("authChange"));
-};
+import { store } from "../store/store";
+import { setSuccessfulLogin, logout } from "../store/slices/authSlice";
 
 export const logoutUser = (): void => {
   accessToken.clear();
   localStorage.removeItem("refreshToken");
-  setAuthState(false);
+  store.dispatch(logout());
   window.location.href = "/auth";
 };
 
@@ -59,7 +54,7 @@ api.interceptors.response.use(
 
       accessToken.value = data.accessToken;
       localStorage.setItem("refreshToken", data.refreshToken);
-      setAuthState(true);
+      store.dispatch(setSuccessfulLogin(data.accessToken));
 
       originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
       return api(originalRequest);

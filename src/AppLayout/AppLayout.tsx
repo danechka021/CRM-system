@@ -9,30 +9,24 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { isAuthorized } from "../api/auth";
 
 import UserProfile from "../pages/profile/UserProfilePage";
 import TodoListPage from "../pages/todo/TodoListPage";
 import AuthorizationPage from "../pages/auth/AuthorizationPage";
 import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
+import { useSelector, UseSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const AppLayout: React.FC = () => {
-  const [isAuthorization, setIsAuthorization] = useState<boolean>(isAuthorized);
+  const isAuthentificated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated,
+  );
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    const syncAuthorization = () => setIsAuthorization(isAuthorized);
-    window.addEventListener("authChange", syncAuthorization);
-    syncAuthorization();
-
-    return () => window.removeEventListener("authChange", syncAuthorization);
-  }, []);
 
   const sections: MenuItem[] = [
     {
@@ -51,7 +45,7 @@ const AppLayout: React.FC = () => {
     navigate(e.key);
   };
 
-  if (!isAuthorization) {
+  if (!isAuthentificated) {
     return (
       <Layout className={styles.layoutContainer}>
         <Content>

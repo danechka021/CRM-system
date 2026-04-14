@@ -9,11 +9,13 @@ import { AuthData } from "../../../types";
 import { accessToken } from "../../../authService";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Form, message } from "antd";
-import { setAuthState } from "../../../api/auth";
 import Checkbox from "antd/es/checkbox/Checkbox";
+import { useDispatch, UseDispatch } from "react-redux";
+import { setSuccessfulLogin } from "../../../store/slices/authSlice";
 
 const AuthForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
 
   const onFinish = async (authData: AuthData): Promise<void> => {
@@ -21,12 +23,10 @@ const AuthForm = () => {
       const data = await authorizeUser(authData);
       accessToken.value = data.accessToken;
       localStorage.setItem("refreshToken", data.refreshToken);
-      setAuthState(true);
 
+      dispatch(setSuccessfulLogin(data.accessToken));
       message.success("Вход выполнен успешно!");
-      setTimeout(() => {
-        navigate("/todos");
-      }, 0);
+      navigate("/todos");
     } catch (error) {
       message.error("Неверные логин или пароль");
     }
