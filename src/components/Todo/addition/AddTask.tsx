@@ -1,38 +1,34 @@
-import { JSX, useEffect, useRef, useState } from "react";
-import styles from "./AddTask.module.css";
-import { addTask } from "../../../api/tasks";
-import { Button, Input, InputRef, Form, notification } from "antd";
+import React, { JSX, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store/store";
+import { addNewTask } from "../../../store/slices/todoSlice";
 
-interface AddTaskProps {
-  onUpdateTask: () => void;
-}
+import styles from "./AddTask.module.css";
+import { Button, Input, InputRef, Form, notification } from "antd";
 
 interface TaskFormValues {
   title: string;
 }
 
-const AddTask: React.FC<AddTaskProps> = ({
-  onUpdateTask,
-}: AddTaskProps): JSX.Element => {
+const AddTask: React.FC = () => {
   const [form] = Form.useForm<TaskFormValues>();
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<InputRef>(null);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   const handleAddTask = async (values: TaskFormValues): Promise<void> => {
+    const trimmedTitle = values.title.trim();
     setLoading(true);
 
     try {
-      await addTask({
-        title: values.title.trim(),
-        isDone: false,
-      });
+      await dispatch(addNewTask(trimmedTitle)).unwrap();
 
       form.resetFields();
-      onUpdateTask();
       inputRef.current?.focus();
     } catch (error: unknown) {
       notification.error({

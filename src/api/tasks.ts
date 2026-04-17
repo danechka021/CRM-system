@@ -5,7 +5,7 @@ import {
   MetaResponse,
   TodoRequest,
   TodoInfo,
-  TaskStatus,
+  TodoStatus,
 } from "../types";
 
 // POST (Отправка задачи на сервер)
@@ -18,7 +18,7 @@ export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
 // GET запрос
 
 export const getTasks = async (
-  status: TaskStatus,
+  status: TodoStatus,
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
   const { data } = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
     params: { filter: status },

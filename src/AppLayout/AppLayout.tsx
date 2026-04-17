@@ -1,5 +1,5 @@
 import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout, Menu, MenuProps, Spin } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import {
@@ -15,18 +15,25 @@ import TodoListPage from "../pages/todo/TodoListPage";
 import AuthorizationPage from "../pages/auth/AuthorizationPage";
 import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
-import { useSelector, UseSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../store/store";
+import { useEffect } from "react";
+import { checkAuth } from "../store/slices/authSlice";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const AppLayout: React.FC = () => {
-  const isAuthentificated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
-  );
-
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { isAuthenticated, isInitialized } = useSelector(
+    (state: RootState) => state.auth,
+  );
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   const sections: MenuItem[] = [
     {
@@ -42,40 +49,44 @@ const AppLayout: React.FC = () => {
   ];
 
   const handleNavigate: MenuProps["onClick"] = (e) => {
-    navigate(e.key);
+    setTimeout(() => {
+      navigate(e.key);
+    }, 0);
   };
+  if (!isInitialized) {
+    return <Spin />;
+  }
 
-  if (!isAuthentificated) {
-    return (
+  return (
+    <Layout className={styles.layoutContainer}>
+      {isAuthenticated && (
+        <Sider collapsible>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            onClick={handleNavigate}
+            items={sections}
+          />
+        </Sider>
+      )}
+
       <Layout className={styles.layoutContainer}>
         <Content>
           <Routes>
-            <Route path="/auth" element={<AuthorizationPage />} />
-            <Route path="/register" element={<RegistrationPage />} />
-            <Route path="*" element={<Navigate to="/auth" replace />} />
-          </Routes>
-        </Content>
-      </Layout>
-    );
-  }
-  return (
-    <Layout className={styles.layoutContainer}>
-      <Sider collapsible>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          onClick={handleNavigate}
-          items={sections}
-        />
-      </Sider>
-
-      <Layout>
-        <Content>
-          <Routes>
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/todos" element={<TodoListPage />} />{" "}
-            <Route path="*" element={<Navigate to="/todos" replace />} />
+            {!isAuthenticated ? (
+              <>
+                <Route path="/auth" element={<AuthorizationPage />} />
+                <Route path="/register" element={<RegistrationPage />} />
+                <Route path="*" element={<Navigate to="/auth" replace />} />
+              </>
+            ) : (
+              <>
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/todos" element={<TodoListPage />} />{" "}
+                <Route path="*" element={<Navigate to="/todos" replace />} />
+              </>
+            )}
           </Routes>
         </Content>
       </Layout>

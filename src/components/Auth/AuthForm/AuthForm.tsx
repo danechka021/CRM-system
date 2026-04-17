@@ -10,7 +10,7 @@ import { accessToken } from "../../../authService";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Form, message } from "antd";
 import Checkbox from "antd/es/checkbox/Checkbox";
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setSuccessfulLogin } from "../../../store/slices/authSlice";
 
 const AuthForm = () => {

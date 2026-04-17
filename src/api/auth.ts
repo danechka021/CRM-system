@@ -1,3 +1,4 @@
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { api } from "./basicApi";
 import {
   UserRegistration,
@@ -9,6 +10,20 @@ import {
 import { accessToken } from "../authService";
 import { store } from "../store/store";
 import { setSuccessfulLogin, logout } from "../store/slices/authSlice";
+
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
 
 export const logoutUser = (): void => {
   accessToken.clear();
@@ -33,18 +48,28 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
 
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
     if (error.response?.status !== 401 || isAuthError(error)) {
       return Promise.reject(error);
     }
 
-    if (originalRequest._retry) {
-      logoutUser();
-      return Promise.reject(error);
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      })
+        .then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        })
+        .catch((error) => Promise.reject(error));
     }
+
     originalRequest._retry = true;
+    isRefreshing = true;
 
     try {
       const refreshToken = localStorage.getItem("refreshToken");
@@ -56,11 +81,16 @@ api.interceptors.response.use(
       localStorage.setItem("refreshToken", data.refreshToken);
       store.dispatch(setSuccessfulLogin(data.accessToken));
 
+      processQueue(null, data.accessToken);
+
       originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
       return api(originalRequest);
-    } catch (errorRfresh) {
+    } catch (errorRefresh) {
+      processQueue(errorRefresh, null);
       logoutUser();
-      return Promise.reject(errorRfresh);
+      return Promise.reject(errorRefresh);
+    } finally {
+      isRefreshing = false;
     }
   },
 );
@@ -79,6 +109,5 @@ export const authorizeUser = async (loginDetails: AuthData): Promise<Token> => {
 
 export const getUserProfile = async (): Promise<Profile> => {
   const { data } = await api.get(`/user/profile`);
-
   return data;
 };

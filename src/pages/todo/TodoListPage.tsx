@@ -1,26 +1,24 @@
-import { useEffect, useState } from "react";
-import { getTasks } from "../../api/tasks.js";
-import { Todo, MetaResponse, TodoInfo } from "../../types.js";
-import { useLocation } from "react-router-dom";
-
-import { notification } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, Outlet } from "react-router-dom";
+import { RootState, AppDispatch } from "../../store/store.js";
+import { fetchAllTask } from "../../store/slices/todoSlice.js";
 
 import AddTask from "../../components/Todo/addition/AddTask.js";
 import TasksStatusTabs from "../../components/Todo/TodoFilter/TasksStatusTabs.js";
 import TasksList from "../../components/Todo/ListOfTasks/Tasks.js";
 
-import styles from "../todo/TodoListPage.module.css";
 import { TodoStatus } from "../../types.js";
-import { Outlet } from "react-router-dom";
+
+import { notification } from "antd";
+
+import styles from "../todo/TodoListPage.module.css";
 
 const TodoListPage = () => {
-  const [tasks, setTasks] = useState<Todo[]>([]);
-
-  const [countTasks, setCountTasks] = useState<TodoInfo>({
-    all: 0,
-    completed: 0,
-    inWork: 0,
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { todos, countTasks } = useSelector((state: RootState) => state.todos);
 
   const [selectedTaskFilter, setSelectedTaskFilter] = useState<TodoStatus>(
     TodoStatus.ALL,
@@ -28,23 +26,11 @@ const TodoListPage = () => {
 
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
 
-  const location = useLocation();
-
   //Отображение по статусам
 
-  const fetchTodos = async (selectedTaskFilter: TodoStatus): Promise<void> => {
+  const fetchTodos = useCallback(async () => {
     try {
-      const results: MetaResponse<Todo, TodoInfo> =
-        await getTasks(selectedTaskFilter);
-      setTasks(results.data);
-
-      if (results.info) {
-        setCountTasks({
-          all: results.info.all,
-          inWork: results.info.inWork,
-          completed: results.info.completed,
-        });
-      }
+      await dispatch(fetchAllTask(selectedTaskFilter)).unwrap();
     } catch (error: unknown) {
       if (error instanceof Error) {
         const descriptions =
@@ -57,24 +43,26 @@ const TodoListPage = () => {
         });
       }
     }
-  };
+  }, [dispatch, selectedTaskFilter]);
 
   useEffect(() => {
-    if (editingTaskId !== null && location.pathname === "/todos") return;
+    if (!isAuthenticated) return;
+    const isEditing = editingTaskId !== null && location.pathname === "/todos";
+    if (isEditing) return;
 
-    const fetchAndUpdate = () => fetchTodos(selectedTaskFilter);
-    fetchAndUpdate();
-    const interval = setInterval(fetchAndUpdate, 5000);
+    fetchTodos();
+
+    const interval = setInterval(fetchTodos, 5000);
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [selectedTaskFilter, editingTaskId, location.pathname]);
+  }, [fetchTodos, editingTaskId, location.pathname, isAuthenticated]);
 
   return (
     <div className={styles.todoPage}>
       <div className={styles.mainContainer}>
         <div className={styles.mainTaskName}>
-          <AddTask onUpdateTask={() => fetchTodos(selectedTaskFilter)} />
+          <AddTask />
         </div>
 
         <div>
@@ -87,8 +75,8 @@ const TodoListPage = () => {
 
         <div className={styles.bottomIndent}>
           <TasksList
-            tasks={tasks}
-            fetchTodos={() => fetchTodos(selectedTaskFilter)}
+            tasks={todos}
+            fetchTodos={fetchTodos}
             setEditingTaskId={setEditingTaskId}
           />
         </div>
