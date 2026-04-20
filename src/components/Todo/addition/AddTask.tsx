@@ -1,4 +1,4 @@
-import React, { JSX, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/store";
 import { addNewTask } from "../../../store/slices/todoSlice";
@@ -10,35 +10,39 @@ interface TaskFormValues {
   title: string;
 }
 
-const AddTask: React.FC = () => {
+const AddTask: React.FC = memo(() => {
   const [form] = Form.useForm<TaskFormValues>();
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<InputRef>(null);
-
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const handleAddTask = async (values: TaskFormValues): Promise<void> => {
-    const trimmedTitle = values.title.trim();
-    setLoading(true);
+  const handleAddTask = useCallback(
+    async (values: TaskFormValues): Promise<void> => {
+      const trimmedTitle = values.title.trim();
+      if (!trimmedTitle) return;
+      setLoading(true);
 
-    try {
-      await dispatch(addNewTask(trimmedTitle)).unwrap();
+      try {
+        await dispatch(addNewTask(trimmedTitle)).unwrap();
 
-      form.resetFields();
-      inputRef.current?.focus();
-    } catch (error: unknown) {
-      notification.error({
-        message: "Ошибка",
-        description: error instanceof Error ? error.message : "Ошибка сервера",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+        form.resetFields();
+        inputRef.current?.focus();
+      } catch (error: unknown) {
+        notification.error({
+          message: "Ошибка",
+          description:
+            error instanceof Error ? error.message : "Ошибка сервера",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch, form],
+  );
 
   return (
     <Form form={form} onFinish={handleAddTask} className={styles.formControl}>
@@ -82,6 +86,6 @@ const AddTask: React.FC = () => {
       </Form.Item>
     </Form>
   );
-};
+});
 
 export default AddTask;

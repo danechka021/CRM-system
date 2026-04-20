@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, Outlet } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store.js";
@@ -14,7 +14,7 @@ import { notification } from "antd";
 
 import styles from "../todo/TodoListPage.module.css";
 
-const TodoListPage = () => {
+const TodoListPage = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -46,11 +46,13 @@ const TodoListPage = () => {
   }, [dispatch, selectedTaskFilter]);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-    const isEditing = editingTaskId !== null && location.pathname === "/todos";
-    if (isEditing) return;
+    if (isAuthenticated) {
+      fetchTodos();
+    }
+  }, [fetchTodos, isAuthenticated]);
 
-    fetchTodos();
+  useEffect(() => {
+    if (!isAuthenticated || editingTaskId !== null) return;
 
     const interval = setInterval(fetchTodos, 5000);
     return () => {
@@ -84,6 +86,6 @@ const TodoListPage = () => {
       </div>
     </div>
   );
-};
+});
 
 export default TodoListPage;
