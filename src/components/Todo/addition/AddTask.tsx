@@ -1,48 +1,48 @@
-import { JSX, useEffect, useRef, useState } from "react";
-import styles from "./AddTask.module.css";
-import { addTask } from "../../api/tasks";
-import { Button, Input, InputRef, Form, notification } from "antd";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store/store";
+import { addNewTask } from "../../../store/slices/todoSlice";
 
-interface AddTaskProps {
-  onUpdateTask: () => void;
-}
+import styles from "./AddTask.module.css";
+import { Button, Input, InputRef, Form, notification } from "antd";
 
 interface TaskFormValues {
   title: string;
 }
 
-const AddTask: React.FC<AddTaskProps> = ({
-  onUpdateTask,
-}: AddTaskProps): JSX.Element => {
+const AddTask: React.FC = memo(() => {
   const [form] = Form.useForm<TaskFormValues>();
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<InputRef>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const handleAddTask = async (values: TaskFormValues): Promise<void> => {
-    setLoading(true);
+  const handleAddTask = useCallback(
+    async (values: TaskFormValues): Promise<void> => {
+      const trimmedTitle = values.title.trim();
+      if (!trimmedTitle) return;
+      setLoading(true);
 
-    try {
-      await addTask({
-        title: values.title.trim(),
-        isDone: false,
-      });
+      try {
+        await dispatch(addNewTask(trimmedTitle)).unwrap();
 
-      form.resetFields();
-      onUpdateTask();
-      inputRef.current?.focus();
-    } catch (error: unknown) {
-      notification.error({
-        message: "Ошибка",
-        description: error instanceof Error ? error.message : "Ошибка сервера",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+        form.resetFields();
+        inputRef.current?.focus();
+      } catch (error: unknown) {
+        notification.error({
+          message: "Ошибка",
+          description:
+            error instanceof Error ? error.message : "Ошибка сервера",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch, form],
+  );
 
   return (
     <Form form={form} onFinish={handleAddTask} className={styles.formControl}>
@@ -86,6 +86,6 @@ const AddTask: React.FC<AddTaskProps> = ({
       </Form.Item>
     </Form>
   );
-};
+});
 
 export default AddTask;

@@ -4,6 +4,7 @@
   align-items: flex-start;
   justify-content: center;
   position: relative;
+  margin-top: 20px;
 }
 .formControl :global(.ant-form-item-explain-error) {
   margin-bottom: 0 !important;
@@ -20,11 +21,11 @@
 .inputForm {
   width: 300px;
   margin-left: 30px;
-  margin-bottom: 0;
   height: 40px;
   border-bottom: 1px solid #1677ff;
 }
 
 .heightControl {
   height: 40px;
+  margin-right: 30px;
 }

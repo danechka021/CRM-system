@@ -1,0 +1,11 @@
+.taskForm {
+  padding: 6px;
+
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.formControl {
+  background-color: white;
+  border-radius: 8px;
+}
