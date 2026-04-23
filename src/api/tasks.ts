@@ -1,32 +1,26 @@
-import axios from "axios";
+import { api } from "./basicApi";
 
 import {
   Todo,
   MetaResponse,
   TodoRequest,
   TodoInfo,
-  TaskStatus,
+  TodoStatus,
 } from "../types";
-
-const api = axios.create({
-  baseURL: "https://easydev.club/api/v1/todos",
-  timeout: 5000,
-  headers: { "Content-Type": "application/json" },
-});
 
 // POST (Отправка задачи на сервер)
 
 export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
-  const { data } = await api.post<Todo>("", todoRequest);
+  const { data } = await api.post<Todo>("/todos", todoRequest);
   return data;
 };
 
 // GET запрос
 
 export const getTasks = async (
-  status: TaskStatus,
+  status: TodoStatus,
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
-  const { data } = await api.get<MetaResponse<Todo, TodoInfo>>("", {
+  const { data } = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
     params: { filter: status },
   });
   return data;
@@ -38,12 +32,12 @@ export const updateTasks = async (
   taskId: number,
   updatedTodo: Partial<Todo>,
 ): Promise<Todo> => {
-  const { data } = await api.put<Todo>(`/${taskId}`, updatedTodo);
+  const { data } = await api.put<Todo>(`/todos/${taskId}`, updatedTodo);
   return data;
 };
 
 // DELETE запрос
 
 export const deleteTask = async (id: number): Promise<void> => {
-  await api.delete(`/${id}`);
+  await api.delete(`/todos/${id}`);
 };

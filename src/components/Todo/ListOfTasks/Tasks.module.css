@@ -1,8 +1,9 @@
 .displayTask {
   width: 400px;
   padding: 5px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  background-color: rgb(45, 50, 55);
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
 .ul {

@@ -1,0 +1,32 @@
+.pageLayout {
+  background-color: var(--registrationPageColor);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.registrationForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+
+  height: auto;
+  width: min(90%, 31rem);
+
+  padding: 2rem;
+  margin: 2rem auto;
+
+  background-color: var(--registrationPageColor);
+  border: 0.0625rem solid #f0f4f8;
+  backdrop-filter: blur(0.625rem);
+  border-radius: 1rem;
+  box-shadow: 0 1.25rem 3.1rem rgba(0, 0, 0, 0.5);
+}
+
+.submitBtn {
+  margin-top: 20px;
+}

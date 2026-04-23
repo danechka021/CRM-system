@@ -1,0 +1,10 @@
+.authBottomForm {
+  width: 425px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stylesLogin {
+  width: 100%;
+}
