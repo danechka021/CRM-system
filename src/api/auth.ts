@@ -29,7 +29,6 @@ export const logoutUser = (): void => {
   accessToken.clear();
   localStorage.removeItem("refreshToken");
   store.dispatch(logout());
-  window.location.href = "/auth";
 };
 
 const isAuthError = (error: any): boolean => {

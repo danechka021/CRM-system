@@ -82,7 +82,6 @@ const TodoListPage = memo(() => {
             setEditingTaskId={setEditingTaskId}
           />
         </div>
-        <Outlet />
       </div>
     </div>
   );

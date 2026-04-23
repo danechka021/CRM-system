@@ -48,9 +48,10 @@ export const checkAuth = () => async (dispatch: AppDispatch) => {
   try {
     await getTasks(TodoStatus.ALL);
     const currentToken: any = accessToken.value;
-    dispatch(setSuccessfulLogin(currentToken));
+    if (currentToken) {
+      dispatch(setSuccessfulLogin(currentToken));
+    }
   } catch (error) {
-    console.log(error);
     dispatch(logout());
   } finally {
     dispatch(setInitialized());
