@@ -49,12 +49,10 @@ const AppLayout: React.FC = () => {
   ];
 
   const handleNavigate: MenuProps["onClick"] = (e) => {
-    setTimeout(() => {
-      navigate(e.key);
-    }, 0);
+    navigate(e.key);
   };
   if (!isInitialized) {
-    return <Spin />;
+    return <Spin size="large" />;
   }
 
   return (

@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
-import { getTasks } from "../../api/tasks";
-import { TodoStatus } from "../../types";
 import { accessToken } from "../../authService";
+import { getUserProfile } from "../../api/auth";
 
 interface AuthState {
   accessToken: string | null;
@@ -46,8 +45,8 @@ export const checkAuth = () => async (dispatch: AppDispatch) => {
   }
 
   try {
-    await getTasks(TodoStatus.ALL);
-    const currentToken: any = accessToken.value;
+    await getUserProfile();
+    const currentToken = accessToken.value;
     if (currentToken) {
       dispatch(setSuccessfulLogin(currentToken));
     }
