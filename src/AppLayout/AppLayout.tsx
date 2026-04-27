@@ -1,4 +1,8 @@
-import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  UnorderedListOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu, MenuProps, Spin } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
@@ -19,6 +23,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useEffect } from "react";
 import { checkAuth } from "../store/slices/authSlice";
+import UserProfilePage from "../components/Admin/UserProfile/UserProfilePage";
+import UsersFormPage from "../pages/users/UsersFormPage";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -45,6 +51,11 @@ const AppLayout: React.FC = () => {
       key: "/todos",
       icon: <UnorderedListOutlined />,
       label: "Список дел",
+    },
+    {
+      key: "/users",
+      icon: <TeamOutlined />,
+      label: "Пользователи",
     },
   ];
 
@@ -82,6 +93,8 @@ const AppLayout: React.FC = () => {
               <>
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/todos" element={<TodoListPage />} />{" "}
+                <Route path="/users" element={<UsersFormPage />} />
+                <Route path="/users/:id" element={<UserProfilePage />} />
                 <Route path="*" element={<Navigate to="/todos" replace />} />
               </>
             )}

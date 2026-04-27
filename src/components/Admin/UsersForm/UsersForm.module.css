@@ -1,0 +1,55 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  width: 76rem;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  margin: 3rem auto;
+  padding: 0 3rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.title h1 {
+  margin: 0;
+  margin-top: 1rem;
+}
+
+.tableForm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 1.5rem;
+}
+
+.tableForm h2 {
+  margin: 0;
+}
+
+.antdElementsTable {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.gridTable {
+  display: grid;
+  grid-template-columns: 2fr 3fr 2fr 2fr 1.5fr 2fr;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.gridHeader {
+  background-color: #fafafa;
+  font-weight: bold;
+  padding: 1rem;
+  border-bottom: 0.2rem solid #eee;
+}
