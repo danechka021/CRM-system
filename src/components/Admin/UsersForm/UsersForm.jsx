@@ -1,11 +1,25 @@
 import { useEffect, useState, memo, useCallback, useMemo } from "react";
-import { Input, Space, Button, Dropdown, Divider, Table, Tag } from "antd";
+import {
+  Input,
+  Space,
+  Button,
+  Dropdown,
+  Divider,
+  Table,
+  Tag,
+  notification,
+} from "antd";
 import { FilterOutlined, DoubleRightOutlined } from "@ant-design/icons";
-import { getUsers, blockUser, unblockUser } from "../../../api/users";
+import {
+  getUsers,
+  blockUser,
+  unblockUser,
+  deleteUser,
+} from "../../../api/users";
 import { useNavigate } from "react-router-dom";
 import { ROLE_COLOR } from "../../../enums";
 import UserLockoutButton from "../Button/UserLockoutButton";
-import DeleteUserButton from "../Button/DeleteUserButton";
+import DeleteUserButton from "../Button/DeleteUSerButton";
 import styles from "./UsersForm.module.css";
 
 const { Search } = Input;
@@ -60,6 +74,20 @@ const UsersForm = memo(() => {
       console.log(error);
     }
   }, []);
+
+  const deleteUserId = useCallback(
+    async (user) => {
+      try {
+        await deleteUser(user.id);
+        loadUsers(currentPage, 20);
+      } catch (error) {
+        notification.error({
+          title: "Ошибка удаления",
+        });
+      }
+    },
+    [currentPage],
+  );
 
   const filterItems = [
     {
@@ -162,12 +190,12 @@ const UsersForm = memo(() => {
         title: "",
         key: "delete",
         width: 80,
-        render: (userId) => {
-          return <DeleteUserButton />;
+        render: (_, user) => {
+          return <DeleteUserButton onAction={deleteUserId} user={user} />;
         },
       },
     ],
-    [changeBlockingStatus],
+    [changeBlockingStatus, deleteUserId, navigate],
   );
 
   return (

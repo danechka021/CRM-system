@@ -27,3 +27,7 @@ export const editUserProfile = async (id) => {
   console.log(data);
   return data;
 };
+
+export const deleteUser = async (id) => {
+  await api.delete(`/admin/users/${id}`);
+};
