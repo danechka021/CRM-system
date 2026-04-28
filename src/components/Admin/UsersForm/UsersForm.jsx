@@ -4,7 +4,8 @@ import { FilterOutlined, DoubleRightOutlined } from "@ant-design/icons";
 import { getUsers, blockUser, unblockUser } from "../../../api/users";
 import { useNavigate } from "react-router-dom";
 import { ROLE_COLOR } from "../../../enums";
-import UserLockoutButton from "../UsersRightsButton/UserLockoutButton";
+import UserLockoutButton from "../Button/UserLockoutButton";
+import DeleteUserButton from "../Button/DeleteUserButton";
 import styles from "./UsersForm.module.css";
 
 const { Search } = Input;
@@ -147,7 +148,7 @@ const UsersForm = memo(() => {
       {
         title: "",
         key: "action",
-        width: 80,
+        width: 70,
         render: (_, user) => (
           <Button
             type="text"
@@ -156,6 +157,14 @@ const UsersForm = memo(() => {
             onClick={() => navigate(`/users/${user.id}`)}
           />
         ),
+      },
+      {
+        title: "",
+        key: "delete",
+        width: 80,
+        render: (userId) => {
+          return <DeleteUserButton />;
+        },
       },
     ],
     [changeBlockingStatus],
