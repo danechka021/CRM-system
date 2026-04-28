@@ -53,3 +53,9 @@
   padding: 1rem;
   border-bottom: 0.2rem solid #eee;
 }
+
+.userLockoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useEffect } from "react";
 import { checkAuth } from "../store/slices/authSlice";
-import UserProfilePage from "../components/Admin/UserProfile/UserProfilePage";
+import AdminUserControl from "../components/Admin/AdminUserControl/AdminUserControl";
 import UsersFormPage from "../pages/users/UsersFormPage";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -63,7 +63,16 @@ const AppLayout: React.FC = () => {
     navigate(e.key);
   };
   if (!isInitialized) {
-    return <Spin size="large" />;
+    return (
+      <Spin
+        size="large"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      />
+    );
   }
 
   return (
@@ -94,7 +103,7 @@ const AppLayout: React.FC = () => {
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/todos" element={<TodoListPage />} />{" "}
                 <Route path="/users" element={<UsersFormPage />} />
-                <Route path="/users/:id" element={<UserProfilePage />} />
+                <Route path="/users/:id" element={<AdminUserControl />} />
                 <Route path="*" element={<Navigate to="/todos" replace />} />
               </>
             )}

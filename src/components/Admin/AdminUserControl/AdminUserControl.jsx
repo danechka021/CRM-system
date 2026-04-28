@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, Button, Descriptions, Spin } from "antd";
-import { getUserProfile } from "../../../api/users";
+import { getUserProfile, editUserProfile } from "../../../api/users";
 
-import styles from "./UserProfilePage.module.css";
+import styles from "./AdminUserControl.module.css";
 
-const UserProfilePage = () => {
+const AdminUserControl = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -40,6 +40,8 @@ const UserProfilePage = () => {
     );
   }
 
+  const editProfile = () => {};
+
   return (
     <div className={styles.mainContainer}>
       <Card title={`Профиль пользователя: ${user.username}`}>
@@ -62,4 +64,4 @@ const UserProfilePage = () => {
   );
 };
 
-export default UserProfilePage;
+export default AdminUserControl;

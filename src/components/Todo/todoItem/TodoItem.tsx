@@ -48,7 +48,7 @@ const TodoItem = memo(
         } catch (error: unknown) {
           if (error instanceof Error) {
             notification.error({
-              message: "Ошибка при добавлении задачи",
+              title: "Ошибка при добавлении задачи",
               description:
                 error instanceof Error ? error.message : "Попробуйте позже",
             });
@@ -86,7 +86,7 @@ const TodoItem = memo(
           notification.success({ message: "Задача обновлена" });
         } catch (error: unknown) {
           notification.error({
-            message: "Ошибка",
+            title: "Ошибка",
             description:
               error instanceof Error ? error.message : "Ошибка сервера",
           });
@@ -106,7 +106,7 @@ const TodoItem = memo(
           fetchTodos();
         } catch (error: unknown) {
           notification.error({
-            message: "Ошибка удаления",
+            title: "Ошибка удаления",
             description:
               error instanceof Error ? error.message : "Попробуйте позже",
           });
