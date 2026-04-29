@@ -22,9 +22,8 @@ export const unblockUser = async (id) => {
   return data;
 };
 
-export const editUserProfile = async (id) => {
-  const { data } = await api.put(`/admin/users/${id}`);
-  console.log(data);
+export const editUserProfile = async (id, payload) => {
+  const { data } = await api.put(`/admin/users/${id}`, payload);
   return data;
 };
 
