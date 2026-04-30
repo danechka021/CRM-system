@@ -1,8 +1,14 @@
 import { api } from "./basicApi";
 
-export const getUsers = async (page = 0, limit = 20) => {
+export const getUsers = async (params = {}) => {
   const { data } = await api.get("/admin/users", {
-    params: { page: page - 1, limit },
+    params: {
+      page: params.page - 1,
+      limit: params.limit || 20,
+      sortyBy: params.sortyBy || "id",
+      sortyOrder: params.sortyOrder || "asc",
+      search: params.search || undefined,
+    },
   });
   return data;
 };

@@ -11,7 +11,7 @@ const DeleteUserButton = ({ user, onAction }) => {
         cancelText="Нет"
         okButtonProps={{ danger: true }}
         icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-        onConfirm={() => onAction(user)}
+        onConfirm={() => onAction(user.id)}
       >
         <Button>
           <DeleteTwoTone twoToneColor="red" />

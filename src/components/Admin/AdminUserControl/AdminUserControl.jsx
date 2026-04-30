@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -12,7 +12,7 @@ import {
 import { getUserProfile, editUserProfile } from "../../../api/users";
 import styles from "./AdminUserControl.module.css";
 
-const AdminUserControl = () => {
+const AdminUserControl = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -55,9 +55,18 @@ const AdminUserControl = () => {
     }));
   };
 
-  const handleEditData = async () => {
+  const handleEditData = useCallback(async () => {
     if (!isEdit) {
       setIsEdit(true);
+      return;
+    }
+
+    if (
+      formData.username === user.username &&
+      formData.email === user.email &&
+      formData.phoneNumber === user.phoneNumber
+    ) {
+      setIsEdit(false);
       return;
     }
 
@@ -71,6 +80,7 @@ const AdminUserControl = () => {
         title: "Данные успешно обновлены!",
       });
     } catch (error) {
+      console.log(error.response?.data);
       notification.error({
         title: "Ошибка редактирования!",
         description: "Этот Email или Логин уже занят!",
@@ -84,7 +94,7 @@ const AdminUserControl = () => {
     } finally {
       setSubmit(false);
     }
-  };
+  }, [id, isEdit, formData, user]);
 
   if (loading) {
     return (
@@ -167,6 +177,6 @@ const AdminUserControl = () => {
       </Button>
     </div>
   );
-};
+});
 
 export default AdminUserControl;

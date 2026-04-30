@@ -1,5 +1,15 @@
 import { useEffect, useState, memo, useCallback, useMemo } from "react";
-import { Input, Space, Button, Dropdown, Divider, Table, Tag } from "antd";
+import {
+  Input,
+  Space,
+  Button,
+  Dropdown,
+  Divider,
+  Table,
+  Tag,
+  notification,
+  Tooltip,
+} from "antd";
 import { FilterOutlined, DoubleRightOutlined } from "@ant-design/icons";
 import {
   getUsers,
@@ -7,7 +17,7 @@ import {
   unblockUser,
   deleteUser,
 } from "../../../api/users";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDeleteData } from "../../../hooks/DeleteData/DeleteData";
 import { ROLE_COLOR } from "../../../enums";
 import UserLockoutButton from "../Button/UserLockoutButton";
@@ -19,53 +29,63 @@ const { Search } = Input;
 const UsersForm = memo(() => {
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const loadUsers = async (page, limit) => {
+  const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
+  const pageSize = 20;
+
+  const loadUsers = async (page, limit, search = "") => {
     try {
-      const response = await getUsers(page, limit);
+      const response = await getUsers({
+        page,
+        limit,
+        search,
+        sortyBy: "id",
+        sortyOrder: "asc",
+      });
 
       const actualUsers = response.data || [];
       const totalCount = response.meta.totalAmount || 0;
 
       setUsers(actualUsers);
       setTotal(totalCount);
-      setCurrentPage(page);
     } catch (error) {
-      console.log(error);
+      notification.error({
+        title: "Ошибка загрузки пользователей!",
+        description: "Не удалось загрузить пользователей в таблицу",
+      });
     }
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    loadUsers(currentPage, pageSize, searchValue);
+  }, [currentPage]);
 
-  const onSearch = (value) => {
-    const searchTerm = value.toLowerCase().trim();
-
-    const filtered = users.filter((user) => {
-      return (
-        user.username?.toLowerCase().includes(searchTerm) ||
-        user.email?.toLowerCase().includes(searchTerm)
-      );
-    });
-    setUsers(filtered);
+  const handleSearchUsers = () => {
+    setSearchParams({ page: 1 });
+    loadUsers(1, pageSize, searchValue);
   };
 
-  const changeBlockingStatus = useCallback(async (user) => {
-    try {
-      if (user.isBlocked) {
-        await unblockUser(user.id);
-      } else {
-        await blockUser(user.id);
-      }
+  const changeBlockingStatus = useCallback(
+    async (user) => {
+      try {
+        if (user.isBlocked) {
+          await unblockUser(user.id);
+        } else {
+          await blockUser(user.id);
+        }
 
-      loadUsers(currentPage, 20);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+        loadUsers(currentPage, 20);
+      } catch (error) {
+        notification.error({
+          title: "Ошибка смены статуса блокировки",
+        });
+      }
+    },
+    [currentPage],
+  );
 
   const { performDelete: deleteUserId, isDeleting } = useDeleteData(
     deleteUser,
@@ -161,12 +181,14 @@ const UsersForm = memo(() => {
         key: "action",
         width: 70,
         render: (_, user) => (
-          <Button
-            type="text"
-            icon={<DoubleRightOutlined />}
-            size="large"
-            onClick={() => navigate(`/users/${user.id}`)}
-          />
+          <Tooltip title="Перейти к профилю">
+            <Button
+              type="text"
+              icon={<DoubleRightOutlined />}
+              size="large"
+              onClick={() => navigate(`/users/${user.id}`)}
+            />
+          </Tooltip>
         ),
       },
       {
@@ -205,8 +227,17 @@ const UsersForm = memo(() => {
               allowClear
               size="large"
               style={{ width: "30rem" }}
-              onSearch={onSearch}
-              onChange={(e) => onSearch(e.target.value)}
+              value={searchValue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchValue(value);
+
+                if (!value) {
+                  setSearchParams({ page: 1 });
+                  loadUsers(1, pageSize, "");
+                }
+              }}
+              onSearch={handleSearchUsers}
             />
           </Space>
           <Dropdown trigger={["click"]} menu={{ items: filterItems }}>
@@ -223,7 +254,7 @@ const UsersForm = memo(() => {
           pageSize: 20,
           total: total,
           current: currentPage,
-          onChange: (page) => loadUsers(page, 20),
+          onChange: (page) => setSearchParams({ page }),
           showSizeChanger: false,
         }}
       />
