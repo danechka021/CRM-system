@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -12,14 +12,13 @@ import {
 import { getUserProfile, editUserProfile } from "../../../api/users";
 import styles from "./AdminUserControl.module.css";
 
-const AdminUserControl = memo(() => {
+const AdminUserControl = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
-  const [submit, setSubmit] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -55,26 +54,33 @@ const AdminUserControl = memo(() => {
     }));
   };
 
-  const handleEditData = useCallback(async () => {
+  const handleEditData = async () => {
     if (!isEdit) {
       setIsEdit(true);
       return;
     }
+    const dataToChange = {};
 
-    if (
-      formData.username === user.username &&
-      formData.email === user.email &&
-      formData.phoneNumber === user.phoneNumber
-    ) {
+    if (formData.username !== user.username) {
+      dataToChange.username = formData.username;
+    }
+    if (formData.email !== user.email) {
+      dataToChange.email = formData.email;
+    }
+    if (formData.phoneNumber !== user.phoneNumber) {
+      dataToChange.phoneNumber = formData.phoneNumber;
+    }
+
+    if (Object.keys(dataToChange).length === 0) {
       setIsEdit(false);
       return;
     }
 
-    setSubmit(true);
     try {
-      const result = await editUserProfile(id, formData);
+      const result = await editUserProfile(id, dataToChange);
+
       console.log(result);
-      setUser(result);
+      setUser((prev) => ({ ...prev, ...dataToChange }));
       setIsEdit(false);
       notification.success({
         title: "Данные успешно обновлены!",
@@ -91,10 +97,8 @@ const AdminUserControl = memo(() => {
         email: user.email,
         phoneNumber: user.phoneNumber,
       });
-    } finally {
-      setSubmit(false);
     }
-  }, [id, isEdit, formData, user]);
+  };
 
   if (loading) {
     return (
@@ -158,18 +162,17 @@ const AdminUserControl = memo(() => {
           }}
         >
           {isEdit && (
-            <Button size="large" onClick={() => setIsEdit(false)}>
-              Отмена
-            </Button>
+            <div className={styles.buttonEdit}>
+              <Button danger size="large" onClick={() => setIsEdit(false)}>
+                Отмена
+              </Button>
+            </div>
           )}
-          <Button
-            type="primary"
-            size="large"
-            onClick={handleEditData}
-            loading={submit}
-          >
-            {isEdit ? "Сохрнаить" : "Редактировать"}
-          </Button>
+          <div className={styles.buttonEdit}>
+            <Button type="primary" size="large" onClick={handleEditData}>
+              {isEdit ? "Сохрнаить" : "Редактировать"}
+            </Button>
+          </div>
         </Space>
       </Card>
       <Button onClick={() => navigate(-1)} size="large" danger>
@@ -177,6 +180,6 @@ const AdminUserControl = memo(() => {
       </Button>
     </div>
   );
-});
+};
 
 export default AdminUserControl;

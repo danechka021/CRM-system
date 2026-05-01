@@ -43,7 +43,7 @@ const UsersForm = memo(() => {
     } catch (error) {
       notification.error({
         title: "Ошибка загрузки пользователей!",
-        description: "Не удалось загрузить пользователей в таблицу",
+        description: "У вас недостаточно прав для данного раздела!",
       });
     }
   };
