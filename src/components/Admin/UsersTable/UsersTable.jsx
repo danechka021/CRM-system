@@ -17,9 +17,14 @@ const UsersTable = ({
   deleteUserId,
   isDeleting,
   changeCurrentRole,
+  handleSortyUsers,
 }) => {
   const [visibleId, setVisibleId] = useState(null);
   const [selectedRoles, setSelectedRoles] = useState([]);
+
+  const handleTableChange = (panding, filters, sorter) => {
+    handleSortyUsers(sorter.field, sorter.order);
+  };
 
   const columns = [
     {
@@ -28,7 +33,8 @@ const UsersTable = ({
       key: "username",
       width: 160,
       align: "center",
-      sorter: (a, b) => a.username.localeCompare(b.username),
+      sorter: true,
+
       ellipsis: true,
     },
     {
@@ -37,7 +43,7 @@ const UsersTable = ({
       key: "email",
       width: 180,
       align: "center",
-      sorter: (a, b) => a.email.localeCompare(b.email),
+      sorter: true,
     },
     {
       title: "Телефон",
@@ -85,7 +91,7 @@ const UsersTable = ({
       align: "center",
       render: (_, user) => {
         return (
-          <UserLockoutButton user={user} onAction={changeBlockingStatus} />
+          <UserLockoutButton user={user} handleBlocked={changeBlockingStatus} />
         );
       },
     },
@@ -112,7 +118,7 @@ const UsersTable = ({
       render: (_, user) => {
         return (
           <DeleteUserButton
-            onAction={() => deleteUserId(user.id)}
+            onDelete={() => deleteUserId(user.id)}
             user={user}
             loading={isDeleting}
           />
@@ -203,6 +209,7 @@ const UsersTable = ({
         dataSource={users}
         rowKey="id"
         bordered
+        onChange={handleTableChange}
         pagination={{
           pageSize: 20,
           total: total,

@@ -1,7 +1,7 @@
 import { DeleteTwoTone, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
 
-const DeleteUserButton = ({ user, onAction }) => {
+const DeleteUserButton = ({ user, onDelete }) => {
   return (
     <div>
       <Popconfirm
@@ -11,7 +11,7 @@ const DeleteUserButton = ({ user, onAction }) => {
         cancelText="Нет"
         okButtonProps={{ danger: true }}
         icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-        onConfirm={() => onAction(user.id)}
+        onConfirm={() => onDelete(user.id)}
       >
         <Button size="small">
           <DeleteTwoTone twoToneColor="red" />

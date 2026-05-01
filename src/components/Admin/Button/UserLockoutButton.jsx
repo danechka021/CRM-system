@@ -1,9 +1,9 @@
 import { Button } from "antd";
 import { memo } from "react";
 
-const UserLockoutButton = memo(({ user, onAction }) => {
+const UserLockoutButton = memo(({ user, handleBlocked }) => {
   const handleClick = () => {
-    onAction(user);
+    handleBlocked(user);
   };
   return (
     <Button onClick={handleClick}>{user.isBlocked ? "Разблок" : "Блок"}</Button>

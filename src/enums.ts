@@ -3,3 +3,9 @@ export const ROLE_COLOR = {
   user: "purple",
   moderator: "orange",
 };
+
+export const FILTER_MAP = {
+  allUsers: undefined,
+  isBlockedUsers: true,
+  activeUsers: false,
+};

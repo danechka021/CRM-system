@@ -13,9 +13,6 @@ import { getUserProfile, editUserProfile } from "../../../api/users";
 import styles from "./AdminUserControl.module.css";
 
 const AdminUserControl = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
@@ -24,6 +21,9 @@ const AdminUserControl = () => {
     email: "",
     phoneNumber: "",
   });
+
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -86,7 +86,6 @@ const AdminUserControl = () => {
         title: "Данные успешно обновлены!",
       });
     } catch (error) {
-      console.log(error.response?.data);
       notification.error({
         title: "Ошибка редактирования!",
         description: "Этот Email или Логин уже занят!",
@@ -114,6 +113,11 @@ const AdminUserControl = () => {
     );
   }
 
+  const validateEmail = (email) => {
+    const enteredValue = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z0-9]{1,5}$/i;
+    return enteredValue.test(email);
+  };
+
   return (
     <div className={styles.mainContainer}>
       <Card title={`Профиль пользователя: ${user.username}`}>
@@ -121,9 +125,11 @@ const AdminUserControl = () => {
           <Descriptions.Item label="Имя">
             {isEdit ? (
               <Input
+                type="text"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
+                maxLength={20}
               />
             ) : (
               user.username
@@ -132,9 +138,11 @@ const AdminUserControl = () => {
           <Descriptions.Item label="Email">
             {isEdit ? (
               <Input
+                type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                status={isEdit && !validateEmail(formData.email) ? "error" : ""}
               />
             ) : (
               user.email
@@ -143,9 +151,12 @@ const AdminUserControl = () => {
           <Descriptions.Item label="Телефон">
             {isEdit ? (
               <Input
+                type="tel"
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
+                pattern="[0-9+()-\ы]*"
+                maxLength={15}
               />
             ) : (
               user.phoneNumber

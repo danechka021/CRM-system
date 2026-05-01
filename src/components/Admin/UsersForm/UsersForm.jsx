@@ -12,6 +12,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDeleteData } from "../../../hooks/DeleteData/DeleteData";
 import styles from "./UsersForm.module.css";
 import UsersTable from "../UsersTable/UsersTable";
+import { FILTER_MAP } from "../../../enums";
 
 const { Search } = Input;
 
@@ -19,43 +20,65 @@ const UsersForm = memo(() => {
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchValue, setSearchValue] = useState("");
+  const [blockStatus, setBlockStatus] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
-
   const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
   const pageSize = 20;
 
-  const loadUsers = async (page, limit, search = "") => {
-    try {
-      const response = await getUsers({
-        page,
-        limit,
-        search,
-        sortyBy: "id",
-        sortyOrder: "asc",
-      });
+  const loadUsers = useCallback(
+    async (params = {}) => {
+      try {
+        const requestParams = {
+          page: params.page || currentPage,
+          limit: pageSize,
+          search: params.search ?? searchValue,
+          sortBy: params.sortBy || "id",
+          sortOrder: params.sortOrder || "asc",
+          isBlocked: params.isBlocked ?? blockStatus,
+        };
 
-      const actualUsers = response.data || [];
-      const totalCount = response.meta.totalAmount || 0;
-      setUsers(actualUsers);
-      setTotal(totalCount);
-    } catch (error) {
-      notification.error({
-        title: "Ошибка загрузки пользователей!",
-        description: "У вас недостаточно прав для данного раздела!",
-      });
-    }
-  };
+        const response = await getUsers(requestParams);
+        setUsers([...(response.data || [])]);
+        setTotal(response.meta.totalAmount || 0);
+      } catch (error) {
+        notification.error({
+          title: "Ошибка загрузки пользователей!",
+          description: "Произошла ошибка, повторите попытку!",
+        });
+      }
+    },
+    [currentPage, searchValue, blockStatus, pageSize],
+  );
 
   useEffect(() => {
     loadUsers(currentPage, pageSize, searchValue);
   }, [currentPage]);
 
+  const hangleFilteredUsers = ({ key }) => {
+    const newFilteredStatus = FILTER_MAP[key];
+    setBlockStatus(newFilteredStatus);
+    setSearchParams({ page: 1 });
+    loadUsers({ isBlocked: newFilteredStatus, page: 1 });
+  };
+
   const handleSearchUsers = () => {
     setSearchParams({ page: 1 });
-    loadUsers(1, pageSize, searchValue);
+    loadUsers({ page: 1, search: searchValue });
   };
+
+  const handleSortyUsers = useCallback(
+    (field, order) => {
+      const sortOrder = order === "descend" ? "desc" : "asc";
+
+      loadUsers({
+        sortBy: field || "id",
+        sortOrder,
+      });
+    },
+    [loadUsers],
+  );
 
   const changeBlockingStatus = useCallback(
     async (user) => {
@@ -97,15 +120,15 @@ const UsersForm = memo(() => {
 
   const filterItems = [
     {
-      key: "1",
+      key: "allUsers",
       label: "Все пользователи",
     },
     {
-      key: "2",
+      key: "isBlockedUsers",
       label: "Заблокированные пользователи",
     },
     {
-      key: "3",
+      key: "activeUsers",
       label: "Активные пользователи",
     },
   ];
@@ -135,13 +158,21 @@ const UsersForm = memo(() => {
 
                 if (!value) {
                   setSearchParams({ page: 1 });
-                  loadUsers(1, pageSize, "");
+                  loadUsers({ page: 1, search: "" });
                 }
               }}
               onSearch={handleSearchUsers}
             />
           </Space>
-          <Dropdown trigger={["click"]} menu={{ items: filterItems }}>
+          <Dropdown
+            trigger={["click"]}
+            menu={{
+              items: filterItems,
+              onClick: hangleFilteredUsers,
+              selectable: true,
+              defaultSelectedKeys: ["allUsers"],
+            }}
+          >
             <Button icon={<FilterOutlined />}>Фильтры</Button>
           </Dropdown>
         </div>
@@ -156,6 +187,7 @@ const UsersForm = memo(() => {
         deleteUserId={deleteUserId}
         isDeleting={isDeleting}
         changeCurrentRole={changeCurrentRole}
+        handleSortyUsers={handleSortyUsers}
       />
     </div>
   );

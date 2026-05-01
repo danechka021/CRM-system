@@ -5,9 +5,10 @@ export const getUsers = async (params = {}) => {
     params: {
       page: params.page - 1,
       limit: params.limit || 20,
-      sortyBy: params.sortyBy || "id",
-      sortyOrder: params.sortyOrder || "asc",
+      sortBy: params.sortBy || "id",
+      sortOrder: params.sortOrder || "asc",
       search: params.search || undefined,
+      isBlocked: params.isBlocked,
     },
   });
   return data;
