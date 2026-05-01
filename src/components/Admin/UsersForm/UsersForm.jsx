@@ -83,34 +83,30 @@ const UsersForm = memo(() => {
   const changeBlockingStatus = useCallback(
     async (user) => {
       try {
-        if (user.isBlocked) {
-          await unblockUser(user.id);
-        } else {
-          await blockUser(user.id);
-        }
+        user.isBlocked ? await unblockUser(user.id) : await blockUser(user.id);
 
-        loadUsers(currentPage, 20);
+        await loadUsers();
       } catch (error) {
         notification.error({
           title: "Ошибка смены статуса блокировки",
         });
       }
     },
-    [currentPage],
+    [loadUsers],
   );
 
   const changeCurrentRole = useCallback(
     async (userId, newRoles) => {
       try {
         await changeUserRights(userId, { roles: newRoles });
-        loadUsers(currentPage, 20, searchValue);
+        await loadUsers();
       } catch (error) {
         notification.error({
           title: "Ошибка при смене ролей",
         });
       }
     },
-    [currentPage, searchValue, loadUsers],
+    [loadUsers],
   );
 
   const { performDelete: deleteUserId, isDeleting } = useDeleteData(
