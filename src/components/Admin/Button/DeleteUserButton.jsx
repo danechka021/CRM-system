@@ -13,7 +13,7 @@ const DeleteUserButton = ({ user, onAction }) => {
         icon={<QuestionCircleOutlined style={{ color: "red" }} />}
         onConfirm={() => onAction(user.id)}
       >
-        <Button>
+        <Button size="small">
           <DeleteTwoTone twoToneColor="red" />
         </Button>
       </Popconfirm>

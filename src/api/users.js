@@ -28,6 +28,11 @@ export const unblockUser = async (id) => {
   return data;
 };
 
+export const changeUserRights = async (id, payload) => {
+  const { data } = await api.post(`admin/users/${id}/rights`, payload);
+  return data;
+};
+
 export const editUserProfile = async (id, payload) => {
   const { data } = await api.put(`/admin/users/${id}`, payload);
   return data;
