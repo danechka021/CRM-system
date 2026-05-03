@@ -1,12 +1,13 @@
 import { notification } from "antd";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 
-export const useDeleteData = (deleteFn, onSuccess) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+type deleteFn = (id: number) => Promise<void>;
+type onSuccess = () => void | Promise<void>;
+
+export const useDeleteData = (deleteFn: deleteFn, onSuccess: onSuccess) => {
   const performDelete = useCallback(
-    async (id) => {
+    async (id: number) => {
       if (!id) return;
-      setIsDeleting(true);
       try {
         await deleteFn(id);
 
@@ -18,10 +19,9 @@ export const useDeleteData = (deleteFn, onSuccess) => {
           title: "Ошибка удаления",
         });
       }
-      setIsDeleting(false);
     },
     [deleteFn, onSuccess],
   );
 
-  return { performDelete, isDeleting };
+  return { performDelete };
 };

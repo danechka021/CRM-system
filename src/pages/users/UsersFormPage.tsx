@@ -1,6 +1,6 @@
 import UsersForm from "../../components/Admin/UsersForm/UsersForm";
 
-const UsersFormPage = () => {
+const UsersFormPage: React.FC = () => {
   return (
     <>
       <UsersForm />

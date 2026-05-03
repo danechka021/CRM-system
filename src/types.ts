@@ -1,4 +1,4 @@
-export type Role = "ADMIN" | "USER" | "MODERATOR";
+import { Roles } from "./enums";
 
 export interface Todo {
   id: number;
@@ -13,11 +13,13 @@ export interface TodoInfo {
   inWork: number;
 }
 
-export interface MetaResponse<T, N> {
+export interface MetaResponse<T, N = any> {
   data: T[];
   info?: N;
   meta: {
     totalAmount: number;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
   };
 }
 
@@ -66,6 +68,35 @@ export interface Profile {
   email: string;
   date: string;
   isBlocked: boolean;
-  roles: Role[];
+  roles: Roles[];
   phoneNumber: string;
+}
+
+export interface UserFilters {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  isBlocked?: boolean;
+  limit?: number;
+  page?: number;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  date: string;
+  isBlocked: boolean;
+  roles: Roles[];
+  phoneNumber: string;
+}
+
+export interface UserRolesRequest {
+  roles: Roles[];
+}
+
+export interface UserRequest {
+  username?: string;
+  email?: string;
+  phoneNumber?: string;
 }

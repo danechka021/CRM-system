@@ -1,13 +1,31 @@
+import React, { useState } from "react";
 import { Table, Tag, Tooltip, Button, Select, Popconfirm, Popover } from "antd";
 import { DoubleRightOutlined, MoreOutlined } from "@ant-design/icons";
-import { ROLE_COLOR } from "../../../enums";
+import { TableProps } from "antd";
+import { SorterResult } from "antd/es/table/interface";
+import { ROLE_COLOR, Roles } from "../../../enums";
+import { User } from "../../../types";
 import UserLockoutButton from "../Button/UserLockoutButton";
 import DeleteUserButton from "../Button/DeleteUserButton";
-
 import styles from "./UserTable.module.css";
-import { useState } from "react";
+import { TableColumnsType } from "antd";
 
-const UsersTable = ({
+interface UserTableProps {
+  users: User[];
+  total: number;
+  currentPage: number;
+  setSearchParams: (params: any) => void;
+  navigate: (path: string) => void;
+  changeBlockingStatus: (user: User) => Promise<void> | void;
+  deleteUserId: (id: number) => void;
+  changeCurrentRole: (
+    userId: number,
+    newRoles: Roles[],
+  ) => Promise<void> | void;
+  handleSortyUsers: (field: string | undefined, order: any) => void;
+}
+
+const UsersTable: React.FC<UserTableProps> = ({
   users,
   total,
   currentPage,
@@ -15,18 +33,22 @@ const UsersTable = ({
   navigate,
   changeBlockingStatus,
   deleteUserId,
-  isDeleting,
   changeCurrentRole,
   handleSortyUsers,
 }) => {
-  const [visibleId, setVisibleId] = useState(null);
-  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [visibleId, setVisibleId] = useState<number | null>(null);
+  const [selectedRoles, setSelectedRoles] = useState<Roles[]>([]);
 
-  const handleTableChange = (panding, filters, sorter) => {
-    handleSortyUsers(sorter.field, sorter.order);
+  const handleTableChange: TableProps<User>[`onChange`] = (
+    _pagination,
+    _filters,
+    sorter,
+  ) => {
+    const newSorter = sorter as SorterResult<User>;
+    handleSortyUsers(newSorter.field as string, newSorter.order);
   };
 
-  const columns = [
+  const columns: TableColumnsType<User> = [
     {
       title: "Имя",
       dataIndex: "username",
@@ -34,7 +56,6 @@ const UsersTable = ({
       width: 160,
       align: "center",
       sorter: true,
-
       ellipsis: true,
     },
     {
@@ -58,11 +79,16 @@ const UsersTable = ({
       key: "roles",
       width: 110,
       align: "center",
-      render: (roles) => (
+      render: (roles: Roles[]) => (
         <>
           {Array.isArray(roles) &&
             roles.map((role) => (
-              <Tag color={ROLE_COLOR[role.toLowerCase()]} key={role}>
+              <Tag
+                color={
+                  ROLE_COLOR[role.toLowerCase() as keyof typeof ROLE_COLOR]
+                }
+                key={role}
+              >
                 {role}
               </Tag>
             ))}
@@ -75,7 +101,7 @@ const UsersTable = ({
       key: "isBlocked",
       width: 120,
       align: "center",
-      render: (isBlocked) => (isBlocked ? "+" : "-"),
+      render: (isBlocked: boolean) => (isBlocked ? "+" : "-"),
     },
     {
       title: "Дата регистрации",
@@ -89,9 +115,16 @@ const UsersTable = ({
       dataIndex: "isBlocked",
       width: 110,
       align: "center",
-      render: (_, user) => {
+      render: (_: boolean, user: User) => {
         return (
-          <UserLockoutButton user={user} handleBlocked={changeBlockingStatus} />
+          <Popconfirm
+            title="Изменить статус блокировки?"
+            okText="Да"
+            cancelText="Нет"
+            onConfirm={() => changeBlockingStatus(user)}
+          >
+            <UserLockoutButton user={user} />
+          </Popconfirm>
         );
       },
     },
@@ -100,7 +133,7 @@ const UsersTable = ({
       key: "action",
       width: 50,
       align: "center",
-      render: (_, user) => (
+      render: (_: boolean, user: User) => (
         <Tooltip title="Перейти к профилю">
           <Button
             size="small"
@@ -115,12 +148,11 @@ const UsersTable = ({
       title: "",
       key: "delete",
       width: 60,
-      render: (_, user) => {
+      render: (_: boolean, user: User) => {
         return (
           <DeleteUserButton
             onDelete={() => deleteUserId(user.id)}
             user={user}
-            loading={isDeleting}
           />
         );
       },
@@ -130,7 +162,7 @@ const UsersTable = ({
       key: "isRights",
       width: 70,
       align: "center",
-      render: (_, user) => {
+      render: (_: boolean, user: User) => {
         const isOpen = visibleId === user.id;
 
         const roleMenu = (
@@ -184,7 +216,7 @@ const UsersTable = ({
             content={roleMenu}
             trigger="click"
             open={isOpen}
-            onOpenChange={(visible) => {
+            onOpenChange={(visible: boolean) => {
               if (visible) {
                 setVisibleId(user.id);
                 setSelectedRoles(user.roles || []);
@@ -193,7 +225,7 @@ const UsersTable = ({
               }
             }}
           >
-            <Tooltip title="Управление ролью">
+            <Tooltip title="Управлять текущими ролями">
               <Button icon={<MoreOutlined />} />
             </Tooltip>
           </Popover>

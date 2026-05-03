@@ -11,29 +11,36 @@ import {
 } from "antd";
 import { getUserProfile, editUserProfile } from "../../../api/users";
 import styles from "./AdminUserControl.module.css";
+import { User, UserRequest } from "../../../types";
 
-const AdminUserControl = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isEdit, setIsEdit] = useState(false);
-  const [formData, setFormData] = useState({
+interface FormState {
+  username: string;
+  email: string;
+  phoneNumber: string;
+}
+
+const AdminUserControl: React.FC = () => {
+  const [user, setUser] = useState<null | User>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [formData, setFormData] = useState<FormState>({
     username: "",
     email: "",
     phoneNumber: "",
   });
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await getUserProfile(id);
+        const data = await getUserProfile(Number(id));
         setUser(data);
         setFormData({
-          username: data.username,
-          email: data.email,
-          phoneNumber: data.phoneNumber,
+          username: data.username || "",
+          email: data.email || "",
+          phoneNumber: data.phoneNumber || "",
         });
       } catch (error) {
         notification.error({
@@ -46,7 +53,7 @@ const AdminUserControl = () => {
     fetchUser();
   }, [id]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -59,15 +66,15 @@ const AdminUserControl = () => {
       setIsEdit(true);
       return;
     }
-    const dataToChange = {};
 
-    if (formData.username !== user.username) {
+    const dataToChange: UserRequest = {};
+    if (formData.username !== user?.username) {
       dataToChange.username = formData.username;
     }
-    if (formData.email !== user.email) {
+    if (formData.email !== user?.email) {
       dataToChange.email = formData.email;
     }
-    if (formData.phoneNumber !== user.phoneNumber) {
+    if (formData.phoneNumber !== user?.phoneNumber) {
       dataToChange.phoneNumber = formData.phoneNumber;
     }
 
@@ -77,10 +84,8 @@ const AdminUserControl = () => {
     }
 
     try {
-      const result = await editUserProfile(id, dataToChange);
-
-      console.log(result);
-      setUser((prev) => ({ ...prev, ...dataToChange }));
+      const result = await editUserProfile(Number(id), dataToChange);
+      setUser(result);
       setIsEdit(false);
       notification.success({
         title: "Данные успешно обновлены!",
@@ -91,11 +96,13 @@ const AdminUserControl = () => {
         description: "Этот Email или Логин уже занят!",
       });
 
-      setFormData({
-        username: user.username,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-      });
+      if (user) {
+        setFormData({
+          username: user.username,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+        });
+      }
     }
   };
 
@@ -113,14 +120,14 @@ const AdminUserControl = () => {
     );
   }
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const enteredValue = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z0-9]{1,5}$/i;
     return enteredValue.test(email);
   };
 
   return (
     <div className={styles.mainContainer}>
-      <Card title={`Профиль пользователя: ${user.username}`}>
+      <Card title={`Профиль пользователя: ${user?.username}`}>
         <Descriptions bordered column={1}>
           <Descriptions.Item label="Имя">
             {isEdit ? (
@@ -130,9 +137,10 @@ const AdminUserControl = () => {
                 value={formData.username}
                 onChange={handleChange}
                 maxLength={20}
+                pattern="[А-Яа-яЁёa-zA-Z]+"
               />
             ) : (
-              user.username
+              user?.username
             )}
           </Descriptions.Item>
           <Descriptions.Item label="Email">
@@ -145,7 +153,7 @@ const AdminUserControl = () => {
                 status={isEdit && !validateEmail(formData.email) ? "error" : ""}
               />
             ) : (
-              user.email
+              user?.email
             )}
           </Descriptions.Item>
           <Descriptions.Item label="Телефон">
@@ -155,11 +163,11 @@ const AdminUserControl = () => {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                pattern="[0-9+()-\ы]*"
+                pattern="(\+7|7|8)[0-9]{10}"
                 maxLength={15}
               />
             ) : (
-              user.phoneNumber
+              user?.phoneNumber
             )}
           </Descriptions.Item>
         </Descriptions>

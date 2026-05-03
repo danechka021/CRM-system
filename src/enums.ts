@@ -8,4 +8,10 @@ export const FILTER_MAP = {
   allUsers: undefined,
   isBlockedUsers: true,
   activeUsers: false,
-};
+} as const;
+
+export enum Roles {
+  ADMIN = "ADMIN",
+  MODERATOR = "MODERATOR",
+  USER = "USER",
+}

@@ -1,7 +1,16 @@
 import { DeleteTwoTone, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
+import { User } from "../../../types";
 
-const DeleteUserButton = ({ user, onDelete }) => {
+interface DeleteUserButtonProps {
+  user: User;
+  onDelete: (id: number) => void;
+}
+
+const DeleteUserButton: React.FC<DeleteUserButtonProps> = ({
+  user,
+  onDelete,
+}) => {
   return (
     <div>
       <Popconfirm

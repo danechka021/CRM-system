@@ -18,6 +18,7 @@ import {
 import styles from "../todoItem/TodoItem.module.css";
 import { updateTasks, deleteTask } from "../../../api/tasks";
 import { Todo } from "../../../types";
+import { useDeleteData } from "../../../hooks/DeleteData/DeleteData";
 
 interface TodoItemProps {
   task: Todo;
@@ -99,20 +100,9 @@ const TodoItem = memo(
 
     //Удаление задачи
 
-    const handleDeleteTask = useCallback(
-      async (id: number): Promise<void> => {
-        try {
-          await deleteTask(id);
-          fetchTodos();
-        } catch (error: unknown) {
-          notification.error({
-            title: "Ошибка удаления",
-            description:
-              error instanceof Error ? error.message : "Попробуйте позже",
-          });
-        }
-      },
-      [fetchTodos, task.id],
+    const { performDelete: handleDeleteTask } = useDeleteData(
+      deleteTask,
+      fetchTodos,
     );
 
     return (

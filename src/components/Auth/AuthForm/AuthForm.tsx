@@ -4,7 +4,7 @@ import LinkButton from "../LinkButton/LinkButton";
 import ValidatedInput from "../ValidationInput/ValidatedInput";
 import styles from "../AuthForm/AuthForm.module.css";
 import authImg from "../../../assets/image_auth.jpg";
-import { authorizeUser } from "../../../api/auth";
+import { authorizeUser, getUserProfile } from "../../../api/auth";
 import { AuthData } from "../../../types";
 import { accessToken } from "../../../authService";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,14 @@ const AuthForm = () => {
       accessToken.value = data.accessToken;
       localStorage.setItem("refreshToken", data.refreshToken);
 
-      dispatch(setSuccessfulLogin(data.accessToken));
+      const userData = await getUserProfile();
+
+      dispatch(
+        setSuccessfulLogin({
+          token: data.accessToken,
+          user: userData,
+        }),
+      );
       message.success("Вход выполнен успешно!");
       navigate("/todos");
     } catch (error) {
