@@ -18,6 +18,7 @@ import {
 import styles from "../todoItem/TodoItem.module.css";
 import { updateTasks, deleteTask } from "../../../api/tasks";
 import { Todo } from "../../../types";
+import { useDeleteData } from "../../../hooks/DeleteData/DeleteData";
 
 interface TodoItemProps {
   task: Todo;
@@ -48,7 +49,7 @@ const TodoItem = memo(
         } catch (error: unknown) {
           if (error instanceof Error) {
             notification.error({
-              message: "Ошибка при добавлении задачи",
+              title: "Ошибка при добавлении задачи",
               description:
                 error instanceof Error ? error.message : "Попробуйте позже",
             });
@@ -86,7 +87,7 @@ const TodoItem = memo(
           notification.success({ message: "Задача обновлена" });
         } catch (error: unknown) {
           notification.error({
-            message: "Ошибка",
+            title: "Ошибка",
             description:
               error instanceof Error ? error.message : "Ошибка сервера",
           });
@@ -99,20 +100,9 @@ const TodoItem = memo(
 
     //Удаление задачи
 
-    const handleDeleteTask = useCallback(
-      async (id: number): Promise<void> => {
-        try {
-          await deleteTask(id);
-          fetchTodos();
-        } catch (error: unknown) {
-          notification.error({
-            message: "Ошибка удаления",
-            description:
-              error instanceof Error ? error.message : "Попробуйте позже",
-          });
-        }
-      },
-      [fetchTodos, task.id],
+    const { performDelete: handleDeleteTask } = useDeleteData(
+      deleteTask,
+      fetchTodos,
     );
 
     return (
