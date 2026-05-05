@@ -4,23 +4,23 @@ import {
   UserFilters,
   User,
   MetaResponse,
+  MetaResponseUsers,
   UserRolesRequest,
   UserRequest,
 } from "../types";
 
 export const getUsers = async (
   params: UserFilters = {},
-): Promise<MetaResponse<User>> => {
-  const { data } = await api.get<MetaResponse<User>>("/admin/users", {
-    params: {
-      page: (params.page || 1) - 1,
-      limit: params.limit || 20,
-      sortBy: params.sortBy || "id",
-      sortOrder: params.sortOrder || "asc",
-      search: params.search || undefined,
-      isBlocked: params.isBlocked,
+): Promise<MetaResponse<User, MetaResponseUsers>> => {
+  const { data } = await api.get<MetaResponse<User, MetaResponseUsers>>(
+    "/admin/users",
+    {
+      params: {
+        ...params,
+        page: (params.page || 1) - 1,
+      },
     },
-  });
+  );
   return data;
 };
 

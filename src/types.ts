@@ -13,14 +13,19 @@ export interface TodoInfo {
   inWork: number;
 }
 
-export interface MetaResponse<T, N = any> {
+export interface MetaResponseTodo {
+  totalAmount: number;
+}
+
+export interface MetaResponseUsers extends MetaResponseTodo {
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+}
+
+export interface MetaResponse<T, M = MetaResponseUsers, N = unknown> {
   data: T[];
+  meta: M;
   info?: N;
-  meta: {
-    totalAmount: number;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
-  };
 }
 
 export interface TodoRequest {

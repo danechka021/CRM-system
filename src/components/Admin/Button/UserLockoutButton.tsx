@@ -6,10 +6,8 @@ interface UserLockoutButtonProps {
   user: User;
 }
 
-const UserLockoutButton: React.FC<UserLockoutButtonProps> = memo(
-  ({ user, ...props }) => {
-    return <Button {...props}>{user.isBlocked ? "Разблок" : "Блок"}</Button>;
-  },
-);
+const UserLockoutButton: React.FC<UserLockoutButtonProps> = memo(({ user }) => {
+  return <Button>{user.isBlocked ? "Разблок" : "Блок"}</Button>;
+});
 
 export default UserLockoutButton;

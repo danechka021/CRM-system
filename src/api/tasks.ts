@@ -3,6 +3,7 @@ import { api } from "./basicApi";
 import {
   Todo,
   MetaResponse,
+  MetaResponseTodo,
   TodoRequest,
   TodoInfo,
   TodoStatus,
@@ -19,8 +20,10 @@ export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
 
 export const getTasks = async (
   status: TodoStatus,
-): Promise<MetaResponse<Todo, TodoInfo>> => {
-  const { data } = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
+): Promise<MetaResponse<Todo, MetaResponseTodo, TodoInfo>> => {
+  const { data } = await api.get<
+    MetaResponse<Todo, MetaResponseTodo, TodoInfo>
+  >("/todos", {
     params: { filter: status },
   });
   return data;

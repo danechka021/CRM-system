@@ -21,7 +21,7 @@ interface FormState {
 
 const AdminUserControl: React.FC = () => {
   const [user, setUser] = useState<null | User>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormState>({
     username: "",
@@ -47,13 +47,13 @@ const AdminUserControl: React.FC = () => {
           title: "Ошибка загрузки профиля!",
         });
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchUser();
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -106,7 +106,7 @@ const AdminUserControl: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         style={{
@@ -135,7 +135,7 @@ const AdminUserControl: React.FC = () => {
                 type="text"
                 name="username"
                 value={formData.username}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 maxLength={20}
                 pattern="[А-Яа-яЁёa-zA-Z]+"
               />
@@ -149,7 +149,7 @@ const AdminUserControl: React.FC = () => {
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 status={isEdit && !validateEmail(formData.email) ? "error" : ""}
               />
             ) : (
@@ -162,7 +162,7 @@ const AdminUserControl: React.FC = () => {
                 type="tel"
                 name="phoneNumber"
                 value={formData.phoneNumber}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 pattern="(\+7|7|8)[0-9]{10}"
                 maxLength={15}
               />
