@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { api } from "./basicApi";
 import {
   UserRegistration,
@@ -78,7 +78,12 @@ api.interceptors.response.use(
 
       accessToken.value = data.accessToken;
       localStorage.setItem("refreshToken", data.refreshToken);
-      store.dispatch(setSuccessfulLogin(data.accessToken));
+      store.dispatch(
+        setSuccessfulLogin({
+          token: data.accessToken,
+          user: data.user,
+        }),
+      );
 
       processQueue(null, data.accessToken);
 

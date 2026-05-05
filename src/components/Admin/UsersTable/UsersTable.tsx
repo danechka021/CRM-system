@@ -117,14 +117,10 @@ const UsersTable: React.FC<UserTableProps> = ({
       align: "center",
       render: (_: boolean, user: User) => {
         return (
-          <Popconfirm
-            title="Изменить статус блокировки?"
-            okText="Да"
-            cancelText="Нет"
+          <UserLockoutButton
+            user={user}
             onConfirm={() => changeBlockingStatus(user)}
-          >
-            <UserLockoutButton user={user} />
-          </Popconfirm>
+          />
         );
       },
     },

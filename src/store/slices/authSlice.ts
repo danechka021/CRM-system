@@ -5,14 +5,12 @@ import { getUserProfile } from "../../api/auth";
 import { User } from "../../types";
 
 interface AuthState {
-  accessToken: string | null;
   isAuthenticated: boolean;
   isInitialized: boolean;
   user: User | null;
 }
 
 const initialState: AuthState = {
-  accessToken: null,
   isAuthenticated: false,
   isInitialized: false,
   user: null,
@@ -26,7 +24,7 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{ token: string; user: User }>,
     ) => {
-      state.accessToken = action.payload.token;
+      accessToken.value = action.payload.token;
       state.user = action.payload.user;
       state.isAuthenticated = true;
     },
@@ -35,7 +33,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
     },
     logout: (state) => {
-      state.accessToken = null;
+      accessToken.clear();
       state.user = null;
       state.isAuthenticated = false;
     },
