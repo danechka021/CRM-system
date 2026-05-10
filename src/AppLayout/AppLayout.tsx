@@ -22,7 +22,7 @@ import RegistrationPage from "../pages/registration/RegistrationPage";
 import styles from "../AppLayout/AppLayout.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { checkAuth } from "../store/slices/authSlice";
 import AdminUserControl from "../components/Admin/AdminUserControl/AdminUserControl";
 import UsersFormPage from "../pages/users/UsersFormPage";
@@ -53,6 +53,13 @@ const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleNavigate: MenuProps["onClick"] = useCallback(
+    (e) => {
+      navigate(e.key);
+    },
+    [navigate],
+  );
+
   const { isAuthenticated, isInitialized, user } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -77,7 +84,10 @@ const AppLayout: React.FC = () => {
       },
     ];
 
-    if (userRole?.includes(Roles.ADMIN)) {
+    if (
+      userRole?.includes(Roles.ADMIN) ||
+      userRole?.includes(Roles.MODERATOR)
+    ) {
       items.push({
         key: "/users",
         icon: <TeamOutlined />,
@@ -108,7 +118,7 @@ const AppLayout: React.FC = () => {
             theme="dark"
             mode="inline"
             selectedKeys={[location.pathname]}
-            onClick={(e) => navigate(e.key)}
+            onClick={handleNavigate}
             items={menuItems}
           />
         </Sider>

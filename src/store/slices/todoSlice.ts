@@ -4,7 +4,7 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { Todo, TodoInfo, TodoStatus } from "../../types";
+import { Todo, TodoInfo, TodoStatus } from "../../types/types";
 import { addTask, getTasks } from "../../api/tasks";
 
 interface TodoState {

@@ -1,13 +1,7 @@
 import { api } from "./basicApi";
 
-import {
-  Todo,
-  MetaResponse,
-  MetaResponseTodo,
-  TodoRequest,
-  TodoInfo,
-  TodoStatus,
-} from "../types";
+import { Todo, TodoRequest, TodoInfo, TodoStatus } from "../types/types";
+import { MetaResponse } from "../types/meta/todo";
 
 // POST (Отправка задачи на сервер)
 
@@ -20,10 +14,8 @@ export const addTask = async (todoRequest: TodoRequest): Promise<Todo> => {
 
 export const getTasks = async (
   status: TodoStatus,
-): Promise<MetaResponse<Todo, MetaResponseTodo, TodoInfo>> => {
-  const { data } = await api.get<
-    MetaResponse<Todo, MetaResponseTodo, TodoInfo>
-  >("/todos", {
+): Promise<MetaResponse<Todo, TodoInfo>> => {
+  const { data } = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
     params: { filter: status },
   });
   return data;

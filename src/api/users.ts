@@ -3,24 +3,20 @@ import { api } from "./basicApi";
 import {
   UserFilters,
   User,
-  MetaResponse,
-  MetaResponseUsers,
   UserRolesRequest,
   UserRequest,
-} from "../types";
+} from "../types/types";
+import { MetaResponse } from "../types/meta/users";
 
 export const getUsers = async (
   params: UserFilters = {},
-): Promise<MetaResponse<User, MetaResponseUsers>> => {
-  const { data } = await api.get<MetaResponse<User, MetaResponseUsers>>(
-    "/admin/users",
-    {
-      params: {
-        ...params,
-        page: (params.page || 1) - 1,
-      },
+): Promise<MetaResponse<User>> => {
+  const { data } = await api.get<MetaResponse<User>>("/admin/users", {
+    params: {
+      ...params,
+      page: (params.page || 1) - 1,
     },
-  );
+  });
   return data;
 };
 

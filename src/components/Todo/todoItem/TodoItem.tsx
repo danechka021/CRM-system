@@ -17,7 +17,7 @@ import {
 
 import styles from "../todoItem/TodoItem.module.css";
 import { updateTasks, deleteTask } from "../../../api/tasks";
-import { Todo } from "../../../types";
+import { Todo } from "../../../types/types";
 import { useDeleteData } from "../../../hooks/DeleteData/useDeleteData";
 
 interface TodoItemProps {

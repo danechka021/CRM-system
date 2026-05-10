@@ -1,6 +1,6 @@
 import { Button, Popconfirm } from "antd";
 import { memo } from "react";
-import { User } from "../../../types";
+import { User } from "../../../types/types";
 
 interface UserLockoutButtonProps {
   user: User;
@@ -16,7 +16,7 @@ const UserLockoutButton: React.FC<UserLockoutButtonProps> = memo(
         cancelText="Нет"
         onConfirm={onConfirm}
       >
-        <Button>{user.isBlocked ? "Разблок" : "Блок"}</Button>;
+        <Button>{user.isBlocked ? "Разблок" : "Блок"}</Button>
       </Popconfirm>
     );
   },

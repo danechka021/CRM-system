@@ -9,7 +9,7 @@ import {
 } from "antd";
 
 import { getUserProfile } from "../../api/auth";
-import { Profile } from "../../types";
+import { Profile } from "../../types/types";
 import styles from "../profile/UserProfilePage.module.css";
 import {
   MailOutlined,

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 import { accessToken } from "../../authService";
 import { getUserProfile } from "../../api/auth";
-import { User } from "../../types";
+import { User } from "../../types/types";
 
 interface AuthState {
   isAuthenticated: boolean;

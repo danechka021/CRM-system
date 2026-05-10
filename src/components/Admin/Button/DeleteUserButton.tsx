@@ -1,6 +1,6 @@
 import { DeleteTwoTone, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
-import { User } from "../../../types";
+import { User } from "../../../types/types";
 
 interface DeleteUserButtonProps {
   user: User;

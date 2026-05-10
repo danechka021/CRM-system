@@ -5,7 +5,7 @@ import ValidatedInput from "../ValidationInput/ValidatedInput";
 import styles from "../AuthForm/AuthForm.module.css";
 import authImg from "../../../assets/image_auth.jpg";
 import { authorizeUser, getUserProfile } from "../../../api/auth";
-import { AuthData } from "../../../types";
+import { AuthData } from "../../../types/types";
 import { accessToken } from "../../../authService";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Form, message } from "antd";

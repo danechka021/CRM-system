@@ -4,7 +4,7 @@ import { DoubleRightOutlined, MoreOutlined } from "@ant-design/icons";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { ROLE_COLOR, Roles } from "../../../enums";
-import { User } from "../../../types";
+import { User } from "../../../types/types";
 import UserLockoutButton from "../Button/UserLockoutButton";
 import DeleteUserButton from "../Button/DeleteUserButton";
 import styles from "./UserTable.module.css";
@@ -83,12 +83,7 @@ const UsersTable: React.FC<UserTableProps> = ({
         <>
           {Array.isArray(roles) &&
             roles.map((role) => (
-              <Tag
-                color={
-                  ROLE_COLOR[role.toLowerCase() as keyof typeof ROLE_COLOR]
-                }
-                key={role}
-              >
+              <Tag color={ROLE_COLOR[role]} key={role}>
                 {role}
               </Tag>
             ))}
@@ -169,11 +164,10 @@ const UsersTable: React.FC<UserTableProps> = ({
                 allowClear
                 placeholder="Управление ролями"
                 value={selectedRoles}
-                options={[
-                  { value: "ADMIN", label: "ADMIN" },
-                  { value: "MODERATOR", label: "MODERATOR" },
-                  { value: "USER", label: "USER" },
-                ]}
+                options={Object.values(Roles).map((role) => ({
+                  value: role,
+                  label: role,
+                }))}
                 onChange={(values) => {
                   setSelectedRoles(values);
                 }}

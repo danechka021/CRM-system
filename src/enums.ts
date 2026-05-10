@@ -1,7 +1,13 @@
+export enum Roles {
+  ADMIN = "ADMIN",
+  MODERATOR = "MODERATOR",
+  USER = "USER",
+}
+
 export const ROLE_COLOR = {
-  admin: "blue",
-  user: "purple",
-  moderator: "orange",
+  [Roles.ADMIN]: "blue",
+  [Roles.MODERATOR]: "orange",
+  [Roles.USER]: "purple",
 };
 
 export const FILTER_MAP = {
@@ -9,9 +15,3 @@ export const FILTER_MAP = {
   isBlockedUsers: true,
   activeUsers: false,
 } as const;
-
-export enum Roles {
-  ADMIN = "ADMIN",
-  MODERATOR = "MODERATOR",
-  USER = "USER",
-}

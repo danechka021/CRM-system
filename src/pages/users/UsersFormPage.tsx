@@ -13,7 +13,7 @@ import { useDeleteData } from "../../hooks/DeleteData/useDeleteData";
 import styles from "./UsersFormPage.module.css";
 import UsersTable from "../../components/Admin/UsersTable/UsersTable";
 import { FILTER_MAP, Roles } from "../../enums";
-import { User, UserFilters } from "../../types";
+import { User, UserFilters } from "../../types/types";
 
 const { Search } = Input;
 

@@ -1,4 +1,4 @@
-import { Roles } from "./enums";
+import { Roles } from "../enums";
 
 export interface Todo {
   id: number;
@@ -11,21 +11,6 @@ export interface TodoInfo {
   all: number;
   completed: number;
   inWork: number;
-}
-
-export interface MetaResponseTodo {
-  totalAmount: number;
-}
-
-export interface MetaResponseUsers extends MetaResponseTodo {
-  sortBy: string;
-  sortOrder: "asc" | "desc";
-}
-
-export interface MetaResponse<T, M = MetaResponseUsers, N = unknown> {
-  data: T[];
-  meta: M;
-  info?: N;
 }
 
 export interface TodoRequest {

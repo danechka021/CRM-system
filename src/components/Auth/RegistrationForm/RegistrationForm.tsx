@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ValidatedInput from "../ValidationInput/ValidatedInput";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 import { registrationUser } from "../../../api/auth";
-import { UserRegistration } from "../../../types";
+import { UserRegistration } from "../../../types/types";
 import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {

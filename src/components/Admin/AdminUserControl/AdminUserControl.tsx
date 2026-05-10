@@ -8,10 +8,11 @@ import {
   notification,
   Input,
   Space,
+  Form,
 } from "antd";
 import { getUserProfile, editUserProfile } from "../../../api/users";
+import { User } from "../../../types/types";
 import styles from "./AdminUserControl.module.css";
-import { User, UserRequest } from "../../../types";
 
 interface FormState {
   username: string;
@@ -23,12 +24,8 @@ const AdminUserControl: React.FC = () => {
   const [user, setUser] = useState<null | User>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormState>({
-    username: "",
-    email: "",
-    phoneNumber: "",
-  });
 
+  const [form] = Form.useForm();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -37,11 +34,7 @@ const AdminUserControl: React.FC = () => {
       try {
         const data = await getUserProfile(Number(id));
         setUser(data);
-        setFormData({
-          username: data.username || "",
-          email: data.email || "",
-          phoneNumber: data.phoneNumber || "",
-        });
+        form.setFieldsValue(data);
       } catch (error) {
         notification.error({
           title: "Ошибка загрузки профиля!",
@@ -51,14 +44,20 @@ const AdminUserControl: React.FC = () => {
       }
     };
     fetchUser();
-  }, [id]);
+  }, [id, form]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const getChangedData = <T extends object>(
+    original: T,
+    updated: T,
+  ): Partial<T> => {
+    const changedFields: Partial<T> = {};
+
+    (Object.keys(updated) as Array<keyof T>).forEach((key) => {
+      if (updated[key] !== original[key]) {
+        changedFields[key] = updated[key];
+      }
+    });
+    return changedFields;
   };
 
   const handleEditData = async () => {
@@ -67,23 +66,14 @@ const AdminUserControl: React.FC = () => {
       return;
     }
 
-    const dataToChange: UserRequest = {};
-    if (formData.username !== user?.username) {
-      dataToChange.username = formData.username;
-    }
-    if (formData.email !== user?.email) {
-      dataToChange.email = formData.email;
-    }
-    if (formData.phoneNumber !== user?.phoneNumber) {
-      dataToChange.phoneNumber = formData.phoneNumber;
-    }
-
-    if (Object.keys(dataToChange).length === 0) {
-      setIsEdit(false);
-      return;
-    }
-
     try {
+      const values = await form.validateFields();
+      const dataToChange = getChangedData(user, values);
+      if (Object.keys(dataToChange).length === 0) {
+        setIsEdit(false);
+        return;
+      }
+
       const result = await editUserProfile(Number(id), dataToChange);
       setUser(result);
       setIsEdit(false);
@@ -95,15 +85,12 @@ const AdminUserControl: React.FC = () => {
         title: "Ошибка редактирования!",
         description: "Этот Email или Логин уже занят!",
       });
-
-      if (user) {
-        setFormData({
-          username: user.username,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-        });
-      }
     }
+  };
+
+  const handelCancel = () => {
+    setIsEdit(false);
+    form.resetFields();
   };
 
   if (isLoading) {
@@ -120,57 +107,55 @@ const AdminUserControl: React.FC = () => {
     );
   }
 
-  const validateEmail = (email: string) => {
-    const enteredValue = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z0-9]{1,5}$/i;
-    return enteredValue.test(email);
-  };
-
   return (
     <div className={styles.mainContainer}>
       <Card title={`Профиль пользователя: ${user?.username}`}>
-        <Descriptions bordered column={1}>
-          <Descriptions.Item label="Имя">
-            {isEdit ? (
-              <Input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                maxLength={20}
-                pattern="[А-Яа-яЁёa-zA-Z]+"
-              />
-            ) : (
-              user?.username
-            )}
-          </Descriptions.Item>
-          <Descriptions.Item label="Email">
-            {isEdit ? (
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                status={isEdit && !validateEmail(formData.email) ? "error" : ""}
-              />
-            ) : (
-              user?.email
-            )}
-          </Descriptions.Item>
-          <Descriptions.Item label="Телефон">
-            {isEdit ? (
-              <Input
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                pattern="(\+7|7|8)[0-9]{10}"
-                maxLength={15}
-              />
-            ) : (
-              user?.phoneNumber
-            )}
-          </Descriptions.Item>
-        </Descriptions>
+        <Form form={form} component={false}>
+          <Descriptions bordered column={1}>
+            <Descriptions.Item label="Имя">
+              {isEdit ? (
+                <Form.Item
+                  name="username"
+                  rules={[{ required: true, message: "Введите имя" }]}
+                >
+                  <Input maxLength={20} />
+                </Form.Item>
+              ) : (
+                user?.username
+              )}
+            </Descriptions.Item>
+
+            <Descriptions.Item label="Email">
+              {isEdit ? (
+                <Form.Item
+                  name="email"
+                  rules={[{ type: "email", message: "Некорректный email" }]}
+                >
+                  <Input />
+                </Form.Item>
+              ) : (
+                user?.email
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="Телефон">
+              {isEdit ? (
+                <Form.Item
+                  name="phoneNumber"
+                  rules={[
+                    {
+                      pattern: /^(\+7|7|8)[0-9]{10}$/,
+                      message: "Формат: +79991234567",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              ) : (
+                user?.phoneNumber
+              )}
+            </Descriptions.Item>
+          </Descriptions>
+        </Form>
 
         <Space
           style={{
@@ -182,7 +167,7 @@ const AdminUserControl: React.FC = () => {
         >
           {isEdit && (
             <div className={styles.buttonEdit}>
-              <Button danger size="large" onClick={() => setIsEdit(false)}>
+              <Button danger size="large" onClick={handelCancel}>
                 Отмена
               </Button>
             </div>

@@ -6,7 +6,7 @@ import {
   RefreshServise,
   Token,
   Profile,
-} from "../types";
+} from "../types/types";
 import { accessToken } from "../authService";
 import { store } from "../store/store";
 import { setSuccessfulLogin, logout } from "../store/slices/authSlice";
