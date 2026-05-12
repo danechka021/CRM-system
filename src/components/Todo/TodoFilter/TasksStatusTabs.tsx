@@ -1,6 +1,6 @@
 import { useCallback, memo } from "react";
 import { Dispatch } from "react";
-import { TodoInfo, TodoStatus } from "../../../types";
+import { TodoInfo, TodoStatus } from "../../../types/types";
 import { Tabs } from "antd";
 import styles from "./TasksStatusTabs.module.css";
 

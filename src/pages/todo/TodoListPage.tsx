@@ -8,7 +8,7 @@ import AddTask from "../../components/Todo/addition/AddTask.js";
 import TasksStatusTabs from "../../components/Todo/TodoFilter/TasksStatusTabs.js";
 import TasksList from "../../components/Todo/ListOfTasks/Tasks.js";
 
-import { TodoStatus } from "../../types.js";
+import { TodoStatus } from "../../types/types.js";
 
 import { notification } from "antd";
 

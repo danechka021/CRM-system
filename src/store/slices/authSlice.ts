@@ -2,30 +2,39 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 import { accessToken } from "../../authService";
 import { getUserProfile } from "../../api/auth";
+import { User } from "../../types/types";
 
 interface AuthState {
-  accessToken: string | null;
   isAuthenticated: boolean;
   isInitialized: boolean;
+  user: User | null;
 }
 
 const initialState: AuthState = {
-  accessToken: null,
   isAuthenticated: false,
   isInitialized: false,
+  user: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setSuccessfulLogin: (state, action: PayloadAction<string>) => {
-      state.accessToken = action.payload;
+    setSuccessfulLogin: (
+      state,
+      action: PayloadAction<{ token: string; user: User }>,
+    ) => {
+      accessToken.value = action.payload.token;
+      state.user = action.payload.user;
       state.isAuthenticated = true;
     },
-
+    setUserData: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+    },
     logout: (state) => {
-      state.accessToken = null;
+      accessToken.clear();
+      state.user = null;
       state.isAuthenticated = false;
     },
     setInitialized: (state) => {
@@ -34,7 +43,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { setSuccessfulLogin, logout, setInitialized } = authSlice.actions;
+export const { setSuccessfulLogin, logout, setInitialized, setUserData } =
+  authSlice.actions;
 
 export const checkAuth = () => async (dispatch: AppDispatch) => {
   const refreshToken = localStorage.getItem("refreshToken");
@@ -45,10 +55,15 @@ export const checkAuth = () => async (dispatch: AppDispatch) => {
   }
 
   try {
-    await getUserProfile();
-    const currentToken = accessToken.value;
+    const userData = await getUserProfile();
+    const currentToken = accessToken.value || "";
     if (currentToken) {
-      dispatch(setSuccessfulLogin(currentToken));
+      dispatch(
+        setSuccessfulLogin({
+          token: currentToken,
+          user: userData,
+        }),
+      );
     }
   } catch (error) {
     dispatch(logout());
