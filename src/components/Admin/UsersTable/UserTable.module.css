@@ -1,0 +1,25 @@
+.menuRole {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 14rem;
+  height: 6rem;
+  padding: 0.8rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: "0 2px 8px rgba(0,0,0,0.15)";
+  min-width: 10rem;
+}
+
+.selectRoleMenu {
+  width: 14rem;
+}
+
+.Button {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}

@@ -1,12 +1,7 @@
 import { api } from "./basicApi";
 
-import {
-  Todo,
-  MetaResponse,
-  TodoRequest,
-  TodoInfo,
-  TodoStatus,
-} from "../types";
+import { Todo, TodoRequest, TodoInfo, TodoStatus } from "../types/types";
+import { MetaResponse } from "../types/meta/todo";
 
 // POST (Отправка задачи на сервер)
 

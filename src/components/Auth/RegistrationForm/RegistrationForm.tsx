@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ValidatedInput from "../ValidationInput/ValidatedInput";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 import { registrationUser } from "../../../api/auth";
-import { UserRegistration } from "../../../types";
+import { UserRegistration } from "../../../types/types";
 import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
@@ -50,7 +50,7 @@ const RegistrationForm = () => {
           errorMessage="Поле обязательно для заполнения!"
           rules={[
             {
-              pattern: /^[А-Яа-яЁёa-zA-Z0-9\s]+$/,
+              pattern: /^[А-Яа-яЁёa-zA-Z]+$/,
               message: "Допускаются только русские и английские буквы",
             },
             { required: true, message: "" },
@@ -120,7 +120,7 @@ const RegistrationForm = () => {
           isRequired={false}
           rules={[
             {
-              pattern: /^((\+7|7|8)+([0-9]){10})$/,
+              pattern: /^((\+7|7|8)[0-9]{10})$/,
               message: "Введите корректный номер",
             },
           ]}

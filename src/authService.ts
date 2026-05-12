@@ -1,17 +1,19 @@
-class AccessTokenStorage {
-  private _value: string | null = null;
+const createTokenStorage = () => {
+  let _token: string | null = null;
 
-  set value(token: string | null) {
-    this._value = token;
-  }
+  return {
+    get value() {
+      return _token;
+    },
 
-  get value(): string | null {
-    return this._value;
-  }
+    set value(token: string | null) {
+      _token = token;
+    },
 
-  clear() {
-    this._value = null;
-  }
-}
+    clear() {
+      _token = null;
+    },
+  };
+};
 
-export const accessToken = new AccessTokenStorage();
+export const accessToken = createTokenStorage();
